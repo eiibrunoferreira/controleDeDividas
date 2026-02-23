@@ -2,6 +2,7 @@ import { useState } from "react";
 import DebtCard from "../components/DebtCard";
 import EditDebtModal from "../components/EditDebtModal";
 import { useDebts } from "../context/useDebts";
+import NavHeader from "../components/NavHeader";
 
 export default function Dividas() {
   const { debts, updateDebt, deleteDebt } = useDebts();
@@ -28,8 +29,10 @@ export default function Dividas() {
   };
 
   return (
+
     <div className="min-h-screen bg-zinc-900 flex flex-col p-5">
-      <h1 className="text-white text-2xl font-semibold mb-5">Dívidas Totais</h1>
+      <NavHeader />
+      <h1 className="text-white text-2xl font-semibold mb-5 text-center">Dívidas Totais</h1>
 
       {debtsList.length === 0 ? (
         <p className="text-gray-400 text-center mt-20 text-lg">

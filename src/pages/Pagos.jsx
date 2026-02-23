@@ -34,7 +34,7 @@ export default function Pagos() {
 
   return (
     <div className="min-h-screen bg-zinc-900 flex flex-col p-5">
-      <h1 className="text-white text-2xl font-semibold mb-5">Pagos</h1>
+      <h1 className="text-white text-2xl font-semibold mb-5 text-center">Pagos</h1>
 
       {paidDebts.length === 0 ? (
         <p className="text-gray-400 text-center mt-20">

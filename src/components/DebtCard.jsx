@@ -44,7 +44,7 @@ export default function DebtCard({ debt, onPress }) {
   return (
     <div
       onClick={() => onPress && onPress(debt)}
-      className="cursor-pointer bg-zinc-800 p-4 rounded-lg mx-5 mb-3 flex justify-between items-center hover:bg-zinc-700 transition"
+      className="cursor-pointer bg-zinc-800 p-4 rounded-lg mx-2 mb-3 flex justify-between items-center hover:bg-zinc-700 transition"
     >
       <div className="flex items-center">
         <div
