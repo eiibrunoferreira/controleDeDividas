@@ -32,7 +32,7 @@ export default function Dividas() {
 
     <div className="min-h-screen bg-zinc-900 flex flex-col p-5">
       <NavHeader />
-      <h1 className="text-white text-2xl font-semibold mb-5 text-center">Dívidas Totais</h1>
+      <h1 className="text-white text-2xl font-semibold mb-8 text-center">Dívidas Totais</h1>
 
       {debtsList.length === 0 ? (
         <p className="text-gray-400 text-center mt-20 text-lg">

@@ -6,14 +6,14 @@ export default function ButtonsCards() {
 
   return (
     <div className="rounded-xl p-4">
-      <h2 className="text-white text-xl font-semibold mb-3">Botões de Acessos</h2>
+      <h2 className="text-white text-center text-xl font-semibold mb-3">Botões de Acessos</h2>
 
       <div className="flex flex-col gap-4">
         <button
           className="bg-zinc-800 rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
           onClick={() => navigate("/a-vencer")}
         >
-          Á VENCER
+          A VENCER
         </button>
 
         <button

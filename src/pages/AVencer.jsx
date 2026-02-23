@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import EditDebtModal from "../components/EditDebtModal";
 import DebtCard from "../components/DebtCard";
 import { useDebts } from "../context/useDebts";
+import NavHeader from "../components/NavHeader";
 
 export default function AVencer() {
   const { debts, updateDebt, deleteDebt } = useDebts(); // 🔥 pegando todas funções do contexto
@@ -34,7 +35,8 @@ export default function AVencer() {
 
   return (
     <div className="min-h-screen bg-zinc-900 flex flex-col p-5">
-      <h1 className="text-white text-2xl font-semibold mb-5 text-center">A Vencer</h1>
+      <NavHeader />
+      <h1 className="text-white text-2xl font-semibold mb-8 text-center">A Vencer</h1>
 
       {upcomingDebts.length === 0 ? (
         <p className="text-gray-400 text-center mt-20">

@@ -19,6 +19,16 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
     return i.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + c.toString().padStart(2, "0");
   };
 
+  // 🟢 TRAVAR SCROLL DO FUNDO
+  useEffect(() => {
+    if (visible) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [visible]);
+
   useEffect(() => {
     if (!(visible && debt)) return;
 
@@ -60,7 +70,6 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
     const integerPart = Math.floor(numberValue / 100);
     const decimalPart = cents.toString().padStart(2, "0");
     const formattedInteger = integerPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
     setForm({ ...form, rawAmount: cleaned, amount: formattedInteger + "," + decimalPart });
   };
 
@@ -111,7 +120,7 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
       onClick={() => { resetForm(); onClose(); }}
     >
       <div
-        className="bg-zinc-900 rounded-xl p-5 w-full max-w-md"
+        className="bg-zinc-900 rounded-xl p-5 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -165,7 +174,7 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
           {["a-vencer", "dividas", "pagos"].map((item) => (
             <button
               key={item}
-              className={`flex-1 py-2 rounded-lg border border-white font-semibold ${form.status === item ? getAmountColor(item) : "bg-transparent text-white"}`}
+              className={`flex-1 py-2 rounded-lg border font-semibold ${form.status === item ? getAmountColor(item) : "bg-transparent text-white"}`}
               onClick={() => setForm({ ...form, status: item })}
             >
               {item === "a-vencer" ? "A Vencer" : item === "dividas" ? "Dívidas" : "Pagos"}

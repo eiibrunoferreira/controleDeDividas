@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDebts } from "../context/useDebts"; // ajuste se estiver usando outro arquivo
 
 export default function AddDebtModal({ visible, onClose }) {
@@ -11,6 +11,16 @@ export default function AddDebtModal({ visible, onClose }) {
   const [rawAmount, setRawAmount] = useState(""); // Valor sem formatação
   const [status, setStatus] = useState(null);
   const [error, setError] = useState("");
+
+  // 🟢 TRAVAR SCROLL DO FUNDO
+  useEffect(() => {
+    if (visible) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [visible]);
 
   function resetForm() {
     setName("");
@@ -86,7 +96,7 @@ export default function AddDebtModal({ visible, onClose }) {
       }}
     >
       <div
-        className="bg-zinc-900 rounded-xl p-6 w-full max-w-md"
+        className="bg-zinc-900 rounded-xl p-6 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-white text-xl font-semibold mb-4">Nova Dívida</h2>
@@ -134,11 +144,17 @@ export default function AddDebtModal({ visible, onClose }) {
           {["a-vencer", "dividas", "pagos"].map((item) => (
             <button
               key={item}
-              className={`flex-1 p-2 rounded border ${status === item ? "bg-white text-black font-semibold" : "text-white border-white"
+              className={`flex-1 p-2 rounded border ${status === item
+                  ? "bg-white text-black font-semibold"
+                  : "text-white border-white"
                 }`}
               onClick={() => setStatus(item)}
             >
-              {item === "a-vencer" ? "A Vencer" : item === "dividas" ? "Dívidas" : "Pagos"}
+              {item === "a-vencer"
+                ? "A Vencer"
+                : item === "dividas"
+                  ? "Dívidas"
+                  : "Pagos"}
             </button>
           ))}
         </div>
