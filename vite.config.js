@@ -40,5 +40,5 @@ export default defineConfig({
       },
     }),
   ],
-  base: './', // importante para GitHub Pages
+  base: '/controleDeDividas/', // importante para GitHub Pages
 });
