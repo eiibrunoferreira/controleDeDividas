@@ -8,7 +8,7 @@ import AVencer from "./pages/AVencer";
 export default function App() {
   return (
     <BrowserRouter basename="/controleDeDividas/">
-      <div className="min-h-screen bg-zinc-900 text-white">
+      <div className="min-h-screen text-white">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dividas" element={<Dividas />} />

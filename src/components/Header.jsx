@@ -65,7 +65,7 @@ export default function Header() {
   return (
     <>
       {/* HEADER */}
-      <div className="mt-5 mx-5 px-10 py-5 flex justify-between items-center bg-zinc-800 rounded-2xl">
+      <div className="mt-5 mx-5 px-10 py-5 flex justify-between items-center bg-slate-950 rounded-2xl">
         <div>
           <p className="text-sm text-zinc-400">Bem-vindo,</p>
           <p

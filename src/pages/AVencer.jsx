@@ -34,7 +34,7 @@ export default function AVencer() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 flex flex-col p-5">
+    <div className="min-h-screen bg-slate-900 flex flex-col p-5">
       <NavHeader />
       <h1 className="text-white text-2xl font-semibold mb-8 text-center">A Vencer</h1>
 

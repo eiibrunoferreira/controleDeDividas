@@ -116,11 +116,11 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 flex justify-center items-center p-5 z-50"
+      className="fixed inset-0 bg-slate-950/90 flex justify-center items-center p-5 z-50"
       onClick={() => { resetForm(); onClose(); }}
     >
       <div
-        className="bg-zinc-900 rounded-xl p-5 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
+        className="bg-slate-900 rounded-xl p-5 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -134,7 +134,7 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
         {/* Nome */}
         <label className="text-white mb-1 block">Nome</label>
         <input
-          className="w-full bg-zinc-800 text-white p-3 rounded-lg mb-3 border-none"
+          className="w-full bg-slate-800 text-white p-3 rounded-lg mb-3 border-none"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
@@ -142,7 +142,7 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
         {/* Descrição */}
         <label className="text-white mb-1 block">Descrição</label>
         <textarea
-          className="w-full bg-zinc-800 text-white p-3 rounded-lg mb-3 border-none min-h-[80px]"
+          className="w-full bg-slate-800 text-white p-3 rounded-lg mb-3 border-none min-h-[80px]"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
@@ -151,14 +151,14 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
         <label className="text-white mb-1 block">Dia do vencimento</label>
         <input
           type="number"
-          className="w-full bg-zinc-800 text-white p-3 rounded-lg mb-3 border-none"
+          className="w-full bg-slate-800 text-white p-3 rounded-lg mb-3 border-none"
           value={form.dueDay}
           onChange={(e) => setForm({ ...form, dueDay: e.target.value })}
         />
 
         {/* Valor */}
         <label className="text-white mb-1 block">Valor</label>
-        <div className="flex items-center bg-zinc-800 rounded-lg p-3 mb-3">
+        <div className="flex items-center bg-slate-800 rounded-lg p-3 mb-3">
           <span className="text-gray-400 font-semibold mr-2">R$</span>
           <input
             type="text"
@@ -185,7 +185,7 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
         {/* Botões */}
         <div className="flex gap-3">
           <button
-            className="flex-1 py-3 rounded-lg bg-gray-600 text-white font-semibold"
+            className="flex-1 py-3 rounded-lg bg-slate-800 text-white font-semibold"
             onClick={handleDelete}
           >
             Apagar dívida

@@ -89,14 +89,14 @@ export default function AddDebtModal({ visible, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50"
+      className="fixed inset-0 bg-slate-950/90 flex justify-center items-center p-4 z-50"
       onClick={() => {
         resetForm();
         onClose();
       }}
     >
       <div
-        className="bg-zinc-900 rounded-xl p-6 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
+        className="bg-slate-900 rounded-xl p-6 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-white text-xl font-semibold mb-4">Nova Dívida</h2>
@@ -106,7 +106,7 @@ export default function AddDebtModal({ visible, onClose }) {
         <input
           type="text"
           placeholder="Nome da dívida"
-          className="w-full bg-zinc-800 text-white p-3 rounded mb-3"
+          className="w-full bg-slate-800 text-white p-3 rounded mb-3"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -114,7 +114,7 @@ export default function AddDebtModal({ visible, onClose }) {
         <input
           type="text"
           placeholder="Descrição (opcional)"
-          className="w-full bg-zinc-800 text-white p-3 rounded mb-3"
+          className="w-full bg-slate-800 text-white p-3 rounded mb-3"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -122,13 +122,13 @@ export default function AddDebtModal({ visible, onClose }) {
         <input
           type="number"
           placeholder="Dia do vencimento (opcional)"
-          className="w-full bg-zinc-800 text-white p-3 rounded mb-3"
+          className="w-full bg-slate-800 text-white p-3 rounded mb-3"
           value={dueDay}
           onChange={(e) => setDueDay(e.target.value)}
           max={31}
         />
 
-        <div className="flex items-center bg-zinc-800 rounded p-3 mb-3">
+        <div className="flex items-center bg-slate-800 rounded p-3 mb-3">
           <span className="text-gray-400 mr-2 font-semibold">R$</span>
           <input
             type="text"
@@ -145,8 +145,8 @@ export default function AddDebtModal({ visible, onClose }) {
             <button
               key={item}
               className={`flex-1 p-2 rounded border ${status === item
-                  ? "bg-white text-black font-semibold"
-                  : "text-white border-white"
+                ? "bg-white text-black font-semibold"
+                : "text-white border-white"
                 }`}
               onClick={() => setStatus(item)}
             >
@@ -161,7 +161,7 @@ export default function AddDebtModal({ visible, onClose }) {
 
         <div className="flex justify-between gap-2">
           <button
-            className="flex-1 p-3 rounded bg-gray-600 text-white"
+            className="flex-1 p-3 rounded bg-slate-800 text-white"
             onClick={() => {
               resetForm();
               onClose();
