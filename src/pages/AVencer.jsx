@@ -34,16 +34,25 @@ export default function AVencer() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040d24] flex flex-col p-5">
+    <div className="
+  min-h-screen
+  flex
+  flex-col
+  p-5
+  bg-gradient-to-b
+  from-[#020617]
+  via-[#071226]
+  to-[#00031f]
+">
       <NavHeader />
       <h1 className="text-white text-2xl font-semibold mb-8 text-center">A Vencer</h1>
 
       {upcomingDebts.length === 0 ? (
-        <p className="text-gray-400 text-center mt-20">
+        <p className="text-gray-400 text-center mt-20 text-lg">
           Nenhuma dívida a vencer...
         </p>
       ) : (
-        <div className="space-y-3">
+        <div>
           {upcomingDebts.map((debt) => (
             <div key={debt.id} onClick={() => handleOpenDebt(debt)}>
               <DebtCard debt={debt} />

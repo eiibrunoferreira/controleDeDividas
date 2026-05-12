@@ -34,7 +34,16 @@ export default function Pagos() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040d24] flex flex-col p-5">
+    <div className="
+  min-h-screen
+  flex
+  flex-col
+  p-5
+  bg-gradient-to-b
+  from-[#020617]
+  via-[#071226]
+  to-[#00031f]
+">
       <NavHeader />
       <h1 className="text-white text-2xl font-semibold mb-8 text-center">Pagos</h1>
 
@@ -43,7 +52,7 @@ export default function Pagos() {
           Nenhuma dívida paga ainda
         </p>
       ) : (
-        <div className="space-y-3">
+        <div className>
           {paidDebts.map((debt) => (
             <div key={debt.id} onClick={() => handleOpenDebt(debt)}>
               <DebtCard debt={debt} />

@@ -4,15 +4,13 @@ export default function NavHeader() {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed ml-2 -mt-1.5 p-2 px-3.5 flex text-center justify-center items-center bg-slate-950 rounded-full hover:brightness-90 transition-all">
-      {/* Botão Voltar */}
+    <div className="fixed ml-2 -mt-1.5 w-11 h-11 flex items-center justify-center bg-slate-950 rounded-full hover:brightness-90 transition-all">
       <button
         onClick={() => navigate(-1)}
-        className="text-white text-xl text-center font-bold hover:text-zinc-300 transition"
+        className="text-white text-xl font-bold hover:text-zinc-300 transition"
       >
         ⭠
       </button>
-
     </div>
   );
 }

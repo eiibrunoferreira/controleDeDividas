@@ -30,7 +30,16 @@ export default function Dividas() {
 
   return (
 
-    <div className="min-h-screen bg-[#040d24] flex flex-col p-5">
+    <div className="
+  min-h-screen
+  flex
+  flex-col
+  p-5
+  bg-gradient-to-b
+  from-[#020617]
+  via-[#071226]
+  to-[#00031f]
+">
       <NavHeader />
       <h1 className="text-white text-2xl font-semibold mb-8 text-center">Dívidas Totais</h1>
 
@@ -39,13 +48,11 @@ export default function Dividas() {
           Nenhuma dívida ainda
         </p>
       ) : (
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col">
           {debtsList.map((debt) => (
-            <DebtCard
-              key={debt.id}
-              debt={debt}
-              onPress={handleOpenDebt}
-            />
+            <div key={debt.id} onClick={() => handleOpenDebt(debt)}>
+              <DebtCard debt={debt} />
+            </div>
           ))}
         </div>
       )}
