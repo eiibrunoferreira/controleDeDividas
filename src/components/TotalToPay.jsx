@@ -9,7 +9,7 @@ export default function TotalToPay() {
   });
 
   return (
-    <div className="mx-5 mt-5 p-6 rounded-2xl bg-[#00031f]">
+    <div className="mx-5 mt-5 p-6 rounded-2xl bg-gradient-to-r from-[#10284D] to-[#0B1D39]">
       <p className="text-sm text-zinc-300 mb-1">
         Total a vencer:
       </p>

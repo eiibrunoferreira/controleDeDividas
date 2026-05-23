@@ -35,10 +35,7 @@ export default function Dividas() {
   flex
   flex-col
   p-5
-  bg-gradient-to-b
-  from-[#020617]
-  via-[#071226]
-  to-[#00031f]
+  bg-[#061224]
 ">
       <NavHeader />
       <h1 className="text-white text-2xl font-semibold mb-8 text-center">Dívidas Totais</h1>

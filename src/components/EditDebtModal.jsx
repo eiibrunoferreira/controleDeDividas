@@ -120,7 +120,7 @@ export default function EditDebtModal({ visible, onClose, debt, updateDebt, dele
       onClick={() => { resetForm(); onClose(); }}
     >
       <div
-        className="bg-slate-900 rounded-xl p-5 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
+        className="bg-[#08162c] rounded-xl p-5 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

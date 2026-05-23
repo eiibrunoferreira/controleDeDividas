@@ -10,21 +10,21 @@ export default function ButtonsCards() {
 
       <div className="flex flex-col gap-4">
         <button
-          className="bg-[#061954] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
+          className="bg-gradient-to-r from-[#10284D] to-[#0B1D39] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
           onClick={() => navigate("/a-vencer")}
         >
           A VENCER
         </button>
 
         <button
-          className="bg-[#061954] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
+          className="bg-gradient-to-r from-[#0B1D39] to-[#10284D] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
           onClick={() => navigate("/dividas")}
         >
           DÍVIDAS
         </button>
 
         <button
-          className="bg-[#061954] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
+          className="bg-gradient-to-r from-[#10284D] to-[#0B1D39] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
           onClick={() => navigate("/pagos")}
         >
           PAGOS

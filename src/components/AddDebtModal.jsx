@@ -96,7 +96,7 @@ export default function AddDebtModal({ visible, onClose }) {
       }}
     >
       <div
-        className="bg-slate-900 rounded-xl p-6 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
+        className="bg-[#08162c] rounded-xl p-6 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-white text-xl font-semibold mb-4">Nova Dívida</h2>

@@ -14,9 +14,9 @@ export default function DebtCard({ debt, onPress }) {
   function getAmountColor() {
     switch (debt.status) {
       case "pagos":
-        return "text-green-500";
+        return "text-white";
       case "a-vencer":
-        return "text-red-500";
+        return "text-white";
       default:
         return "text-white";
     }
@@ -44,7 +44,7 @@ export default function DebtCard({ debt, onPress }) {
   return (
     <div
       onClick={() => onPress && onPress(debt)}
-      className="cursor-pointer bg-[#00031f] p-4 rounded-lg mx-2 mb-3 flex justify-between items-center hover:brightness-90 transition-all"
+      className="cursor-pointer bg-gradient-to-r from-[#0B1D39] to-[#10284D] p-4 rounded-lg mx-2 mb-3 flex justify-between items-center hover:brightness-90 transition-all"
     >
       <div className="flex items-center">
         <div
