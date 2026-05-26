@@ -40,9 +40,10 @@ export default function Home() {
     backgroundRepeat: 'no-repeat',
     opacity: '0.10',
     transform: 'scaleY(-1) scaleX(-1)',
-    backgroundPosition: 'bottom center',
-    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)',
-    maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)',
+
+    // Agora que a caixa tem o tamanho certo, o degradê aplica perfeitamente nas duas pontas da imagem!
+    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 30%, transparent 90%)',
+    maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)',
   };
 
   return (
@@ -50,7 +51,14 @@ export default function Home() {
       <div className="min-h-screen w-full flex flex-col relative overflow-x-hidden bg-[#061224]">
 
         {/* IMAGENS DE FUNDO */}
-        <div className="fixed inset-0 z-0 pointer-events-none" style={imageMaskTopStyle} />
+        {/* 🌟 Ajustamos o topo: tiramos o inset-0, definimos uma altura (h-[35vh]) e top-0 */}
+        <div
+          className="fixed top-0 left-0 right-0 h-[35vh] z-0 pointer-events-none"
+          style={{
+            ...imageMaskTopStyle,
+            backgroundPosition: 'top center', // Força a imagem a se alinhar no topo real
+          }}
+        />
         <div className="fixed inset-0 z-0 pointer-events-none" style={imageMaskBottomStyle} />
 
         {/* CONTEÚDO */}

@@ -40,25 +40,28 @@ export default function Dividas() {
     maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)',
   };
 
-  // 💎 IMAGEM DA PARTE DE CIMA (Invertida e Espelhada com opacidade suave)
+  // 💎 IMAGEM DA PARTE DE CIMA CORRIGIDA PARA PWA 🚀
   const imageMaskTopStyle = {
     backgroundImage: `url('${backgroundImage}')`,
     backgroundSize: '100%',
     backgroundRepeat: 'no-repeat',
     opacity: '0.10',
     transform: 'scaleY(-1) scaleX(-1)',
-    backgroundPosition: 'bottom center',
-    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)',
-    maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)',
+    // 🎨 O degradê padronizado de 3 pontos que some nas duas extremidades
+    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)',
+    maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)',
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col p-5 relative overflow-x-hidden bg-[#061224]">
 
-      {/* 🖼️ IMAGEM DO TOPO (Invertida) */}
+      {/* 🖼️ IMAGEM DO TOPO (Ajustada com tamanho fixo e alinhamento correto) */}
       <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={imageMaskTopStyle}
+        className="fixed top-0 left-0 right-0 h-[35vh] z-0 pointer-events-none"
+        style={{
+          ...imageMaskTopStyle,
+          backgroundPosition: 'top center',
+        }}
       />
 
       {/* 🖼️ IMAGEM DA BASE */}
