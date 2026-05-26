@@ -5,6 +5,7 @@ import AddDividaButton from "../components/AddDividaButton";
 import ButtonsCards from "../components/ButtonsCards";
 import AddDebtModal from "../components/AddDebtModal";
 import { useDebts } from "../context/useDebts"; // 🎯 Puxando o seu hook
+import backgroundImage from "/images/background.png";
 
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,7 +25,7 @@ export default function Home() {
 
   // 💎 Seus estilos de imagem de fundo que ficaram perfeitos
   const imageMaskBottomStyle = {
-    backgroundImage: "url('public/images/background.png')",
+    backgroundImage: `url('${backgroundImage}')`,
     backgroundSize: '100%',
     backgroundPosition: 'bottom center',
     backgroundRepeat: 'no-repeat',
@@ -34,7 +35,7 @@ export default function Home() {
   };
 
   const imageMaskTopStyle = {
-    backgroundImage: "url('public/images/background.png')",
+    backgroundImage: `url('${backgroundImage}')`,
     backgroundSize: '100%',
     backgroundRepeat: 'no-repeat',
     opacity: '0.10',

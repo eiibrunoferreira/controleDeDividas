@@ -3,6 +3,7 @@ import DebtCard from "../components/DebtCard";
 import EditDebtModal from "../components/EditDebtModal";
 import { useDebts } from "../context/useDebts";
 import NavHeader from "../components/NavHeader";
+import backgroundImage from "/images/background.png";
 
 export default function Dividas() {
   const { debts, updateDebt, deleteDebt } = useDebts();
@@ -30,7 +31,7 @@ export default function Dividas() {
 
   // 💎 IMAGEM DA PARTE DE BAIXO (Perfeito de acordo com sua calibração)
   const imageMaskBottomStyle = {
-    backgroundImage: "url('public/images/background.png')",
+    backgroundImage: `url('${backgroundImage}')`,
     backgroundSize: '100%',
     backgroundPosition: 'bottom center',
     backgroundRepeat: 'no-repeat',
@@ -41,7 +42,7 @@ export default function Dividas() {
 
   // 💎 IMAGEM DA PARTE DE CIMA (Invertida e Espelhada com opacidade suave)
   const imageMaskTopStyle = {
-    backgroundImage: "url('public/images/background.png')",
+    backgroundImage: `url('${backgroundImage}')`,
     backgroundSize: '100%',
     backgroundRepeat: 'no-repeat',
     opacity: '0.10',

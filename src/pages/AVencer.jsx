@@ -3,6 +3,7 @@ import EditDebtModal from "../components/EditDebtModal";
 import DebtCard from "../components/DebtCard";
 import { useDebts } from "../context/useDebts";
 import NavHeader from "../components/NavHeader";
+import backgroundImage from "/images/background.png";
 
 export default function AVencer() {
   const { debts, updateDebt, deleteDebt } = useDebts();
@@ -35,7 +36,7 @@ export default function AVencer() {
 
   // 💎 IMAGEM DA PARTE DE BAIXO
   const imageMaskBottomStyle = {
-    backgroundImage: "url('public/images/background.png')",
+    backgroundImage: `url('${backgroundImage}')`,
     backgroundSize: '100%',
     backgroundPosition: 'bottom center',
     backgroundRepeat: 'no-repeat',
@@ -46,7 +47,7 @@ export default function AVencer() {
 
   // 💎 IMAGEM DA PARTE DE CIMA (Invertida e Espelhada)
   const imageMaskTopStyle = {
-    backgroundImage: "url('public/images/background.png')",
+    backgroundImage: `url('${backgroundImage}')`,
     backgroundSize: '100%',
     backgroundRepeat: 'no-repeat',
     opacity: '0.10',
