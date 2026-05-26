@@ -62,13 +62,13 @@ export default function AVencer() {
 
       {/* 🖼️ IMAGEM DO TOPO (Invertida) */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none"
+        className="fixed inset-0 z-0 pointer-events-none"
         style={imageMaskTopStyle}
       />
 
       {/* 🖼️ IMAGEM DA BASE */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none"
+        className="fixed inset-0 z-0 pointer-events-none"
         style={imageMaskBottomStyle}
       />
 

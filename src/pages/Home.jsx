@@ -50,8 +50,8 @@ export default function Home() {
       <div className="min-h-screen w-full flex flex-col relative overflow-x-hidden bg-[#061224]">
 
         {/* IMAGENS DE FUNDO */}
-        <div className="absolute inset-0 z-0 pointer-events-none" style={imageMaskTopStyle} />
-        <div className="absolute inset-0 z-0 pointer-events-none" style={imageMaskBottomStyle} />
+        <div className="fixed inset-0 z-0 pointer-events-none" style={imageMaskTopStyle} />
+        <div className="fixed inset-0 z-0 pointer-events-none" style={imageMaskBottomStyle} />
 
         {/* CONTEÚDO */}
         <div className="relative z-10 flex flex-col w-full flex-1">
