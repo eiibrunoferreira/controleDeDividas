@@ -38,6 +38,18 @@ export function DebtProvider({ children }) {
     );
   };
 
+  // 🎯 NOVA FUNÇÃO ADICIONADA AQUI:
+  // Ela varre a lista, e tudo que for "pagos" ela transforma em "dividas"
+  const startNewMonth = () => {
+    setDebts((prev) =>
+      persist(
+        prev.map((d) =>
+          d.status === "pagos" ? { ...d, status: "dividas" } : d
+        )
+      )
+    );
+  };
+
   const totalAVencer = useMemo(() => {
     return debts
       .filter((d) => d.status === "a-vencer")
@@ -46,7 +58,8 @@ export function DebtProvider({ children }) {
 
   return (
     <DebtContext.Provider
-      value={{ debts, addDebt, updateDebt, deleteDebt, totalAVencer }}
+      // 🎯 IMPORTANTE: Adicionamos o 'startNewMonth' aqui na linha de baixo para a Home conseguir enxergar ele!
+      value={{ debts, addDebt, updateDebt, deleteDebt, totalAVencer, startNewMonth }}
     >
       {children}
     </DebtContext.Provider>
