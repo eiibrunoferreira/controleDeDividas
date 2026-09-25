@@ -1,6 +1,6 @@
 const prisma = require("../lib/prisma");
 
-```js
+
 async function createDebt(req, res) {
   try {
     const {
@@ -26,12 +26,20 @@ async function createDebt(req, res) {
       annualPaidYear,
     } = req.body;
 
-    if (!name || amount === undefined || amount === null) {
-      return res.status(400).json({
-        error: "Nome e valor da dívida são obrigatórios.",
-      });
-    }
+   if (!name || amount === undefined || amount === null) {
+  return res.status(400).json({
+    error: "Nome e valor da dívida são obrigatórios.",
+  });
+}
 
+const savedRecurrenceGroupId =
+  Boolean(recurring)
+    ? recurrenceGroupId ||
+      `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 10)}`
+    : null;
+    
     const debt = await prisma.debt.create({
       data: {
         name: name.trim(),
@@ -52,7 +60,7 @@ async function createDebt(req, res) {
           recurrenceType || null,
 
         recurrenceGroupId:
-          recurrenceGroupId || null,
+  savedRecurrenceGroupId,
 
         recurrenceYear:
           recurrenceYear !== null &&
@@ -139,7 +147,6 @@ async function createDebt(req, res) {
     });
   }
 }
-```
 
 
 async function getDebts(req, res) {
