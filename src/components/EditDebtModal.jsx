@@ -1,203 +1,1314 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function EditDebtModal({ visible, onClose, debt, updateDebt, deleteDebt }) {
+export default function EditDebtModal({
+  visible,
+  onClose,
+  debt,
+  updateDebt,
+  deleteDebt,
+}) {
+  const [deleteConfirmVisible, setDeleteConfirmVisible] =
+    useState(false);
+
   const [form, setForm] = useState({
     name: "",
     description: "",
-    dueDay: "",
+    dueDate: "",
     amount: "",
     rawAmount: "",
     status: null,
+    recurring: false,
+    recurrenceType: "monthly",
+    monthlyDueMode: "date",
+    recurrenceWeekday: "",
+    recurrenceMonths: [],
+    hasRecurrenceLimit: false,
+    recurrenceLimit: "",
+    recurrenceNumber: 1,
     error: "",
   });
 
-  const formatAmountFromCents = (cents) => {
-    if (!cents) return "";
-    const numberValue = parseInt(cents, 10);
-    const c = numberValue % 100;
-    const i = Math.floor(numberValue / 100);
-    return i.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + c.toString().padStart(2, "0");
-  };
+  // =========================
+  // DIAS DA SEMANA
+  // =========================
 
-  // 🟢 TRAVAR SCROLL DO FUNDO
+  const weekdays = [
+    { value: 0, label: "Domingo" },
+    { value: 1, label: "Segunda-feira" },
+    { value: 2, label: "Terça-feira" },
+    { value: 3, label: "Quarta-feira" },
+    { value: 4, label: "Quinta-feira" },
+    { value: 5, label: "Sexta-feira" },
+    { value: 6, label: "Sábado" },
+  ];
+
+  // =========================
+  // MESES
+  // =========================
+
+  const months = [
+    { value: 1, label: "Janeiro" },
+    { value: 2, label: "Fevereiro" },
+    { value: 3, label: "Março" },
+    { value: 4, label: "Abril" },
+    { value: 5, label: "Maio" },
+    { value: 6, label: "Junho" },
+    { value: 7, label: "Julho" },
+    { value: 8, label: "Agosto" },
+    { value: 9, label: "Setembro" },
+    { value: 10, label: "Outubro" },
+    { value: 11, label: "Novembro" },
+    { value: 12, label: "Dezembro" },
+  ];
+
+  // =========================
+  // BLOQUEIA O SCROLL
+  // =========================
+
   useEffect(() => {
-    if (visible) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-    return () => document.body.classList.remove("overflow-hidden");
+    if (!visible) return;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [visible]);
 
+  // =========================
+  // FORMATA VALOR
+  // =========================
+
+  function formatAmountFromCents(cents) {
+    if (!cents) return "";
+
+    const numberValue = parseInt(cents, 10);
+
+    if (!Number.isFinite(numberValue)) {
+      return "";
+    }
+
+    const integerPart = Math.floor(numberValue / 100);
+    const decimalPart = numberValue % 100;
+
+    const formattedInteger =
+      integerPart.toLocaleString("pt-BR");
+
+    return `${formattedInteger},${decimalPart
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  // =========================
+  // CARREGA A DÍVIDA
+  // =========================
+
   useEffect(() => {
-    if (!(visible && debt)) return;
+    if (!visible || !debt) return;
 
-    const cents = debt.amount ? Math.round(debt.amount * 100).toString() : "";
-    const newFormState = {
-      name: debt.name || "",
-      description: debt.description || "",
-      dueDay: debt.dueDay ? String(debt.dueDay) : "",
-      status: debt.status || null,
-      rawAmount: cents,
-      amount: formatAmountFromCents(cents),
-      error: "",
-    };
+    const cents =
+      debt.amount != null
+        ? Math.round(debt.amount * 100).toString()
+        : "";
 
-    requestAnimationFrame(() => setForm(newFormState));
+    const recurring = debt.recurring === true;
+
+    const recurrenceType =
+      debt.recurrenceType === "weekly"
+        ? "weekly"
+        : debt.recurrenceType === "annual"
+          ? "annual"
+          : "monthly";
+
+    const monthlyDueMode =
+      debt.monthlyDueMode === "weekday"
+        ? "weekday"
+        : "date";
+
+    const recurrenceWeekday =
+      debt.recurrenceWeekday != null
+        ? String(debt.recurrenceWeekday)
+        : "";
+
+    const recurrenceMonths =
+      recurrenceType === "annual" &&
+      Array.isArray(debt.recurrenceMonths)
+        ? debt.recurrenceMonths
+        : [];
+
+    const hasRecurrenceLimit =
+      recurring &&
+      recurrenceType !== "annual" &&
+      debt.recurrenceLimit != null;
+
+    const recurrenceLimit =
+      hasRecurrenceLimit
+        ? String(debt.recurrenceLimit)
+        : "";
+
+    requestAnimationFrame(() => {
+      setForm({
+        name: debt.name || "",
+        description: debt.description || "",
+        dueDate: debt.dueDate || "",
+        amount: formatAmountFromCents(cents),
+        rawAmount: cents,
+        status:
+          debt.status === "pagos"
+            ? "pagos"
+            : "a-vencer",
+        recurring,
+        recurrenceType,
+        monthlyDueMode,
+        recurrenceWeekday,
+        recurrenceMonths,
+        hasRecurrenceLimit,
+        recurrenceLimit,
+        recurrenceNumber: debt.recurrenceNumber || 1,
+        error: "",
+      });
+    });
   }, [visible, debt]);
 
-  const resetForm = () => {
+  // =========================
+  // RESETA O FORMULÁRIO
+  // =========================
+
+  function resetForm() {
     setForm({
       name: "",
       description: "",
-      dueDay: "",
+      dueDate: "",
       amount: "",
       rawAmount: "",
       status: null,
+      recurring: false,
+      recurrenceType: "monthly",
+      monthlyDueMode: "date",
+      recurrenceWeekday: "",
+      recurrenceMonths: [],
+      hasRecurrenceLimit: false,
+      recurrenceLimit: "",
+      recurrenceNumber: 1,
       error: "",
     });
-  };
+  }
 
-  const handleAmountChange = (text) => {
-    const cleaned = text.replace(/\D/g, "");
-    if (!cleaned) {
-      setForm({ ...form, rawAmount: "", amount: "" });
+  // =========================
+  // FECHAR
+  // =========================
+
+  function handleClose() {
+    if (deleteConfirmVisible) return;
+
+    resetForm();
+    onClose();
+  }
+
+  // =========================
+  // ALTERAR VALOR
+  // =========================
+
+  function handleAmountChange(value) {
+    let numbers = value.replace(/\D/g, "");
+
+    if (!numbers) {
+      setForm((prev) => ({
+        ...prev,
+        amount: "",
+        rawAmount: "",
+        error: "",
+      }));
+
       return;
     }
 
-    const numberValue = parseInt(cleaned, 10);
-    const cents = numberValue % 100;
-    const integerPart = Math.floor(numberValue / 100);
-    const decimalPart = cents.toString().padStart(2, "0");
-    const formattedInteger = integerPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    setForm({ ...form, rawAmount: cleaned, amount: formattedInteger + "," + decimalPart });
-  };
+    numbers = numbers.padStart(3, "0");
 
-  const getAmountColor = (itemStatus) => {
-    switch (itemStatus) {
-      case "pagos":
-        return "bg-green-500 text-black border-green-500";
-      case "a-vencer":
-        return "bg-red-800 text-white border-red-800";
-      default:
-        return "bg-white text-black border-white";
-    }
-  };
+    const integerPart = numbers.slice(0, -2);
+    const decimalPart = numbers.slice(-2);
 
-  const handleUpdate = () => {
+    const formattedInteger =
+      Number(integerPart).toLocaleString("pt-BR");
+
+    setForm((prev) => ({
+      ...prev,
+      amount: `${formattedInteger},${decimalPart}`,
+      rawAmount: numbers,
+      error: "",
+    }));
+  }
+
+  // =========================
+  // ALTERA RECORRÊNCIA
+  // =========================
+
+  function handleRecurringChange(value) {
+    setForm((prev) => ({
+      ...prev,
+      recurring: value,
+      error: "",
+      ...(value
+        ? {}
+        : {
+            recurrenceType: "monthly",
+            monthlyDueMode: "date",
+            recurrenceWeekday: "",
+            recurrenceMonths: [],
+            dueDate: "",
+            hasRecurrenceLimit: false,
+            recurrenceLimit: "",
+          }),
+    }));
+  }
+
+  // =========================
+  // ALTERA TIPO DE RECORRÊNCIA
+  // =========================
+
+  function handleRecurrenceTypeChange(type) {
+    setForm((prev) => ({
+      ...prev,
+      recurrenceType: type,
+      monthlyDueMode:
+        type === "monthly" ? "date" : prev.monthlyDueMode,
+      recurrenceWeekday: "",
+      dueDate:
+        type === "weekly" || type === "annual"
+          ? ""
+          : prev.dueDate,
+      recurrenceMonths:
+        type === "annual"
+          ? prev.recurrenceMonths
+          : [],
+      hasRecurrenceLimit: false,
+      recurrenceLimit: "",
+      error: "",
+    }));
+  }
+
+  // =========================
+  // ALTERA MODO MENSAL
+  // =========================
+
+  function handleMonthlyModeChange(mode) {
+    setForm((prev) => ({
+      ...prev,
+      monthlyDueMode: mode,
+      dueDate:
+        mode === "weekday"
+          ? ""
+          : prev.dueDate,
+      recurrenceWeekday:
+        mode === "date"
+          ? ""
+          : prev.recurrenceWeekday,
+      error: "",
+    }));
+  }
+
+  // =========================
+  // SELECIONA MÊS ANUAL
+  // =========================
+
+  function toggleRecurrenceMonth(month) {
+    setForm((prev) => {
+      if (prev.recurrenceMonths.includes(month)) {
+        return {
+          ...prev,
+          recurrenceMonths:
+            prev.recurrenceMonths.filter(
+              (item) => item !== month
+            ),
+          error: "",
+        };
+      }
+
+      return {
+        ...prev,
+        recurrenceMonths: [
+          ...prev.recurrenceMonths,
+          month,
+        ].sort((a, b) => a - b),
+        error: "",
+      };
+    });
+  }
+
+  // =========================
+  // SALVAR ALTERAÇÕES
+  // =========================
+
+  function handleUpdate() {
     if (!debt) return;
 
-    if (!form.name.trim()) return setForm({ ...form, error: "Nome é obrigatório" });
-    if (!form.rawAmount) return setForm({ ...form, error: "Informe um valor válido" });
-    if (!form.status) return setForm({ ...form, error: "Selecione um status" });
+    setForm((prev) => ({
+      ...prev,
+      error: "",
+    }));
+
+    // =========================
+    // NOME
+    // =========================
+
+    if (!form.name.trim()) {
+      setForm((prev) => ({
+        ...prev,
+        error: "Digite o nome da dívida.",
+      }));
+
+      return;
+    }
+
+    // =========================
+    // VALOR
+    // =========================
+
+    if (!form.rawAmount) {
+      setForm((prev) => ({
+        ...prev,
+        error: "Digite o valor da dívida.",
+      }));
+
+      return;
+    }
+
+    const numericAmount =
+      Number(form.rawAmount) / 100;
+
+    if (
+      !numericAmount ||
+      numericAmount <= 0
+    ) {
+      setForm((prev) => ({
+        ...prev,
+        error: "Digite um valor válido.",
+      }));
+
+      return;
+    }
+
+    // =========================
+    // STATUS
+    // =========================
+
+    if (!form.status) {
+      setForm((prev) => ({
+        ...prev,
+        error: "Escolha o status da dívida.",
+      }));
+
+      return;
+    }
+
+    // =========================
+    // NÃO RECORRENTE
+    // =========================
+
+    if (!form.recurring) {
+      if (!form.dueDate) {
+        setForm((prev) => ({
+          ...prev,
+          error: "Informe a data de vencimento.",
+        }));
+
+        return;
+      }
+    }
+
+    // =========================
+    // RECORRENTE
+    // =========================
+
+    if (form.recurring) {
+      if (!form.recurrenceType) {
+        setForm((prev) => ({
+          ...prev,
+          error: "Escolha o tipo de recorrência.",
+        }));
+
+        return;
+      }
+
+      // =======================
+      // MENSAL
+      // =======================
+
+      if (form.recurrenceType === "monthly") {
+        if (!form.monthlyDueMode) {
+          setForm((prev) => ({
+            ...prev,
+            error:
+              "Escolha como a dívida será repetida.",
+          }));
+
+          return;
+        }
+
+        if (
+          form.monthlyDueMode === "date" &&
+          !form.dueDate
+        ) {
+          setForm((prev) => ({
+            ...prev,
+            error:
+              "Informe o dia de vencimento.",
+          }));
+
+          return;
+        }
+
+        if (
+          form.monthlyDueMode === "weekday" &&
+          form.recurrenceWeekday === ""
+        ) {
+          setForm((prev) => ({
+            ...prev,
+            error: "Escolha o dia da semana.",
+          }));
+
+          return;
+        }
+      }
+
+      // =======================
+      // SEMANAL
+      // =======================
+
+      if (form.recurrenceType === "weekly") {
+        if (form.recurrenceWeekday === "") {
+          setForm((prev) => ({
+            ...prev,
+            error: "Escolha o dia da semana.",
+          }));
+
+          return;
+        }
+      }
+
+      // =======================
+      // ANUAL
+      // =======================
+
+      if (form.recurrenceType === "annual") {
+        if (form.recurrenceMonths.length === 0) {
+          setForm((prev) => ({
+            ...prev,
+            error: "Escolha pelo menos um mês.",
+          }));
+
+          return;
+        }
+      }
+    }
+
+    // =========================
+    // LIMITE DE PARCELAS
+    // =========================
+
+    let finalRecurrenceLimit = null;
+
+    if (
+      form.recurring &&
+      (
+        form.recurrenceType === "monthly" ||
+        form.recurrenceType === "weekly"
+      ) &&
+      form.hasRecurrenceLimit
+    ) {
+      const limit =
+        Number(form.recurrenceLimit);
+
+      if (
+        !Number.isInteger(limit) ||
+        limit <= 0
+      ) {
+        setForm((prev) => ({
+          ...prev,
+          error:
+            "Informe uma quantidade válida de parcelas.",
+        }));
+
+        return;
+      }
+
+      finalRecurrenceLimit = limit;
+    }
+
+    // =========================
+    // DATA FINAL
+    // =========================
+
+    const finalDueDate =
+      !form.recurring ||
+      (
+        form.recurring &&
+        form.recurrenceType === "monthly" &&
+        form.monthlyDueMode === "date"
+      )
+        ? form.dueDate || null
+        : null;
+
+    // =========================
+    // ATUALIZA A DÍVIDA
+    // =========================
 
     updateDebt(debt.id, {
-      name: form.name,
-      description: form.description,
-      dueDay: form.dueDay ? Number(form.dueDay) : null,
-      amount: Number(form.rawAmount) / 100,
+      name: form.name.trim(),
+
+      description:
+        form.description.trim(),
+
+      dueDate: finalDueDate,
+
+      amount: numericAmount,
+
       status: form.status,
+
+      recurring: form.recurring,
+
+      recurrenceType:
+        form.recurring
+          ? form.recurrenceType
+          : null,
+
+      monthlyDueMode:
+        form.recurring &&
+        form.recurrenceType === "monthly"
+          ? form.monthlyDueMode
+          : null,
+
+      recurrenceWeekday:
+        form.recurring &&
+        (
+          form.recurrenceType === "weekly" ||
+          (
+            form.recurrenceType === "monthly" &&
+            form.monthlyDueMode === "weekday"
+          )
+        )
+          ? Number(form.recurrenceWeekday)
+          : null,
+
+      recurrenceLimit:
+        form.recurring &&
+        form.recurrenceType !== "annual"
+          ? finalRecurrenceLimit
+          : null,
+
+      recurrenceNumber:
+        form.recurring
+          ? form.recurrenceNumber
+          : null,
+
+      recurrenceMonths:
+        form.recurring &&
+        form.recurrenceType === "annual"
+          ? form.recurrenceMonths
+          : null,
+
+      recurrenceMonth:
+        form.recurring &&
+        form.recurrenceType === "annual" &&
+        form.recurrenceMonths.length > 0
+          ? form.recurrenceMonths[0]
+          : null,
     });
 
     resetForm();
     onClose();
-  };
+  }
 
-  const handleDelete = () => {
+  // =========================
+  // APAGAR
+  // =========================
+
+  function handleDelete() {
+    setDeleteConfirmVisible(true);
+  }
+
+  function cancelDelete() {
+    setDeleteConfirmVisible(false);
+  }
+
+  function confirmDelete() {
     if (!debt) return;
-    if (window.confirm("Deseja realmente apagar esta dívida?")) {
-      deleteDebt(debt.id);
-      resetForm();
-      onClose();
-    }
-  };
+
+    deleteDebt(debt.id);
+
+    setDeleteConfirmVisible(false);
+
+    resetForm();
+
+    onClose();
+  }
+
+  // =========================
+  // NÃO MOSTRA
+  // =========================
 
   if (!visible) return null;
 
+  // =========================
+  // MODAL
+  // =========================
+
   return (
-    <div
-      className="fixed inset-0 bg-slate-950/90 flex justify-center items-center p-5 z-50"
-      onClick={() => { resetForm(); onClose(); }}
-    >
-      <div
-        className="bg-[#08162c] rounded-xl p-5 w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex justify-between mb-4 items-center">
-          <h2 className="text-white text-xl font-semibold">Editar Dívida</h2>
-          <button className="text-gray-400 text-2xl" onClick={() => { resetForm(); onClose(); }}>✕</button>
-        </div>
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+        <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]">
 
-        {form.error && <p className="text-red-500 mb-2">{form.error}</p>}
+          {/* CABEÇALHO */}
 
-        {/* Nome */}
-        <label className="text-white mb-1 block">Nome</label>
-        <input
-          className="w-full bg-slate-800 text-white p-3 rounded-lg mb-3 border-none"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#243B5D]">
+            <h2 className="text-white text-xl font-bold">
+              Editar dívida
+            </h2>
 
-        {/* Descrição */}
-        <label className="text-white mb-1 block">Descrição</label>
-        <textarea
-          className="w-full bg-slate-800 text-white p-3 rounded-lg mb-3 border-none min-h-[80px]"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
-
-        {/* Dia do vencimento */}
-        <label className="text-white mb-1 block">Dia do vencimento</label>
-        <input
-          type="number"
-          className="w-full bg-slate-800 text-white p-3 rounded-lg mb-3 border-none"
-          value={form.dueDay}
-          onChange={(e) => setForm({ ...form, dueDay: e.target.value })}
-        />
-
-        {/* Valor */}
-        <label className="text-white mb-1 block">Valor</label>
-        <div className="flex items-center bg-slate-800 rounded-lg p-3 mb-3">
-          <span className="text-gray-400 font-semibold mr-2">R$</span>
-          <input
-            type="text"
-            className="flex-1 bg-transparent text-white border-none p-0 outline-none"
-            value={form.amount}
-            onChange={(e) => handleAmountChange(e.target.value)}
-          />
-        </div>
-
-        {/* Status */}
-        <label className="text-white mb-1 block">Status</label>
-        <div className="flex gap-2 mb-5">
-          {["a-vencer", "dividas", "pagos"].map((item) => (
             <button
-              key={item}
-              className={`flex-1 py-2 rounded-lg border font-semibold ${form.status === item ? getAmountColor(item) : "bg-transparent text-white"}`}
-              onClick={() => setForm({ ...form, status: item })}
+              type="button"
+              onClick={handleClose}
+              className="text-gray-300 hover:text-white text-2xl leading-none"
             >
-              {item === "a-vencer" ? "A Vencer" : item === "dividas" ? "Dívidas" : "Pagos"}
+              ×
             </button>
-          ))}
-        </div>
+          </div>
 
-        {/* Botões */}
-        <div className="flex gap-3">
-          <button
-            className="flex-1 py-3 rounded-lg bg-slate-800 text-white font-semibold"
-            onClick={handleDelete}
-          >
-            Apagar dívida
-          </button>
-          <button
-            className="flex-1 py-3 rounded-lg bg-white text-black font-semibold"
-            onClick={handleUpdate}
-          >
-            Salvar
-          </button>
+          {/* FORMULÁRIO */}
+
+          <div className="p-5 space-y-4">
+
+            {/* NOME */}
+
+            <div>
+              <label className="block text-white text-sm font-semibold mb-1">
+                Nome da dívida
+              </label>
+
+              <input
+                type="text"
+                value={form.name}
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                    error: "",
+                  }))
+                }
+                placeholder="Ex: Internet"
+                className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+              />
+            </div>
+
+            {/* DESCRIÇÃO */}
+
+            <div>
+              <label className="block text-white text-sm font-semibold mb-1">
+                Descrição
+                <span className="text-gray-400 font-normal">
+                  {" "} (opcional)
+                </span>
+              </label>
+
+              <textarea
+                value={form.description}
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    description:
+                      e.target.value,
+                    error: "",
+                  }))
+                }
+                placeholder="Ex: Internet de casa"
+                rows={2}
+                className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400 resize-none"
+              />
+            </div>
+
+            {/* RECORRENTE? */}
+
+            <div>
+              <label className="block text-white text-sm font-semibold mb-2">
+                Dívida recorrente?
+              </label>
+
+              <div className="grid grid-cols-2 gap-2">
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleRecurringChange(false)
+                  }
+                  className={`py-3 rounded-xl font-semibold transition ${
+                    !form.recurring
+                      ? "bg-red-700 text-white"
+                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                  }`}
+                >
+                  Não
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleRecurringChange(true)
+                  }
+                  className={`py-3 rounded-xl font-semibold transition ${
+                    form.recurring
+                      ? "bg-orange-600 text-white"
+                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                  }`}
+                >
+                  Sim
+                </button>
+
+              </div>
+            </div>
+
+            {/* NÃO RECORRENTE */}
+
+            {!form.recurring && (
+              <div>
+                <label className="block text-white text-sm font-semibold mb-1">
+                  Data de vencimento
+                </label>
+
+                <input
+                  type="date"
+                  value={form.dueDate}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      dueDate:
+                        e.target.value,
+                      error: "",
+                    }))
+                  }
+                  className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                />
+              </div>
+            )}
+
+            {/* RECORRENTE */}
+
+            {form.recurring && (
+              <>
+                {/* TIPO */}
+
+                <div>
+                  <label className="block text-white text-sm font-semibold mb-2">
+                    Tipo de recorrência
+                  </label>
+
+                  <div className="grid grid-cols-3 gap-2">
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleRecurrenceTypeChange(
+                          "monthly"
+                        )
+                      }
+                      className={`py-3 rounded-xl text-sm font-semibold ${
+                        form.recurrenceType ===
+                        "monthly"
+                          ? "bg-orange-600 text-white"
+                          : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                      }`}
+                    >
+                      Mensal
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleRecurrenceTypeChange(
+                          "weekly"
+                        )
+                      }
+                      className={`py-3 rounded-xl text-sm font-semibold ${
+                        form.recurrenceType ===
+                        "weekly"
+                          ? "bg-orange-600 text-white"
+                          : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                      }`}
+                    >
+                      Semanal
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleRecurrenceTypeChange(
+                          "annual"
+                        )
+                      }
+                      className={`py-3 rounded-xl text-sm font-semibold ${
+                        form.recurrenceType ===
+                        "annual"
+                          ? "bg-orange-600 text-white"
+                          : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                      }`}
+                    >
+                      Anual
+                    </button>
+
+                  </div>
+                </div>
+
+                {/* MENSAL */}
+
+                {form.recurrenceType ===
+                  "monthly" && (
+                  <div className="space-y-3">
+
+                    <div>
+                      <label className="block text-white text-sm font-semibold mb-2">
+                        Como deve repetir?
+                      </label>
+
+                      <div className="grid grid-cols-2 gap-2">
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleMonthlyModeChange(
+                              "date"
+                            )
+                          }
+                          className={`py-3 rounded-xl text-sm font-semibold ${
+                            form.monthlyDueMode ===
+                            "date"
+                              ? "bg-blue-600 text-white"
+                              : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                          }`}
+                        >
+                          Por dia
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleMonthlyModeChange(
+                              "weekday"
+                            )
+                          }
+                          className={`py-3 rounded-xl text-sm font-semibold ${
+                            form.monthlyDueMode ===
+                            "weekday"
+                              ? "bg-blue-600 text-white"
+                              : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                          }`}
+                        >
+                          Por dia da semana
+                        </button>
+
+                      </div>
+                    </div>
+
+                    {/* MENSAL POR DATA */}
+
+                    {form.monthlyDueMode ===
+                      "date" && (
+                      <div>
+                        <label className="block text-white text-sm font-semibold mb-1">
+                          Data do primeiro vencimento
+                        </label>
+
+                        <input
+                          type="date"
+                          value={form.dueDate}
+                          onChange={(e) =>
+                            setForm((prev) => ({
+                              ...prev,
+                              dueDate:
+                                e.target.value,
+                              error: "",
+                            }))
+                          }
+                          className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                        />
+
+                        <p className="text-gray-400 text-xs mt-1">
+                          A dívida será repetida pelo mesmo dia de cada mês.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* MENSAL POR DIA DA SEMANA */}
+
+                    {form.monthlyDueMode ===
+                      "weekday" && (
+                      <div>
+                        <label className="block text-white text-sm font-semibold mb-1">
+                          Dia da semana
+                        </label>
+
+                        <select
+                          value={
+                            form.recurrenceWeekday
+                          }
+                          onChange={(e) =>
+                            setForm((prev) => ({
+                              ...prev,
+                              recurrenceWeekday:
+                                e.target.value,
+                              error: "",
+                            }))
+                          }
+                          className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                        >
+                          <option value="">
+                            Selecione
+                          </option>
+
+                          {weekdays.map((day) => (
+                            <option
+                              key={day.value}
+                              value={day.value}
+                            >
+                              {day.label}
+                            </option>
+                          ))}
+                        </select>
+
+                        <p className="text-gray-400 text-xs mt-1">
+                          Exemplo: toda quinta-feira de cada mês.
+                        </p>
+                      </div>
+                    )}
+
+                  </div>
+                )}
+
+                {/* SEMANAL */}
+
+                {form.recurrenceType ===
+                  "weekly" && (
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-1">
+                      Dia da semana
+                    </label>
+
+                    <select
+                      value={
+                        form.recurrenceWeekday
+                      }
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          recurrenceWeekday:
+                            e.target.value,
+                          error: "",
+                        }))
+                      }
+                      className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                    >
+                      <option value="">
+                        Selecione
+                      </option>
+
+                      {weekdays.map((day) => (
+                        <option
+                          key={day.value}
+                          value={day.value}
+                        >
+                          {day.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <p className="text-gray-400 text-xs mt-1">
+                      A dívida será repetida a cada semana nesse dia.
+                    </p>
+                  </div>
+                )}
+
+                {/* ANUAL */}
+
+                {form.recurrenceType ===
+                  "annual" && (
+                  <div>
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Em quais meses?
+                    </label>
+
+                    <div className="grid grid-cols-3 gap-2">
+
+                      {months.map((month) => {
+                        const selected =
+                          form.recurrenceMonths.includes(
+                            month.value
+                          );
+
+                        return (
+                          <button
+                            key={month.value}
+                            type="button"
+                            onClick={() =>
+                              toggleRecurrenceMonth(
+                                month.value
+                              )
+                            }
+                            className={`py-2 px-2 rounded-lg text-sm font-semibold transition ${
+                              selected
+                                ? "bg-orange-600 text-white"
+                                : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                            }`}
+                          >
+                            {month.label}
+                          </button>
+                        );
+                      })}
+
+                    </div>
+
+                    <p className="text-gray-400 text-xs mt-2">
+                      Você poderá organizar a semana do vencimento posteriormente.
+                    </p>
+                  </div>
+                )}
+
+                {/* LIMITE DE PARCELAS */}
+
+                {(form.recurrenceType ===
+                  "monthly" ||
+                  form.recurrenceType ===
+                    "weekly") && (
+                  <div className="bg-[#10284D] border border-[#29466D] rounded-xl p-3">
+
+                    <label className="flex items-center gap-3 cursor-pointer">
+
+                      <input
+                        type="checkbox"
+                        checked={
+                          form.hasRecurrenceLimit
+                        }
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            hasRecurrenceLimit:
+                              e.target.checked,
+                            recurrenceLimit:
+                              e.target.checked
+                                ? prev.recurrenceLimit
+                                : "",
+                            error: "",
+                          }))
+                        }
+                        className="w-5 h-5 accent-orange-600"
+                      />
+
+                      <span className="text-white text-sm font-semibold">
+                        Definir quantidade de parcelas
+                      </span>
+
+                    </label>
+
+                    {form.hasRecurrenceLimit && (
+                      <input
+                        type="number"
+                        min="1"
+                        value={
+                          form.recurrenceLimit
+                        }
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            recurrenceLimit:
+                              e.target.value,
+                            error: "",
+                          }))
+                        }
+                        placeholder="Ex: 12"
+                        className="mt-3 w-full bg-[#0B1D39] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                      />
+                    )}
+
+                  </div>
+                )}
+
+              </>
+            )}
+
+            {/* VALOR */}
+
+            <div>
+              <label className="block text-white text-sm font-semibold mb-1">
+                Valor
+              </label>
+
+              <div className="relative">
+
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 font-semibold">
+                  R$
+                </span>
+
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.amount}
+                  onChange={(e) =>
+                    handleAmountChange(
+                      e.target.value
+                    )
+                  }
+                  placeholder="0,00"
+                  className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl pl-12 pr-4 py-3 outline-none focus:border-blue-400"
+                />
+
+              </div>
+            </div>
+
+            {/* STATUS */}
+
+            <div>
+              <label className="block text-white text-sm font-semibold mb-2">
+                Status
+              </label>
+
+              <div className="grid grid-cols-2 gap-2">
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      status: "a-vencer",
+                      error: "",
+                    }))
+                  }
+                  className={`py-3 rounded-xl font-semibold transition ${
+                    form.status ===
+                    "a-vencer"
+                      ? "bg-red-700 text-white"
+                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                  }`}
+                >
+                  A Vencer
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      status: "pagos",
+                      error: "",
+                    }))
+                  }
+                  className={`py-3 rounded-xl font-semibold transition ${
+                    form.status === "pagos"
+                      ? "bg-green-600 text-white"
+                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                  }`}
+                >
+                  Pago
+                </button>
+
+              </div>
+            </div>
+
+            {/* ERRO */}
+
+            {form.error && (
+              <div className="bg-red-900/50 border border-red-700 text-red-200 rounded-xl px-4 py-3 text-sm">
+                {form.error}
+              </div>
+            )}
+
+            {/* BOTÕES */}
+
+            <div className="grid grid-cols-2 gap-3 pt-2">
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="py-3 rounded-xl bg-red-700 text-white font-bold hover:bg-red-600 transition"
+              >
+                Apagar
+              </button>
+
+              <button
+                type="button"
+                onClick={handleUpdate}
+                className="py-3 rounded-xl bg-[#16A34A] text-white font-bold hover:brightness-90 transition"
+              >
+                Salvar
+              </button>
+
+            </div>
+
+            {/* CANCELAR */}
+
+            <button
+              type="button"
+              onClick={handleClose}
+              className="w-full py-3 rounded-xl bg-gray-600 text-white font-bold hover:bg-gray-500 transition"
+            >
+              Cancelar
+            </button>
+
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* =========================
+          CONFIRMAÇÃO DE EXCLUSÃO
+      ========================= */}
+
+      {deleteConfirmVisible && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 px-5">
+
+          <div className="w-full max-w-sm bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558] p-6">
+
+            <div className="text-center">
+
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+
+                <span className="text-red-400 text-2xl font-bold">
+                  !
+                </span>
+
+              </div>
+
+              <h3 className="text-white text-xl font-bold mb-2">
+                Apagar dívida?
+              </h3>
+
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                Tem certeza que deseja apagar esta dívida?
+                <br />
+                Essa ação não poderá ser desfeita.
+              </p>
+
+              <div className="grid grid-cols-2 gap-3">
+
+                <button
+                  type="button"
+                  onClick={cancelDelete}
+                  className="py-3 rounded-xl bg-gray-600 text-white font-bold hover:bg-gray-500 transition"
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={confirmDelete}
+                  className="py-3 rounded-xl bg-red-700 text-white font-bold hover:bg-red-600 transition"
+                >
+                  Apagar
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+    </>
   );
 }
