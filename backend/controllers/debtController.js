@@ -1,5 +1,6 @@
 const prisma = require("../lib/prisma");
 
+```js
 async function createDebt(req, res) {
   try {
     const {
@@ -9,13 +10,20 @@ async function createDebt(req, res) {
       status,
       recurring,
       recurrenceType,
+      recurrenceGroupId,
+      recurrenceYear,
       dueDate,
       monthlyDueMode,
+      monthlyWeekday,
+      monthlyWeekOccurrence,
       recurrenceWeekday,
       recurrenceLimit,
       recurrenceNumber,
       recurrenceMonth,
       recurrenceMonths,
+      annualPaidWeek,
+      annualPaidMonth,
+      annualPaidYear,
     } = req.body;
 
     if (!name || amount === undefined || amount === null) {
@@ -27,15 +35,45 @@ async function createDebt(req, res) {
     const debt = await prisma.debt.create({
       data: {
         name: name.trim(),
-        description: description?.trim() || null,
-        amount: Number(amount),
-        status: status || "a-vencer",
 
-        recurring: Boolean(recurring),
+        description:
+          description?.trim() || null,
 
-        recurrenceType: recurrenceType || null,
-        dueDate: dueDate || null,
-        monthlyDueMode: monthlyDueMode || null,
+        amount:
+          Number(amount),
+
+        status:
+          status || "a-vencer",
+
+        recurring:
+          Boolean(recurring),
+
+        recurrenceType:
+          recurrenceType || null,
+
+        recurrenceGroupId:
+          recurrenceGroupId || null,
+
+        recurrenceYear:
+          recurrenceYear !== null &&
+          recurrenceYear !== undefined
+            ? Number(recurrenceYear)
+            : null,
+
+        dueDate:
+          dueDate || null,
+
+        monthlyDueMode:
+          monthlyDueMode || null,
+
+        monthlyWeekday:
+          monthlyWeekday !== null &&
+          monthlyWeekday !== undefined
+            ? Number(monthlyWeekday)
+            : null,
+
+        monthlyWeekOccurrence:
+          monthlyWeekOccurrence || null,
 
         recurrenceWeekday:
           recurrenceWeekday !== null &&
@@ -68,7 +106,26 @@ async function createDebt(req, res) {
             ? recurrenceMonths
             : null,
 
-        userId: req.userId,
+        annualPaidWeek:
+          annualPaidWeek !== null &&
+          annualPaidWeek !== undefined
+            ? Number(annualPaidWeek)
+            : null,
+
+        annualPaidMonth:
+          annualPaidMonth !== null &&
+          annualPaidMonth !== undefined
+            ? Number(annualPaidMonth)
+            : null,
+
+        annualPaidYear:
+          annualPaidYear !== null &&
+          annualPaidYear !== undefined
+            ? Number(annualPaidYear)
+            : null,
+
+        userId:
+          req.userId,
       },
     });
 
@@ -82,6 +139,8 @@ async function createDebt(req, res) {
     });
   }
 }
+```
+
 
 async function getDebts(req, res) {
   try {
