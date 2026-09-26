@@ -26,6 +26,7 @@ export default function EditDebtModal({
     recurrenceLimit: "",
     recurrenceNumber: 1,
     error: "",
+    monthlyWeekOccurrence: "",
   });
 
   // =========================
@@ -114,11 +115,13 @@ export default function EditDebtModal({
     const recurring = debt.recurring === true;
 
     const recurrenceType =
-      debt.recurrenceType === "weekly"
-        ? "weekly"
-        : debt.recurrenceType === "annual"
-          ? "annual"
-          : "monthly";
+  debt.recurrenceType === "weekly"
+    ? "weekly"
+    : debt.recurrenceType === "biweekly"
+      ? "biweekly"
+      : debt.recurrenceType === "annual"
+        ? "annual"
+        : "monthly";
 
     const monthlyDueMode =
       debt.monthlyDueMode === "weekday"
@@ -129,6 +132,9 @@ export default function EditDebtModal({
       debt.recurrenceWeekday != null
         ? String(debt.recurrenceWeekday)
         : "";
+
+        const monthlyWeekOccurrence =
+  debt.monthlyWeekOccurrence || "";
 
     const recurrenceMonths =
       recurrenceType === "annual" &&
@@ -166,6 +172,7 @@ export default function EditDebtModal({
         recurrenceLimit,
         recurrenceNumber: debt.recurrenceNumber || 1,
         error: "",
+        monthlyWeekOccurrence,
       });
     });
   }, [visible, debt]);
@@ -191,6 +198,7 @@ export default function EditDebtModal({
       recurrenceLimit: "",
       recurrenceNumber: 1,
       error: "",
+      monthlyWeekOccurrence: "",
     });
   }
 
@@ -292,20 +300,20 @@ export default function EditDebtModal({
   // =========================
 
   function handleMonthlyModeChange(mode) {
-    setForm((prev) => ({
-      ...prev,
-      monthlyDueMode: mode,
-      dueDate:
-        mode === "weekday"
-          ? ""
-          : prev.dueDate,
-      recurrenceWeekday:
-        mode === "date"
-          ? ""
-          : prev.recurrenceWeekday,
-      error: "",
-    }));
-  }
+  setForm((prev) => ({
+    ...prev,
+    monthlyDueMode: mode,
+    dueDate:
+      mode === "date"
+        ? prev.dueDate
+        : prev.dueDate,
+    recurrenceWeekday:
+      mode === "date"
+        ? ""
+        : prev.recurrenceWeekday,
+    error: "",
+  }));
+}
 
   // =========================
   // SELECIONA MÊS ANUAL
@@ -469,6 +477,57 @@ export default function EditDebtModal({
 
           return;
         }
+
+        if (
+  form.monthlyDueMode === "weekday" &&
+  !form.dueDate
+) {
+  setForm((prev) => ({
+    ...prev,
+    error:
+      "Informe a data do primeiro vencimento.",
+  }));
+
+  return;
+}
+
+if (
+  form.monthlyDueMode === "weekday" &&
+  form.dueDate &&
+  form.recurrenceWeekday !== ""
+) {
+  const selectedDate =
+    new Date(
+      `${form.dueDate}T00:00:00`
+    );
+
+  if (
+    Number.isNaN(
+      selectedDate.getTime()
+    )
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      error:
+        "Informe uma data válida.",
+    }));
+
+    return;
+  }
+
+  if (
+    selectedDate.getDay() !==
+    Number(form.recurrenceWeekday)
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      error:
+        "A data precisa cair no dia da semana selecionado.",
+    }));
+
+    return;
+  }
+}
       }
 
       // =======================
@@ -485,6 +544,70 @@ export default function EditDebtModal({
           return;
         }
       }
+
+      // =======================
+// QUINZENAL
+// =======================
+
+if (
+  form.recurrenceType === "biweekly"
+) {
+  if (
+    form.recurrenceWeekday === ""
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      error:
+        "Escolha o dia da semana.",
+    }));
+
+    return;
+  }
+
+  if (!form.dueDate) {
+    setForm((prev) => ({
+      ...prev,
+      error:
+        "Informe a data do primeiro vencimento.",
+    }));
+
+    return;
+  }
+
+  const selectedDate =
+    new Date(
+      `${form.dueDate}T00:00:00`
+    );
+
+  if (
+    Number.isNaN(
+      selectedDate.getTime()
+    )
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      error:
+        "Informe uma data válida.",
+    }));
+
+    return;
+  }
+
+  if (
+    selectedDate.getDay() !==
+    Number(
+      form.recurrenceWeekday
+    )
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      error:
+        "A data precisa cair no dia da semana selecionado.",
+    }));
+
+    return;
+  }
+}
 
       // =======================
       // ANUAL
@@ -509,13 +632,14 @@ export default function EditDebtModal({
     let finalRecurrenceLimit = null;
 
     if (
-      form.recurring &&
-      (
-        form.recurrenceType === "monthly" ||
-        form.recurrenceType === "weekly"
-      ) &&
-      form.hasRecurrenceLimit
-    ) {
+  form.recurring &&
+  (
+    form.recurrenceType === "monthly" ||
+    form.recurrenceType === "weekly" ||
+    form.recurrenceType === "biweekly"
+  ) &&
+  form.hasRecurrenceLimit
+) {
       const limit =
         Number(form.recurrenceLimit);
 
@@ -540,14 +664,23 @@ export default function EditDebtModal({
     // =========================
 
     const finalDueDate =
-      !form.recurring ||
-      (
-        form.recurring &&
-        form.recurrenceType === "monthly" &&
-        form.monthlyDueMode === "date"
-      )
-        ? form.dueDate || null
-        : null;
+  !form.recurring ||
+  (
+    form.recurring &&
+    form.recurrenceType === "monthly" &&
+    (
+      form.monthlyDueMode === "date" ||
+      form.monthlyDueMode === "weekday"
+    )
+  ) ||
+  (
+    form.recurring &&
+    (
+      form.recurrenceType === "biweekly"
+    )
+  )
+    ? form.dueDate || null
+    : null;
 
     // =========================
     // ATUALIZA A DÍVIDA
@@ -579,16 +712,31 @@ export default function EditDebtModal({
           : null,
 
       recurrenceWeekday:
-        form.recurring &&
-        (
-          form.recurrenceType === "weekly" ||
-          (
-            form.recurrenceType === "monthly" &&
-            form.monthlyDueMode === "weekday"
-          )
-        )
-          ? Number(form.recurrenceWeekday)
-          : null,
+  form.recurring &&
+  (
+    form.recurrenceType === "weekly" ||
+    form.recurrenceType === "biweekly" ||
+    (
+      form.recurrenceType === "monthly" &&
+      form.monthlyDueMode === "weekday"
+    )
+  )
+    ? Number(form.recurrenceWeekday)
+    : null,
+
+          monthlyWeekday:
+  form.recurring &&
+  form.recurrenceType === "monthly" &&
+  form.monthlyDueMode === "weekday"
+    ? Number(form.recurrenceWeekday)
+    : null,
+
+monthlyWeekOccurrence:
+  form.recurring &&
+  form.recurrenceType === "monthly" &&
+  form.monthlyDueMode === "weekday"
+    ? form.monthlyWeekOccurrence || null
+    : null,
 
       recurrenceLimit:
         form.recurring &&
@@ -801,7 +949,7 @@ export default function EditDebtModal({
                     Tipo de recorrência
                   </label>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-4 gap-2">
 
                     <button
                       type="button"
@@ -836,6 +984,23 @@ export default function EditDebtModal({
                     >
                       Semanal
                     </button>
+
+<button
+  type="button"
+  onClick={() =>
+    handleRecurrenceTypeChange(
+      "biweekly"
+    )
+  }
+  className={`py-3 rounded-xl text-sm font-semibold ${
+    form.recurrenceType ===
+    "biweekly"
+      ? "bg-orange-600 text-white"
+      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+  }`}
+>
+  Quinzenal
+</button>
 
                     <button
                       type="button"
@@ -976,6 +1141,32 @@ export default function EditDebtModal({
                         <p className="text-gray-400 text-xs mt-1">
                           Exemplo: toda quinta-feira de cada mês.
                         </p>
+
+                        <div className="mt-3">
+
+  <label className="block text-white text-sm font-semibold mb-1">
+    Primeiro vencimento
+  </label>
+
+  <input
+    type="date"
+    value={form.dueDate}
+    onChange={(e) =>
+      setForm((prev) => ({
+        ...prev,
+        dueDate:
+          e.target.value,
+        error: "",
+      }))
+    }
+    className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+  />
+
+  <p className="text-gray-400 text-xs mt-1">
+    Escolha a primeira data em que essa dívida será paga.
+  </p>
+
+</div>
                       </div>
                     )}
 
@@ -1025,6 +1216,74 @@ export default function EditDebtModal({
                   </div>
                 )}
 
+
+{/* QUINZENAL */}
+
+{form.recurrenceType ===
+  "biweekly" && (
+  <div>
+
+    <label className="block text-white text-sm font-semibold mb-1">
+      Dia da semana
+    </label>
+
+    <select
+      value={
+        form.recurrenceWeekday
+      }
+      onChange={(e) =>
+        setForm((prev) => ({
+          ...prev,
+          recurrenceWeekday:
+            e.target.value,
+          error: "",
+        }))
+      }
+      className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+    >
+      <option value="">
+        Selecione
+      </option>
+
+      {weekdays.map((day) => (
+        <option
+          key={day.value}
+          value={day.value}
+        >
+          {day.label}
+        </option>
+      ))}
+    </select>
+
+    <div className="mt-3">
+
+      <label className="block text-white text-sm font-semibold mb-1">
+        Primeiro vencimento
+      </label>
+
+      <input
+        type="date"
+        value={form.dueDate}
+        onChange={(e) =>
+          setForm((prev) => ({
+            ...prev,
+            dueDate:
+              e.target.value,
+            error: "",
+          }))
+        }
+        className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+      />
+
+      <p className="text-gray-400 text-xs mt-1">
+        Escolha a primeira data em que essa dívida será paga. As próximas serão calculadas automaticamente a cada 14 dias.
+      </p>
+
+    </div>
+
+  </div>
+)}
+
                 {/* ANUAL */}
 
                 {form.recurrenceType ===
@@ -1073,9 +1332,11 @@ export default function EditDebtModal({
                 {/* LIMITE DE PARCELAS */}
 
                 {(form.recurrenceType ===
-                  "monthly" ||
-                  form.recurrenceType ===
-                    "weekly") && (
+  "monthly" ||
+  form.recurrenceType ===
+    "weekly" ||
+  form.recurrenceType ===
+    "biweekly") && (
                   <div className="bg-[#10284D] border border-[#29466D] rounded-xl p-3">
 
                     <label className="flex items-center gap-3 cursor-pointer">

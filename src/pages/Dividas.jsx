@@ -823,24 +823,27 @@ export default function Dividas() {
 
         <DebtHistoryModal
 
-          visible={
-            historyModalVisible
-          }
+  visible={
+    historyModalVisible
+  }
 
-          debt={
-            selectedDebt
-          }
+  debt={
+    selectedDebt
+  }
 
-          debts={
-            debts
-          }
+  debts={
+    debts
+  }
 
-          onClose={
-            handleCloseHistoryModal
-          }
+  onClose={
+    handleCloseHistoryModal
+  }
 
-        />
+  onEdit={
+    handleOpenEditModal
+  }
 
+/>
       )}
 
 

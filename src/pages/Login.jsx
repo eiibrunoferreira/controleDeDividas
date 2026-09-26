@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDebts } from "../context/useDebts";
 
 import backgroundImage from "/images/background.png";
 
@@ -12,7 +13,32 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const [rememberMe, setRememberMe] = useState(false);
+
   const navigate = useNavigate();
+  const { loadDebts } = useDebts();
+
+  useEffect(() => {
+
+  const token =
+    localStorage.getItem("@auth_token") ||
+    sessionStorage.getItem("@auth_token");
+
+  if (!token) {
+    return;
+  }
+
+  const enterAutomatically = async () => {
+
+    await loadDebts();
+
+    navigate("/home");
+
+  };
+
+  enterAutomatically();
+
+}, [loadDebts, navigate]);
 
 
   // =========================================================
@@ -58,7 +84,26 @@ export default function Login() {
 
       console.log("Login realizado:", data);
 
-localStorage.setItem("@auth_token", data.token);
+localStorage.removeItem("@auth_token");
+sessionStorage.removeItem("@auth_token");
+
+if (rememberMe) {
+
+  localStorage.setItem(
+    "@auth_token",
+    data.token
+  );
+
+} else {
+
+  sessionStorage.setItem(
+    "@auth_token",
+    data.token
+  );
+
+}
+
+await loadDebts();
 
 navigate("/home");
 
@@ -313,19 +358,39 @@ navigate("/home");
             {/* ESQUECI A SENHA */}
             {/* ================================================= */}
 
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between gap-3">
 
-              <button
-                type="button"
-                onClick={() =>
-                  alert("Recuperação de senha será conectada ao backend.")
-                }
-                className="text-orange-400 hover:text-orange-300 text-sm transition-colors"
-              >
-                Esqueci minha senha
-              </button>
+  <label className="flex items-center gap-2 cursor-pointer">
 
-            </div>
+    <input
+      type="checkbox"
+      checked={rememberMe}
+      onChange={(event) =>
+        setRememberMe(
+          event.target.checked
+        )
+      }
+      className="w-4 h-4 accent-orange-500"
+    />
+
+    <span className="text-gray-400 text-sm">
+      Lembrar de mim
+    </span>
+
+  </label>
+
+
+  <button
+    type="button"
+    onClick={() =>
+      alert("Recuperação de senha será conectada ao backend.")
+    }
+    className="text-orange-400 hover:text-orange-300 text-sm transition-colors"
+  >
+    Esqueci minha senha
+  </button>
+
+</div>
 
 
             {/* ================================================= */}

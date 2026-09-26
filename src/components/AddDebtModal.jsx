@@ -192,6 +192,62 @@ function getNextWeekdayDate(weekday) {
 
 }
 
+function getMonthlyWeekOccurrence(dateString, weekday) {
+  if (!dateString) {
+    return null;
+  }
+
+  const date = new Date(
+    `${dateString}T00:00:00`
+  );
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const selectedWeekday = Number(weekday);
+
+  if (
+    !Number.isInteger(selectedWeekday) ||
+    selectedWeekday < 0 ||
+    selectedWeekday > 6
+  ) {
+    return null;
+  }
+
+  if (
+    date.getDay() !== selectedWeekday
+  ) {
+    return null;
+  }
+
+  const dayOfMonth =
+    date.getDate();
+
+  const occurrence =
+    Math.ceil(dayOfMonth / 7);
+
+  // Verifica se esta é a última ocorrência
+  // desse dia da semana no mês.
+
+  const nextSameWeekday =
+    new Date(date);
+
+  nextSameWeekday.setDate(
+    date.getDate() + 7
+  );
+
+  if (
+    nextSameWeekday.getMonth() !==
+    date.getMonth()
+  ) {
+    return "last";
+  }
+
+  return String(occurrence);
+}
+
+
   async function handleSubmit(e) {
 
   e.preventDefault();
@@ -304,6 +360,59 @@ function getNextWeekdayDate(weekday) {
 
     }
 
+    if (
+  monthlyDueMode === "weekday" &&
+  !dueDate
+) {
+
+  setError(
+    "Informe a data do primeiro vencimento."
+  );
+
+  return;
+
+}
+
+if (
+  monthlyDueMode === "weekday" &&
+  dueDate &&
+  recurrenceWeekday !== ""
+) {
+
+  const selectedDate =
+    new Date(
+      `${dueDate}T00:00:00`
+    );
+
+  if (
+    Number.isNaN(
+      selectedDate.getTime()
+    )
+  ) {
+
+    setError(
+      "Informe uma data válida."
+    );
+
+    return;
+
+  }
+
+  if (
+    selectedDate.getDay() !==
+    Number(recurrenceWeekday)
+  ) {
+
+    setError(
+      "A data escolhida precisa cair no dia da semana selecionado."
+    );
+
+    return;
+
+  }
+
+}
+
     // =======================
     // SEMANAL
     // =======================
@@ -319,6 +428,71 @@ function getNextWeekdayDate(weekday) {
       }
 
     }
+
+    if (recurrenceType === "biweekly") {
+
+  if (recurrenceWeekday === "") {
+
+    setError("Escolha o dia da semana.");
+
+    return;
+
+  }
+
+}
+
+if (
+  recurrenceType === "biweekly" &&
+  !dueDate
+) {
+
+  setError(
+    "Informe a data do primeiro vencimento."
+  );
+
+  return;
+
+}
+
+if (
+  recurrenceType === "biweekly" &&
+  dueDate &&
+  recurrenceWeekday !== ""
+) {
+
+  const selectedDate =
+    new Date(
+      `${dueDate}T00:00:00`
+    );
+
+  if (
+    Number.isNaN(
+      selectedDate.getTime()
+    )
+  ) {
+
+    setError(
+      "Informe uma data válida."
+    );
+
+    return;
+
+  }
+
+  if (
+    selectedDate.getDay() !==
+    Number(recurrenceWeekday)
+  ) {
+
+    setError(
+      "A data escolhida precisa cair no dia da semana selecionado."
+    );
+
+    return;
+
+  }
+
+}
 
     // =======================
     // ANUAL
@@ -345,11 +519,18 @@ function getNextWeekdayDate(weekday) {
   let finalRecurrenceLimit = null;
 
   if (
-    recurring &&
-    (recurrenceType === "monthly" ||
-      recurrenceType === "weekly") &&
-    hasRecurrenceLimit
-  ) {
+
+  recurring &&
+
+  (
+    recurrenceType === "monthly" ||
+    recurrenceType === "weekly" ||
+    recurrenceType === "biweekly"
+  ) &&
+
+  hasRecurrenceLimit
+
+) {
 
     const limit = Number(recurrenceLimit);
 
@@ -378,6 +559,16 @@ function getNextWeekdayDate(weekday) {
       : null;
 
       let firstDueDate = dueDate;
+
+      const monthlyWeekOccurrence =
+  recurring &&
+  recurrenceType === "monthly" &&
+  monthlyDueMode === "weekday"
+    ? getMonthlyWeekOccurrence(
+        dueDate,
+        recurrenceWeekday
+      )
+    : null;
 
 if (
   recurring &&
@@ -412,17 +603,29 @@ if (
       ? recurrenceType
       : null,
 
-    dueDate:
+   dueDate:
   !recurring ||
+
   (
     recurring &&
+
     recurrenceType === "monthly" &&
-    monthlyDueMode === "date"
+
+    (
+      monthlyDueMode === "date" ||
+      monthlyDueMode === "weekday"
+    )
   ) ||
+
   (
     recurring &&
-    recurrenceType === "weekly"
+
+    (
+      recurrenceType === "weekly" ||
+      recurrenceType === "biweekly"
+    )
   )
+
     ? firstDueDate || null
     : null,
 
@@ -432,15 +635,32 @@ if (
         ? monthlyDueMode
         : null,
 
+        monthlyWeekday:
+  recurring &&
+  recurrenceType === "monthly" &&
+  monthlyDueMode === "weekday"
+    ? Number(recurrenceWeekday)
+    : null,
+
+monthlyWeekOccurrence:
+  monthlyWeekOccurrence,
+
     recurrenceWeekday:
-      recurring &&
-      (
-        recurrenceType === "weekly" ||
-        (
-          recurrenceType === "monthly" &&
-          monthlyDueMode === "weekday"
-        )
-      )
+  recurring &&
+
+  (
+
+    recurrenceType === "weekly" ||
+
+    recurrenceType === "biweekly" ||
+
+    (
+      recurrenceType === "monthly" &&
+
+      monthlyDueMode === "weekday"
+    )
+
+  )
         ? Number(recurrenceWeekday)
         : null,
 
@@ -455,6 +675,12 @@ if (
       recurrenceType === "annual"
         ? firstAnnualMonth
         : null,
+
+recurrenceYear:
+  recurring &&
+  recurrenceType === "annual"
+    ? new Date().getFullYear()
+    : null,
 
     recurrenceMonths:
       recurring &&
@@ -723,7 +949,7 @@ if (
                   Tipo de recorrência
                 </label>
 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-2">
 
                   <button
                     type="button"
@@ -756,6 +982,22 @@ if (
                   >
                     Semanal
                   </button>
+
+                  <button
+  type="button"
+  onClick={() =>
+    handleRecurrenceTypeChange(
+      "biweekly"
+    )
+  }
+  className={`py-3 rounded-xl text-sm font-semibold ${
+    recurrenceType === "biweekly"
+      ? "bg-orange-600 text-white"
+      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+  }`}
+>
+  Quinzenal
+</button>
 
                   <button
                     type="button"
@@ -856,41 +1098,70 @@ if (
                   {/* MENSAL POR DIA DA SEMANA */}
 
                   {monthlyDueMode === "weekday" && (
-                    <div>
 
-                      <label className="block text-white text-sm font-semibold mb-1">
-                        Dia da semana
-                      </label>
+  <div>
 
-                      <select
-                        value={recurrenceWeekday}
-                        onChange={(e) =>
-                          setRecurrenceWeekday(
-                            e.target.value
-                          )
-                        }
-                        className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
-                      >
-                        <option value="">
-                          Selecione
-                        </option>
+    <label className="block text-white text-sm font-semibold mb-1">
+      Dia da semana
+    </label>
 
-                        {weekdays.map((day) => (
-                          <option
-                            key={day.value}
-                            value={day.value}
-                          >
-                            {day.label}
-                          </option>
-                        ))}
-                      </select>
+    <select
+      value={recurrenceWeekday}
+      onChange={(e) =>
+        setRecurrenceWeekday(
+          e.target.value
+        )
+      }
+      className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+    >
 
-                      <p className="text-gray-400 text-xs mt-1">
-                        Exemplo: toda quinta-feira de cada mês.
-                      </p>
+      <option value="">
+        Selecione
+      </option>
 
-                    </div>
-                  )}
+      {weekdays.map((day) => (
+
+        <option
+          key={day.value}
+          value={day.value}
+        >
+          {day.label}
+        </option>
+
+      ))}
+
+    </select>
+
+     <p className="text-gray-400 text-xs mt-2">
+      Exemplo: toda quinta-feira de cada mês.
+    </p>
+
+    <div className="mt-3">
+
+      <label className="block text-white text-sm font-semibold mb-1">
+        Primeiro vencimento
+      </label>
+
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) =>
+          setDueDate(
+            e.target.value
+          )
+        }
+        className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+      />
+
+      <p className="text-gray-400 text-xs mt-1">
+        Escolha a primeira data em que essa dívida será paga. As próximas serão calculadas automaticamente.
+      </p>
+
+    </div>
+
+  </div>
+
+)}
 
                 </div>
               )}
@@ -984,12 +1255,83 @@ if (
                 </div>
               )}
 
-              {/* =========================
+             
+
+              {recurrenceType === "biweekly" && (
+
+  <div>
+
+    <label className="block text-white text-sm font-semibold mb-1">
+      Dia da semana
+    </label>
+
+    <select
+      value={recurrenceWeekday}
+      onChange={(e) =>
+        setRecurrenceWeekday(
+          e.target.value
+        )
+      }
+      className="w-full bg-[#10284D] cursor-pointer text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none"
+    >
+
+      <option value="">
+        Selecione
+      </option>
+
+      {weekdays.map((day) => (
+
+        <option
+          key={day.value}
+          value={day.value}
+        >
+          {day.label}
+        </option>
+
+      ))}
+
+    </select>
+
+    <p className="text-gray-400 text-xs mt-2">
+      Exemplo: Uma quinta sim e outra não.
+    </p>
+
+    <div className="mt-3">
+
+      <label className="block text-white text-sm font-semibold mb-1">
+        Primeiro vencimento
+      </label>
+
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) =>
+          setDueDate(
+            e.target.value
+          )
+        }
+        className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+      />
+
+      <p className="text-gray-400 text-xs mt-1">
+        Escolha a primeira data em que essa dívida será paga. As próximas serão calculadas automaticamente a cada 14 dias.
+      </p>
+
+    </div>
+
+  </div>
+
+)}
+
+ {/* =========================
                   LIMITE DE PARCELAS
               ========================= */}
 
-              {(recurrenceType === "monthly" ||
-                recurrenceType === "weekly") && (
+              {(
+  recurrenceType === "monthly" ||
+  recurrenceType === "weekly" ||
+  recurrenceType === "biweekly"
+) && (
                 <div className="bg-[#10284D] border border-[#29466D] rounded-xl p-3">
 
                   <label className="flex items-center gap-3 cursor-pointer">

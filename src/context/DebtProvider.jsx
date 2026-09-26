@@ -1,4 +1,9 @@
-import { useState, useMemo, useEffect } from "react";
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+} from "react";
 
 import { DebtContext } from "./DebtContext";
 
@@ -6,53 +11,64 @@ export function DebtProvider({ children }) {
 
   const [debts, setDebts] = useState([]);
 
-  useEffect(() => {
+  const loadDebts = useCallback(async () => {
 
-  const loadDebts = async () => {
+  const token =
+    localStorage.getItem("@auth_token");
 
-    const token = localStorage.getItem("@auth_token");
+  if (!token) {
 
-    if (!token) {
-      return;
-    }
+    setDebts([]);
 
-    try {
+    return;
 
-      const response = await fetch(
+  }
+
+  try {
+
+    const response =
+      await fetch(
         "https://controlededividas.onrender.com/debts",
         {
           method: "GET",
+
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
+
         }
       );
 
-      const data = await response.json();
+    const data =
+      await response.json();
 
-      if (!response.ok) {
-
-        console.error(
-          data.error ||
-          "Erro ao carregar as dívidas."
-        );
-
-        return;
-
-      }
-
-      setDebts(data);
-
-    } catch (error) {
+    if (!response.ok) {
 
       console.error(
-        "Erro ao carregar as dívidas:",
-        error
+        data.error ||
+        "Erro ao carregar as dívidas."
       );
+
+      return;
 
     }
 
-  };
+    setDebts(data);
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao carregar as dívidas:",
+      error
+    );
+
+  }
+
+}, []);
+
+
+useEffect(() => {
 
   loadDebts();
 
@@ -459,73 +475,152 @@ export function DebtProvider({ children }) {
   // =========================================================
 
   const getNextMonthlyWeekdayDate = (
-    dateString,
-    weekday,
-    occurrence
-  ) => {
+  dateString
+) => {
 
-    if (
-      !dateString
-    ) {
-      return null;
-    }
+  if (!dateString) {
+    return null;
+  }
 
 
-    const [year, month] =
-      dateString
-        .split("-")
-        .map(Number);
+  const [year, month, day] =
+    dateString
+      .split("-")
+      .map(Number);
 
 
-    if (
-      !year ||
-      !month
-    ) {
-      return null;
-    }
+  if (
+    !year ||
+    !month ||
+    !day
+  ) {
+    return null;
+  }
 
 
-    let nextMonth =
-      month + 1;
-
-
-    let nextYear =
-      year;
-
-
-    if (
-      nextMonth > 12
-    ) {
-
-      nextMonth = 1;
-
-      nextYear++;
-
-    }
-
-
-    if (
-      occurrence === "last"
-    ) {
-
-      return getLastWeekdayOfMonth(
-        nextYear,
-        nextMonth,
-        Number(weekday)
-      );
-
-    }
-
-
-    return getNthWeekdayOfMonth(
-      nextYear,
-      nextMonth,
-      Number(weekday),
-      Number(occurrence)
+  const nextDate =
+    new Date(
+      year,
+      month - 1,
+      day
     );
 
-  };
 
+  // Mensal por dia da semana =
+  // uma cobrança a cada 4 semanas.
+
+  nextDate.setDate(
+    nextDate.getDate() + 28
+  );
+
+
+  const nextYear =
+    nextDate.getFullYear();
+
+
+  const nextMonth =
+    String(
+      nextDate.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  const nextDay =
+    String(
+      nextDate.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  return `${nextYear}-${nextMonth}-${nextDay}`;
+
+};
+
+  // =========================================================
+// CALCULAR PRÓXIMA DATA SEMANAL PELO DIA DA SEMANA
+// =========================================================
+
+const getNextWeeklyDateFromWeekday = (
+  weekday
+) => {
+
+  const selectedWeekday =
+    Number(
+      weekday
+    );
+
+  if (
+    !Number.isInteger(
+      selectedWeekday
+    ) ||
+    selectedWeekday < 0 ||
+    selectedWeekday > 6
+  ) {
+    return null;
+  }
+
+  const today =
+    new Date();
+
+  const currentWeekday =
+    today.getDay();
+
+  let daysUntil =
+    (
+      selectedWeekday -
+      currentWeekday +
+      7
+    ) % 7;
+
+  if (
+    daysUntil === 0
+  ) {
+    daysUntil = 7;
+  }
+
+  const nextDate =
+    new Date(
+      today
+    );
+
+  nextDate.setHours(
+    12,
+    0,
+    0,
+    0
+  );
+
+  nextDate.setDate(
+    today.getDate() +
+    daysUntil
+  );
+
+  const year =
+    nextDate.getFullYear();
+
+  const month =
+    String(
+      nextDate.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+  const day =
+    String(
+      nextDate.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+  return `${year}-${month}-${day}`;
+
+};
 
   // =========================================================
   // CALCULAR PRÓXIMA DATA SEMANAL
@@ -593,6 +688,41 @@ export function DebtProvider({ children }) {
     return `${nextYear}-${nextMonth}-${formattedDay}`;
 
   };
+
+  const getNextBiweeklyDate = (dateString) => {
+  if (!dateString) return null;
+
+  const [year, month, day] = dateString
+    .split("-")
+    .map(Number);
+
+  if (!year || !month || !day) return null;
+
+  const nextDate = new Date(
+    year,
+    month - 1,
+    day
+  );
+
+  nextDate.setDate(
+    nextDate.getDate() + 14
+  );
+
+  const nextYear =
+    nextDate.getFullYear();
+
+  const nextMonth =
+    String(
+      nextDate.getMonth() + 1
+    ).padStart(2, "0");
+
+  const nextDay =
+    String(
+      nextDate.getDate()
+    ).padStart(2, "0");
+
+  return `${nextYear}-${nextMonth}-${nextDay}`;
+};
 
 
   // =========================================================
@@ -702,7 +832,8 @@ export function DebtProvider({ children }) {
   ) => {
 
     const token =
-      localStorage.getItem("@auth_token");
+  localStorage.getItem("@auth_token") ||
+  sessionStorage.getItem("@auth_token");
 
     if (!token) {
 
@@ -951,13 +1082,18 @@ export function DebtProvider({ children }) {
     // =====================================================
 
     const shouldCreateNext =
-      changedToPaid &&
-      updatedDebt.recurring === true &&
-      (
-        updatedDebt.recurrenceType === "annual"
-          ? updatedDebt.recurrenceMonth != null
-          : Boolean(updatedDebt.dueDate)
-      );
+  changedToPaid &&
+  updatedDebt.recurring === true &&
+  (
+    updatedDebt.recurrenceType === "annual"
+      ? updatedDebt.recurrenceMonth != null
+      : updatedDebt.recurrenceType === "weekly"
+        ? (
+            Boolean(updatedDebt.dueDate) ||
+            updatedDebt.recurrenceWeekday != null
+          )
+        : Boolean(updatedDebt.dueDate)
+  );
 
 
     let nextDebt = null;
@@ -972,15 +1108,13 @@ export function DebtProvider({ children }) {
       // ===================================================
 
       const recurrenceType =
-        updatedDebt.recurrenceType === "weekly"
-
-          ? "weekly"
-
-          : updatedDebt.recurrenceType === "annual"
-
-            ? "annual"
-
-            : "monthly";
+  updatedDebt.recurrenceType === "weekly"
+    ? "weekly"
+    : updatedDebt.recurrenceType === "biweekly"
+      ? "biweekly"
+      : updatedDebt.recurrenceType === "annual"
+        ? "annual"
+        : "monthly";
 
 
       // ===================================================
@@ -1052,15 +1186,43 @@ export function DebtProvider({ children }) {
         // ===============================================
 
         if (
-          recurrenceType === "weekly"
-        ) {
+  recurrenceType === "weekly"
+) {
 
-          nextDueDate =
-            getNextWeeklyDate(
-              updatedDebt.dueDate
-            );
+  if (
+    updatedDebt.dueDate
+  ) {
 
-        }
+    nextDueDate =
+      getNextWeeklyDate(
+        updatedDebt.dueDate
+      );
+
+  } else {
+
+    nextDueDate =
+      getNextWeeklyDateFromWeekday(
+        updatedDebt.recurrenceWeekday
+      );
+
+  }
+
+}
+
+// ===============================================
+// QUINZENAL
+// ===============================================
+
+else if (
+  recurrenceType === "biweekly"
+) {
+
+  nextDueDate =
+    getNextBiweeklyDate(
+      updatedDebt.dueDate
+    );
+
+}
 
 
         // ===============================================
@@ -1816,22 +1978,24 @@ export function DebtProvider({ children }) {
   return (
 
     <DebtContext.Provider
-      value={{
+  value={{
 
-        debts,
+    debts,
 
-        addDebt,
+    addDebt,
 
-        updateDebt,
+    updateDebt,
 
-        deleteDebt,
+    deleteDebt,
 
-        totalAVencer,
+    totalAVencer,
 
-        startNewMonth,
+    startNewMonth,
 
-      }}
-    >
+    loadDebts,
+
+  }}
+>
 
       {children}
 

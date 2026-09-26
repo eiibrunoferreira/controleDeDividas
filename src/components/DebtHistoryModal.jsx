@@ -7,6 +7,7 @@ export default function DebtHistoryModal({
   debt,
   debts,
   onClose,
+  onEdit,
 }) {
   const [historyOpen, setHistoryOpen] = useState(false);
 
@@ -702,14 +703,26 @@ export default function DebtHistoryModal({
           </div>
         )}
 
-        {/* Fechar */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-full py-3 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20 transition"
-        >
-          Fechar
-        </button>
+        {/* AÇÕES */}
+<div className="flex gap-3">
+
+  <button
+    type="button"
+    onClick={() => onEdit(debt)}
+    className="flex-1 py-3 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition"
+  >
+    Editar
+  </button>
+
+  <button
+    type="button"
+    onClick={onClose}
+    className="flex-1 py-3 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20 transition"
+  >
+    Fechar
+  </button>
+
+</div>
       </div>
     </div>
   );
