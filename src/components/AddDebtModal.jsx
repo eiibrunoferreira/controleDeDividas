@@ -801,6 +801,34 @@ recurrenceYear:
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
 
+<style>
+  {`
+    .add-debt-date {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      height: 48px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    .add-debt-date::-webkit-date-and-time-value {
+      text-align: left;
+      margin: 0;
+    }
+
+    .add-debt-date::-webkit-datetime-edit {
+      text-align: left;
+    }
+
+    .add-debt-date::-webkit-datetime-edit-fields-wrapper {
+      text-align: left;
+      padding: 0;
+    }
+  `}
+</style>
+
       <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]">
 
         {/* =========================
@@ -923,16 +951,16 @@ recurrenceYear:
               </label>
 
               <input
-                type="date"
-                value={dueDate}
-                onChange={(e) =>
-                  setDueDate(e.target.value)
-                }
-                 onClick={(e) =>
+  type="date"
+  value={dueDate}
+  onChange={(e) =>
+    setDueDate(e.target.value)
+  }
+  onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-                className="w-full min-w-0 h-12 bg-[#10284D] text-white border border-[#29466D] focus:border-blue-400 rounded-xl px-4 py-3 outline-none text-left"
-              />
+  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer"
+/>
 
             </div>
           )}
