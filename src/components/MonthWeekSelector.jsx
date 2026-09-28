@@ -48,6 +48,8 @@ export default function MonthWeekSelector({
 
   const didDrag = useRef(false);
 
+  const [pressedArrow, setPressedArrow] = useState(null);
+
 
   // =======================================================
   // DATA ATUAL
@@ -464,12 +466,23 @@ export default function MonthWeekSelector({
 
         <button
   type="button"
-  tabIndex={-1}
-  onPointerDown={(e) => e.preventDefault()}
-  onClick={() =>
-    changeMonth(-1)
-  }
-  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all focus:outline-none focus:ring-0"
+  onPointerDown={() => {
+    setPressedArrow("left");
+
+    setTimeout(() => {
+      setPressedArrow(null);
+    }, 120);
+  }}
+  onClick={() => changeMonth(-1)}
+  className={`text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full transition-colors select-none focus:outline-none focus:ring-0 ${
+    pressedArrow === "left"
+      ? "bg-white/10"
+      : ""
+  }`}
+  style={{
+    WebkitTapHighlightColor: "transparent",
+    touchAction: "manipulation",
+  }}
 >
   ‹
 </button>
@@ -509,12 +522,23 @@ export default function MonthWeekSelector({
 
         <button
   type="button"
-  tabIndex={-1}
-  onPointerDown={(e) => e.preventDefault()}
-  onClick={() =>
-    changeMonth(1)
-  }
-  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all focus:outline-none focus:ring-0"
+  onPointerDown={() => {
+    setPressedArrow("right");
+
+    setTimeout(() => {
+      setPressedArrow(null);
+    }, 120);
+  }}
+  onClick={() => changeMonth(1)}
+  className={`text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full transition-colors select-none focus:outline-none focus:ring-0 ${
+    pressedArrow === "right"
+      ? "bg-white/10"
+      : ""
+  }`}
+  style={{
+    WebkitTapHighlightColor: "transparent",
+    touchAction: "manipulation",
+  }}
 >
   ›
 </button>
