@@ -18,6 +18,36 @@ export default function AddDebtModal({ visible, onClose }) {
   };
 }, [visible]);
 
+useEffect(() => {
+  if (!visible) return;
+
+  const preventBackgroundScroll = (event) => {
+
+    const modal = event.target.closest(
+      ".modal-scroll-content"
+    );
+
+    if (modal) {
+      return;
+    }
+
+    event.preventDefault();
+  };
+
+  document.addEventListener(
+    "touchmove",
+    preventBackgroundScroll,
+    { passive: false }
+  );
+
+  return () => {
+    document.removeEventListener(
+      "touchmove",
+      preventBackgroundScroll
+    );
+  };
+}, [visible]);
+
   // =========================
   // DADOS PRINCIPAIS
   // =========================
@@ -799,20 +829,13 @@ recurrenceYear:
   if (!visible) return null;
 
   return (
-   <div
-  className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden"
-  style={{
-    touchAction: "none",
-    overscrollBehavior: "none",
-  }}
->
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden">
 
   <div
-    className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
+    className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
     style={{
-      touchAction: "pan-y",
-      overscrollBehavior: "contain",
       WebkitOverflowScrolling: "touch",
+      overscrollBehavior: "contain",
     }}
   >
 <style>
