@@ -70,35 +70,45 @@ useEffect(() => {
 
     if (keyboardOpen) {
 
-      modal.style.position = "fixed";
+  const topSpace = 40;
 
-      modal.style.top = "10px";
+  const bottomSpace = 10;
 
-      modal.style.left = "50%";
+  modal.style.position = "fixed";
 
-      modal.style.transform =
-        "translateX(-50%)";
+  modal.style.top =
+    `${topSpace}px`;
 
-      modal.style.marginTop = "0";
+  modal.style.left = "50%";
 
-      modal.style.maxHeight =
-        `${viewport.height - 20}px`;
+  modal.style.transform =
+    "translateX(-50%)";
 
-    } else {
+  modal.style.width =
+    "calc(100% - 32px)";
 
-      modal.style.position = "";
+  modal.style.marginTop = "0";
 
-      modal.style.top = "";
+  modal.style.maxHeight =
+    `${viewport.height - topSpace - bottomSpace}px`;
 
-      modal.style.left = "";
+} else {
 
-      modal.style.transform = "";
+  modal.style.position = "";
 
-      modal.style.marginTop = "0";
+  modal.style.top = "";
 
-      modal.style.maxHeight = "90vh";
+  modal.style.left = "";
 
-    }
+  modal.style.transform = "";
+
+  modal.style.width = "";
+
+  modal.style.marginTop = "0";
+
+  modal.style.maxHeight = "90vh";
+
+}
 
   };
 
