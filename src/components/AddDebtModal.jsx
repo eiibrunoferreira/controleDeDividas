@@ -56,47 +56,67 @@ useEffect(() => {
 
   if (!viewport) return;
 
-  const updateModalHeight = () => {
+  const updateModalPosition = () => {
 
     const modal = modalRef.current;
 
     if (!modal) return;
 
-    const availableHeight =
-      viewport.height - 32;
+    const keyboardOpen =
+      viewport.height <
+      window.innerHeight * 0.75;
 
-    modal.style.maxHeight =
-      `${availableHeight}px`;
+    if (keyboardOpen) {
+
+      modal.style.maxHeight =
+        `${viewport.height - 20}px`;
+
+      modal.style.marginTop =
+        "10px";
+
+    } else {
+
+      modal.style.maxHeight =
+        "90vh";
+
+      modal.style.marginTop =
+        "0px";
+    }
   };
 
-  updateModalHeight();
+  updateModalPosition();
 
   viewport.addEventListener(
     "resize",
-    updateModalHeight
+    updateModalPosition
   );
 
   viewport.addEventListener(
     "scroll",
-    updateModalHeight
+    updateModalPosition
   );
 
   return () => {
 
     viewport.removeEventListener(
       "resize",
-      updateModalHeight
+      updateModalPosition
     );
 
     viewport.removeEventListener(
       "scroll",
-      updateModalHeight
+      updateModalPosition
     );
 
     const modal = modalRef.current;
 
     if (modal) {
-      modal.style.maxHeight = "";
+
+      modal.style.maxHeight =
+        "90vh";
+
+      modal.style.marginTop =
+        "0px";
     }
   };
 
