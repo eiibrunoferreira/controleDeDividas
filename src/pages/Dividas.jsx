@@ -10,6 +10,8 @@ import NavHeader from "../components/NavHeader";
 
 import backgroundImage from "/images/background.png";
 
+import BackToTopButton from "../components/BackToTopButton";
+
 
 export default function Dividas() {
 
@@ -878,6 +880,8 @@ export default function Dividas() {
         />
 
       )}
+
+      <BackToTopButton />
 
     </div>
 

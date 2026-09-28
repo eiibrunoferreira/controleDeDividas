@@ -799,8 +799,16 @@ recurrenceYear:
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden">
 
+  <div
+    className="w-full max-w-md max-h-[calc(100dvh-32px)] overflow-y-auto overscroll-contain bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
+    style={{
+      WebkitOverflowScrolling: "touch",
+      touchAction: "pan-y",
+      overscrollBehavior: "contain",
+    }}
+  >
 <style>
   {`
     .add-debt-date {
@@ -838,7 +846,7 @@ recurrenceYear:
   `}
 </style>
 
-      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]">
+      
 
         {/* =========================
             CABEÇALHO

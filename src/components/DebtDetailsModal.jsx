@@ -527,15 +527,6 @@ export default function DebtDetailsModal({
               </p>
             )}
 
-
-          {debt.recurring &&
-            debt.recurrenceNumber != null && (
-              <p className="text-gray-300 text-sm mt-1">
-                Número atual:{" "}
-                {debt.recurrenceNumber}
-              </p>
-            )}
-
         </div>
 
 
