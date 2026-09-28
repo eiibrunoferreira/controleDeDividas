@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useDebts } from "../context/useDebts";
 
 export default function AddDebtModal({ visible, onClose }) {
   const { addDebt } = useDebts();
+  const modalRef = useRef(null);
 
   // =========================
   // BLOQUEIA O SCROLL DE TRÁS
@@ -46,6 +47,59 @@ useEffect(() => {
       preventBackgroundScroll
     );
   };
+}, [visible]);
+
+useEffect(() => {
+  if (!visible) return;
+
+  const viewport = window.visualViewport;
+
+  if (!viewport) return;
+
+  const updateModalHeight = () => {
+
+    const modal = modalRef.current;
+
+    if (!modal) return;
+
+    const availableHeight =
+      viewport.height - 32;
+
+    modal.style.maxHeight =
+      `${availableHeight}px`;
+  };
+
+  updateModalHeight();
+
+  viewport.addEventListener(
+    "resize",
+    updateModalHeight
+  );
+
+  viewport.addEventListener(
+    "scroll",
+    updateModalHeight
+  );
+
+  return () => {
+
+    viewport.removeEventListener(
+      "resize",
+      updateModalHeight
+    );
+
+    viewport.removeEventListener(
+      "scroll",
+      updateModalHeight
+    );
+
+    const modal = modalRef.current;
+
+    if (modal) {
+      modal.style.maxHeight = "";
+    }
+  };
+
 }, [visible]);
 
   // =========================
@@ -832,13 +886,13 @@ recurrenceYear:
    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden">
 
   <div
-  className="modal-scroll-content w-full max-w-md h-[calc(100dvh-32px)] max-h-[calc(100dvh-32px)] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
-  style={{
-    WebkitOverflowScrolling: "touch",
-    overscrollBehavior: "contain",
-    overflowAnchor: "none",
-  }}
->
+  ref={modalRef}
+    className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
+    style={{
+      WebkitOverflowScrolling: "touch",
+      overscrollBehavior: "contain",
+    }}
+  >
 <style>
   {`
     .add-debt-date {
