@@ -463,14 +463,16 @@ export default function MonthWeekSelector({
         {/* BOTÃO ANTERIOR */}
 
         <button
-  onClick={(e) => {
-    changeMonth(-1);
-    e.currentTarget.blur();
-  }}
-  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all"
+  type="button"
+  tabIndex={-1}
+  onPointerDown={(e) => e.preventDefault()}
+  onClick={() =>
+    changeMonth(-1)
+  }
+  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all focus:outline-none focus:ring-0"
 >
-          ‹
-        </button>
+  ‹
+</button>
 
 
         {/* MÊS E ANO */}
@@ -506,15 +508,16 @@ export default function MonthWeekSelector({
         {/* BOTÃO PRÓXIMO */}
 
         <button
-  onClick={(e) => {
-    changeMonth(1);
-    e.currentTarget.blur();
-  }}
-  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all"
+  type="button"
+  tabIndex={-1}
+  onPointerDown={(e) => e.preventDefault()}
+  onClick={() =>
+    changeMonth(1)
+  }
+  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all focus:outline-none focus:ring-0"
 >
-          ›
-
-        </button>
+  ›
+</button>
 
       </div>
 
