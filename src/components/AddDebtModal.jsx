@@ -11,28 +11,10 @@ export default function AddDebtModal({ visible, onClose }) {
   useEffect(() => {
   if (!visible) return;
 
-  const scrollY = window.scrollY;
-
-  document.documentElement.style.overflow = "hidden";
-
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${scrollY}px`;
-  document.body.style.left = "0";
-  document.body.style.right = "0";
-  document.body.style.width = "100%";
   document.body.style.overflow = "hidden";
 
   return () => {
-    document.documentElement.style.overflow = "";
-
-    document.body.style.position = "";
-    document.body.style.top = "";
-    document.body.style.left = "";
-    document.body.style.right = "";
-    document.body.style.width = "";
     document.body.style.overflow = "";
-
-    window.scrollTo(0, scrollY);
   };
 }, [visible]);
 
@@ -817,14 +799,20 @@ recurrenceYear:
   if (!visible) return null;
 
   return (
-   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden">
+   <div
+  className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden"
+  style={{
+    touchAction: "none",
+    overscrollBehavior: "none",
+  }}
+>
 
   <div
-    className="w-full max-w-md max-h-[calc(100dvh-32px)] overflow-y-auto overscroll-contain bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
+    className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
     style={{
-      WebkitOverflowScrolling: "touch",
       touchAction: "pan-y",
       overscrollBehavior: "contain",
+      WebkitOverflowScrolling: "touch",
     }}
   >
 <style>
