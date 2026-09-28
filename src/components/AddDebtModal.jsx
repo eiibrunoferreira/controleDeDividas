@@ -1120,13 +1120,16 @@ recurrenceYear:
                       </label>
 
                       <input
-                        type="date"
-                        value={dueDate}
-                        onChange={(e) =>
-                          setDueDate(e.target.value)
-                        }
-                        className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
-                      />
+  type="date"
+  value={dueDate}
+  onChange={(e) =>
+    setDueDate(e.target.value)
+  }
+  onClick={(e) =>
+    e.currentTarget.showPicker?.()
+  }
+  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
+/>
 
                       <p className="text-gray-400 text-xs mt-1">
                         A dívida será repetida pelo mesmo dia de cada mês.
@@ -1182,16 +1185,17 @@ recurrenceYear:
         Primeiro vencimento
       </label>
 
-      <input
-        type="date"
-        value={dueDate}
-        onChange={(e) =>
-          setDueDate(
-            e.target.value
-          )
-        }
-        className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
-      />
+     <input
+  type="date"
+  value={dueDate}
+  onChange={(e) =>
+    setDueDate(e.target.value)
+  }
+  onClick={(e) =>
+    e.currentTarget.showPicker?.()
+  }
+  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
+/>
 
       <p className="text-gray-400 text-xs mt-1">
         Escolha a primeira data em que essa dívida será paga. As próximas serão calculadas automaticamente.
@@ -1342,16 +1346,17 @@ recurrenceYear:
         Primeiro vencimento
       </label>
 
-      <input
-        type="date"
-        value={dueDate}
-        onChange={(e) =>
-          setDueDate(
-            e.target.value
-          )
-        }
-        className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
-      />
+     <input
+  type="date"
+  value={dueDate}
+  onChange={(e) =>
+    setDueDate(e.target.value)
+  }
+  onClick={(e) =>
+    e.currentTarget.showPicker?.()
+  }
+  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
+/>
 
       <p className="text-gray-400 text-xs mt-1">
         Escolha a primeira data em que essa dívida será paga. As próximas serão calculadas automaticamente a cada 14 dias.
