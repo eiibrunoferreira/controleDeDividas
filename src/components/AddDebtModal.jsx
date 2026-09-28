@@ -50,6 +50,7 @@ useEffect(() => {
 }, [visible]);
 
 useEffect(() => {
+
   if (!visible) return;
 
   const viewport = window.visualViewport;
@@ -66,25 +67,44 @@ useEffect(() => {
       viewport.height <
       window.innerHeight * 0.75;
 
+
     if (keyboardOpen) {
+
+      modal.style.position = "fixed";
+
+      modal.style.top = "10px";
+
+      modal.style.left = "50%";
+
+      modal.style.transform =
+        "translateX(-50%)";
+
+      modal.style.marginTop = "0";
 
       modal.style.maxHeight =
         `${viewport.height - 20}px`;
 
-      modal.style.marginTop =
-        "10px";
-
     } else {
 
-      modal.style.maxHeight =
-        "90vh";
+      modal.style.position = "";
 
-      modal.style.marginTop =
-        "0px";
+      modal.style.top = "";
+
+      modal.style.left = "";
+
+      modal.style.transform = "";
+
+      modal.style.marginTop = "0";
+
+      modal.style.maxHeight = "90vh";
+
     }
+
   };
 
+
   updateModalPosition();
+
 
   viewport.addEventListener(
     "resize",
@@ -95,6 +115,7 @@ useEffect(() => {
     "scroll",
     updateModalPosition
   );
+
 
   return () => {
 
@@ -108,20 +129,28 @@ useEffect(() => {
       updateModalPosition
     );
 
+
     const modal = modalRef.current;
 
     if (modal) {
 
-      modal.style.maxHeight =
-        "90vh";
+      modal.style.position = "";
 
-      modal.style.marginTop =
-        "0px";
+      modal.style.top = "";
+
+      modal.style.left = "";
+
+      modal.style.transform = "";
+
+      modal.style.marginTop = "";
+
+      modal.style.maxHeight = "";
+
     }
+
   };
 
 }, [visible]);
-
   // =========================
   // DADOS PRINCIPAIS
   // =========================
