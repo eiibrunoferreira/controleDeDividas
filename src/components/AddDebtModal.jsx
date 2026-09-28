@@ -806,25 +806,34 @@ recurrenceYear:
     .add-debt-date {
       display: block;
       width: 100%;
-      max-width: 100%;
       min-width: 0;
+      max-width: 100%;
       height: 48px;
       box-sizing: border-box;
+      padding: 0 16px;
       font-size: 16px;
+      line-height: 48px;
+      text-align: left;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     .add-debt-date::-webkit-date-and-time-value {
-      text-align: left;
+      height: 48px;
       margin: 0;
+      line-height: 48px;
+      text-align: left;
     }
 
     .add-debt-date::-webkit-datetime-edit {
-      text-align: left;
+      padding: 0;
+      display: flex;
+      align-items: center;
     }
 
     .add-debt-date::-webkit-datetime-edit-fields-wrapper {
-      text-align: left;
       padding: 0;
+      text-align: left;
     }
   `}
 </style>
@@ -959,7 +968,7 @@ recurrenceYear:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer"
+  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
 />
 
             </div>
