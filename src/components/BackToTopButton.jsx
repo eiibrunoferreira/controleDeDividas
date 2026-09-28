@@ -79,7 +79,7 @@ export default function BackToTopButton() {
     >
 
       <span className="text-lg leading-none">
-        ⮝
+        
       </span>
 
       <span className="text-sm font-semibold">
