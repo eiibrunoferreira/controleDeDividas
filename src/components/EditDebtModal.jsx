@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function EditDebtModal({
   visible,
@@ -9,6 +9,8 @@ export default function EditDebtModal({
 }) {
   const [deleteConfirmVisible, setDeleteConfirmVisible] =
     useState(false);
+
+    const modalRef = useRef(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -75,6 +77,157 @@ export default function EditDebtModal({
       document.body.style.overflow = "";
     };
   }, [visible]);
+
+  useEffect(() => {
+
+  if (!visible) return;
+
+  const preventBackgroundScroll = (event) => {
+
+    const modal = event.target.closest(
+      ".modal-scroll-content"
+    );
+
+    if (modal) {
+      return;
+    }
+
+    event.preventDefault();
+
+  };
+
+  document.addEventListener(
+    "touchmove",
+    preventBackgroundScroll,
+    { passive: false }
+  );
+
+  return () => {
+
+    document.removeEventListener(
+      "touchmove",
+      preventBackgroundScroll
+    );
+
+  };
+
+}, [visible]);
+
+
+useEffect(() => {
+
+  if (!visible) return;
+
+  const viewport = window.visualViewport;
+
+  if (!viewport) return;
+
+  const updateModalPosition = () => {
+
+    const modal = modalRef.current;
+
+    if (!modal) return;
+
+    const keyboardOpen =
+      viewport.height <
+      window.innerHeight * 0.75;
+
+
+    if (keyboardOpen) {
+
+      const topSpace = 40;
+
+      const bottomSpace = 10;
+
+      modal.style.position = "fixed";
+
+      modal.style.top =
+        `${topSpace}px`;
+
+      modal.style.left = "50%";
+
+      modal.style.transform =
+        "translateX(-50%)";
+
+      modal.style.width =
+        "calc(100% - 32px)";
+
+      modal.style.marginTop = "0";
+
+      modal.style.maxHeight =
+        `${viewport.height - topSpace - bottomSpace}px`;
+
+    } else {
+
+      modal.style.position = "";
+
+      modal.style.top = "";
+
+      modal.style.left = "";
+
+      modal.style.transform = "";
+
+      modal.style.width = "";
+
+      modal.style.marginTop = "0";
+
+      modal.style.maxHeight = "90vh";
+
+    }
+
+  };
+
+
+  updateModalPosition();
+
+
+  viewport.addEventListener(
+    "resize",
+    updateModalPosition
+  );
+
+  viewport.addEventListener(
+    "scroll",
+    updateModalPosition
+  );
+
+
+  return () => {
+
+    viewport.removeEventListener(
+      "resize",
+      updateModalPosition
+    );
+
+    viewport.removeEventListener(
+      "scroll",
+      updateModalPosition
+    );
+
+
+    const modal = modalRef.current;
+
+    if (modal) {
+
+      modal.style.position = "";
+
+      modal.style.top = "";
+
+      modal.style.left = "";
+
+      modal.style.transform = "";
+
+      modal.style.width = "";
+
+      modal.style.marginTop = "";
+
+      modal.style.maxHeight = "";
+
+    }
+
+  };
+
+}, [visible]);
 
   // =========================
   // FORMATA VALOR
@@ -803,9 +956,11 @@ monthlyWeekOccurrence:
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-        
-        <style>
+      <div
+  className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden"
+>
+
+  <style>
   {`
     .edit-debt-date {
       display: block;
@@ -842,8 +997,14 @@ monthlyWeekOccurrence:
   `}
 </style>
         
-        <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]">
-
+<div
+  ref={modalRef}
+  className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
+  style={{
+    WebkitOverflowScrolling: "touch",
+    overscrollBehavior: "contain",
+  }}
+>
           {/* CABEÇALHO */}
 
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#243B5D]">
