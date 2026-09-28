@@ -84,7 +84,7 @@ export default function Home() {
   // ABRIR / FECHAR SEMANA
   // =========================================================
 
-  const handleWeekToggle = (week) => {
+  const handleWeekToggle = (week, isInitial = false) => {
 
     if (week === null) {
 
@@ -93,6 +93,11 @@ export default function Home() {
       return;
 
     }
+
+    if (isInitial) {
+  setOpenWeek(week);
+  return;
+}
 
 
     setOpenWeek((currentWeek) => {

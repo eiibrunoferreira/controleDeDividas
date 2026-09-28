@@ -177,7 +177,7 @@ export default function MonthWeekSelector({
 
     if (onWeekToggle) {
 
-      onWeekToggle(null);
+      onWeekToggle(currentWeek, true);
 
     }
 
@@ -463,12 +463,12 @@ export default function MonthWeekSelector({
         {/* BOTÃO ANTERIOR */}
 
         <button
-          onClick={() =>
-            changeMonth(-1)
-          }
-
-          className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all"
-        >
+  onClick={(e) => {
+    changeMonth(-1);
+    e.currentTarget.blur();
+  }}
+  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all"
+>
           ‹
         </button>
 
@@ -506,12 +506,12 @@ export default function MonthWeekSelector({
         {/* BOTÃO PRÓXIMO */}
 
         <button
-          onClick={() =>
-            changeMonth(1)
-          }
-
-          className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all"
-        >
+  onClick={(e) => {
+    changeMonth(1);
+    e.currentTarget.blur();
+  }}
+  className="text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:scale-95 transition-all"
+>
           ›
 
         </button>

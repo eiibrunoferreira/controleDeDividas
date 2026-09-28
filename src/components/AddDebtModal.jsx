@@ -928,7 +928,10 @@ recurrenceYear:
                 onChange={(e) =>
                   setDueDate(e.target.value)
                 }
-                className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none"
+                 onClick={(e) =>
+    e.currentTarget.showPicker?.()
+  }
+                className="w-full min-w-0 h-12 bg-[#10284D] text-white border border-[#29466D] focus:border-blue-400 rounded-xl px-4 py-3 outline-none text-left"
               />
 
             </div>
