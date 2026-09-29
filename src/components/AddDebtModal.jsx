@@ -206,6 +206,81 @@ useEffect(() => {
   };
 
 }, [visible]);
+
+
+useEffect(() => {
+
+  if (!visible) return;
+
+  const modal = modalRef.current;
+
+  if (!modal) return;
+
+
+  const handlePointerDown = (event) => {
+
+    const target = event.target;
+
+
+    if (
+      !(target instanceof HTMLInputElement) &&
+      !(target instanceof HTMLTextAreaElement)
+    ) {
+      return;
+    }
+
+
+    // Campos que não vamos interceptar
+
+    if (
+      target.type === "date" ||
+      target.type === "checkbox" ||
+      target.type === "radio" ||
+      target.type === "file"
+    ) {
+      return;
+    }
+
+
+    // Se já está focado, deixa o comportamento
+    // normal acontecer
+
+    if (
+      document.activeElement === target
+    ) {
+      return;
+    }
+
+
+    // Impede o navegador de fazer o
+    // auto-scroll da página
+
+    event.preventDefault();
+
+
+    target.focus({
+      preventScroll: true,
+    });
+
+  };
+
+
+  modal.addEventListener(
+    "pointerdown",
+    handlePointerDown
+  );
+
+
+  return () => {
+
+    modal.removeEventListener(
+      "pointerdown",
+      handlePointerDown
+    );
+
+  };
+
+}, [visible]);
   // =========================
   // DADOS PRINCIPAIS
   // =========================
