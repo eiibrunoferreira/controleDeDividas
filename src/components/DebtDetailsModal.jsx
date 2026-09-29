@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function DebtDetailsModal({
   visible,
@@ -355,13 +357,13 @@ export default function DebtDetailsModal({
             {debt.name || "Dívida"}
           </h2>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-gray-300 hover:text-white text-2xl leading-none shrink-0"
-          >
-            ×
-          </button>
+         <button
+  type="button"
+  onClick={onClose}
+  className="text-gray-300 hover:text-white text-lg leading-none"
+>
+  <FontAwesomeIcon icon={faXmark} />
+</button>
 
         </div>
 
@@ -539,10 +541,6 @@ export default function DebtDetailsModal({
           onClick={handleEdit}
           className="w-full mb-3 py-3 rounded-xl bg-orange-500 text-white font-bold flex items-center justify-center gap-2 hover:bg-orange-600 transition"
         >
-
-          <span className="text-lg">
-            ✏️
-          </span>
 
           Editar Dívida
 

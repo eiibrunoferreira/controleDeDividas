@@ -437,14 +437,22 @@ export default function Home() {
 
 
           {/* ================================================= */}
-          {/* BOTÕES ANTIGOS */}
-          {/* ================================================= */}
+{/* BOTÕES DE ACESSO */}
+{/* ================================================= */}
 
-          <div className="mt-5 mx-5">
+<div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-5 pointer-events-none">
 
-            <ButtonsCards />
+  <div className="pointer-events-auto">
 
-          </div>
+    <ButtonsCards
+  onAddDebt={() =>
+    setModalVisible(true)
+  }
+/>
+
+  </div>
+
+</div>
 
 
           {/* ================================================= */}
@@ -475,10 +483,9 @@ export default function Home() {
 
             <p className="text-white text-sm">
 
-              © Direitos reservados Bruno Ferreira
+              
 
             </p>
-
           </div>
 
         </div>

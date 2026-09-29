@@ -2,7 +2,14 @@
 
 import { useNavigate } from "react-router-dom";
 
-export default function ButtonsCards() {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFileInvoiceDollar,
+  faRightFromBracket,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+
+export default function ButtonsCards({ onAddDebt }) {
 
   const navigate = useNavigate();
 
@@ -19,52 +26,73 @@ export default function ButtonsCards() {
 
   return (
 
-    <div className="rounded-xl p-4">
+  <div className="flex items-center justify-center">
 
-      {/* ================================================= */}
-      {/* TÍTULO */}
-      {/* ================================================= */}
+    {/* ================================================= */}
+    {/* BALÃO DA NAVEGAÇÃO */}
+    {/* ================================================= */}
 
-      <h2 className="text-white text-center text-xl font-semibold mb-3">
-        Botões de Acessos
-      </h2>
+   <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-[#071427] border border-white/10 backdrop-blur-xl shadow-xl">
 
+  {/* ================================================= */}
+  {/* BOTÃO DÍVIDAS */}
+  {/* ================================================= */}
 
-      {/* ================================================= */}
-      {/* BOTÕES */}
-      {/* ================================================= */}
-
-      <div className="flex flex-col gap-4">
-
-        {/* ================================================= */}
-        {/* BOTÃO DÍVIDAS */}
-        {/* ================================================= */}
-
-        <button
-          className="bg-gradient-to-r from-[#0B1D39] to-[#10284D] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
-          onClick={() =>
-            navigate("/dividas")
-          }
-        >
-          DÍVIDAS
-        </button>
+  <button
+    type="button"
+    title="Dívidas"
+    aria-label="Dívidas"
+    onClick={() =>
+      navigate("/dividas")
+    }
+    className="w-10 h-10 rounded-full bg-gradient-to-r from-[#0B1D39] to-[#10284D] text-white flex items-center justify-center shadow-md hover:brightness-110 active:scale-95 transition-all"
+  >
+    <FontAwesomeIcon
+      icon={faFileInvoiceDollar}
+      className="text-sm"
+    />
+  </button>
 
 
-        {/* ================================================= */}
-        {/* BOTÃO SAIR */}
-        {/* ================================================= */}
+  {/* ================================================= */}
+  {/* BOTÃO ADICIONAR DÍVIDA */}
+  {/* ================================================= */}
 
-        <button
-          className="bg-gradient-to-r from-[#7F1D1D] to-[#991B1B] rounded-lg py-6 text-white font-medium hover:brightness-90 transition-all"
-          onClick={handleLogout}
-        >
-          SAIR DA CONTA
-        </button>
+  <button
+    type="button"
+    title="Adicionar dívida"
+    aria-label="Adicionar dívida"
+    onClick={onAddDebt}
+    className="w-10 h-10 rounded-full bg-[#16A34A] text-white flex items-center justify-center shadow-md hover:brightness-90 transition-all"
+  >
+    <FontAwesomeIcon
+      icon={faPlus}
+      className="text-sm"
+    />
+  </button>
 
-      </div>
 
-    </div>
+  {/* ================================================= */}
+  {/* BOTÃO SAIR */}
+  {/* ================================================= */}
 
-  );
+  <button
+    type="button"
+    title="Sair da conta"
+    aria-label="Sair da conta"
+    onClick={handleLogout}
+    className="w-10 h-10 rounded-full bg-gradient-to-r from-[#7F1D1D] to-[#991B1B] text-white flex items-center justify-center shadow-md hover:brightness-110 active:scale-95 transition-all"
+  >
+    <FontAwesomeIcon
+      icon={faRightFromBracket}
+      className="text-sm"
+    />
+  </button>
+
+</div>
+
+  </div>
+
+);
 
 }

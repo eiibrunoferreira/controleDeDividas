@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+
 export default function BackToTopButton() {
 
   const [visible, setVisible] = useState(false);
@@ -78,9 +81,10 @@ export default function BackToTopButton() {
       "
     >
 
-      <span className="text-lg leading-none">
-        
-      </span>
+      <FontAwesomeIcon
+  icon={faArrowUp}
+  className="text-sm"
+/>
 
       <span className="text-sm font-semibold">
         Voltar ao Topo

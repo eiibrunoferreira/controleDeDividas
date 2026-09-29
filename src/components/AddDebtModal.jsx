@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { useDebts } from "../context/useDebts";
 
@@ -1214,12 +1216,12 @@ recurrenceYear:
           </h2>
 
           <button
-            type="button"
-            onClick={handleClose}
-            className="text-gray-300 hover:text-white text-2xl leading-none"
-          >
-            ×
-          </button>
+  type="button"
+  onClick={handleClose}
+  className="text-gray-300 hover:text-white text-lg leading-none"
+>
+  <FontAwesomeIcon icon={faXmark} />
+</button>
 
         </div>
 

@@ -104,6 +104,49 @@ export default function MonthWeekSelector({
     useState(currentWeek);
 
 
+    useEffect(() => {
+
+  const container =
+    weekContainerRef.current;
+
+  if (!container) return;
+
+  requestAnimationFrame(() => {
+
+    const selectedButton =
+      container.children[
+        selectedWeek - 1
+      ];
+
+    if (!selectedButton) return;
+
+    const containerWidth =
+      container.clientWidth;
+
+    const buttonWidth =
+      selectedButton.offsetWidth;
+
+    const targetScrollLeft =
+      selectedButton.offsetLeft -
+      (containerWidth - buttonWidth) / 2;
+
+    const maxScrollLeft =
+      container.scrollWidth -
+      containerWidth;
+
+    container.scrollLeft =
+      Math.max(
+        0,
+        Math.min(
+          targetScrollLeft,
+          maxScrollLeft
+        )
+      );
+
+  });
+
+}, [selectedMonth, selectedYear]);
+
   // =======================================================
   // QUANTIDADE DE SEMANAS DO MÊS
   // =======================================================
@@ -152,6 +195,49 @@ export default function MonthWeekSelector({
       selectedMonth,
       selectedYear
     );
+
+    const getWeekRange = (week) => {
+  const firstDay = new Date(
+    selectedYear,
+    selectedMonth,
+    1
+  ).getDay();
+
+  const daysInMonth = new Date(
+    selectedYear,
+    selectedMonth + 1,
+    0
+  ).getDate();
+
+  const firstWeekEnd =
+    1 +
+    ((6 - firstDay + 7) % 7);
+
+  let startDay;
+  let endDay;
+
+  if (week === 1) {
+    startDay = 1;
+    endDay = Math.min(
+      firstWeekEnd,
+      daysInMonth
+    );
+  } else {
+    startDay =
+      firstWeekEnd +
+      1 +
+      (week - 2) * 7;
+
+    endDay = Math.min(
+      startDay + 6,
+      daysInMonth
+    );
+  }
+
+  return `${String(startDay).padStart(2, "0")} – ${String(
+    endDay
+  ).padStart(2, "0")}`;
+};
 
 
   // =======================================================

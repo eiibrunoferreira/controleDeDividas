@@ -46,69 +46,104 @@ export default function WeeklyDebtList({
   // =========================================================
 
   const getWeekDateRange = (
-    selectedMonth,
-    selectedYear,
-    selectedWeek
-  ) => {
+  selectedMonth,
+  selectedYear,
+  selectedWeek
+) => {
 
-    const numericMonth =
-      Number(selectedMonth);
+  const numericMonth =
+    Number(selectedMonth);
 
-    const numericYear =
-      Number(selectedYear);
+  const numericYear =
+    Number(selectedYear);
 
-    const numericWeek =
-      Number(selectedWeek);
-
-
-    const firstDayOfMonth =
-      new Date(
-        numericYear,
-        numericMonth - 1,
-        1
-      ).getDay();
+  const numericWeek =
+    Number(selectedWeek);
 
 
-    const daysInMonth =
-      new Date(
-        numericYear,
-        numericMonth,
-        0
-      ).getDate();
+  const firstDayOfMonth =
+    new Date(
+      numericYear,
+      numericMonth - 1,
+      1
+    ).getDay();
 
 
-    let startDay;
+  const daysInMonth =
+    new Date(
+      numericYear,
+      numericMonth,
+      0
+    ).getDate();
 
 
-    if (numericWeek === 1) {
+  // =======================================================
+  // PRIMEIRA SEMANA
+  // =======================================================
+  //
+  // Domingo = 0
+  // Segunda = 1
+  // ...
+  // Sábado = 6
+  //
+  // A primeira semana termina no sábado.
+  //
+  // Exemplo:
+  // Outubro/2026 começa na quinta-feira (4)
+  // Então:
+  // Semana 1 = 01 até 03
+  // Semana 2 = 04 até 10
+  //
+  // =======================================================
 
-      startDay = 1;
-
-    } else {
-
-      startDay =
-        8 -
-        firstDayOfMonth +
-        (numericWeek - 2) * 7;
-
-    }
+  const firstWeekEnd =
+    firstDayOfMonth === 0
+      ? 7
+      : 7 - firstDayOfMonth;
 
 
-    const endDay =
+  let startDay;
+  let endDay;
+
+
+  if (numericWeek === 1) {
+
+    startDay = 1;
+
+    endDay =
+      Math.min(
+        firstWeekEnd,
+        daysInMonth
+      );
+
+  } else {
+
+    startDay =
+      firstWeekEnd +
+      1 +
+      (numericWeek - 2) * 7;
+
+    endDay =
       Math.min(
         startDay + 6,
         daysInMonth
       );
 
+  }
 
-    return {
-      startDay,
-      endDay,
-      monthName:
-        months[numericMonth - 1],
-    };
+
+  return {
+
+    startDay,
+
+    endDay,
+
+    monthName:
+      months[numericMonth - 1],
 
   };
+
+};
 
 
   const weekDateRange =
@@ -333,7 +368,7 @@ export default function WeeklyDebtList({
 
   return (
 
-    <div className="mx-5 mt-5">
+    <div className="mx-5 mt-5 pb-5">
 
 
       {/* ===================================================== */}
