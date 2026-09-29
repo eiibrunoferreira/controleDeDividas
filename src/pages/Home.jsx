@@ -440,19 +440,6 @@ export default function Home() {
 {/* BOTÕES DE ACESSO */}
 {/* ================================================= */}
 
-<div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-5 pointer-events-none">
-
-  <div className="pointer-events-auto">
-
-    <ButtonsCards
-  onAddDebt={() =>
-    setModalVisible(true)
-  }
-/>
-
-  </div>
-
-</div>
 
 
           {/* ================================================= */}
@@ -491,6 +478,32 @@ export default function Home() {
         </div>
 
       </div>
+
+
+      {/* ================================================= */}
+      {/* NAVEGAÇÃO INFERIOR */}
+      {/* ================================================= */}
+
+      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-5 pointer-events-none">
+
+        <div className="pointer-events-auto">
+
+          <ButtonsCards
+            onAddDebt={() =>
+              setModalVisible(true)
+            }
+          />
+
+        </div>
+
+      </div>
+
+
+      {/* ================================================= */}
+      {/* MODAL DE ADICIONAR DÍVIDA */}
+      {/* ================================================= */}
+
+
 
 
       {/* ================================================= */}
