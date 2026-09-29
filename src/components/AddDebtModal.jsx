@@ -262,6 +262,66 @@ useEffect(() => {
       preventScroll: true,
     });
 
+    requestAnimationFrame(() => {
+
+  setTimeout(() => {
+
+    const modalRect =
+      modal.getBoundingClientRect();
+
+    const targetRect =
+      target.getBoundingClientRect();
+
+    const topPadding = 12;
+
+    const bottomPadding = 16;
+
+
+    // ----------------------------------------
+    // CAMPO ESTÁ ABAIXO DA ÁREA VISÍVEL
+    // ----------------------------------------
+
+    if (
+      targetRect.bottom >
+      modalRect.bottom - bottomPadding
+    ) {
+
+      const scrollAmount =
+        targetRect.bottom -
+        (modalRect.bottom - bottomPadding);
+
+      modal.scrollBy({
+        top: scrollAmount,
+        behavior: "smooth",
+      });
+
+    }
+
+
+    // ----------------------------------------
+    // CAMPO ESTÁ ACIMA DA ÁREA VISÍVEL
+    // ----------------------------------------
+
+    else if (
+      targetRect.top <
+      modalRect.top + topPadding
+    ) {
+
+      const scrollAmount =
+        targetRect.top -
+        (modalRect.top + topPadding);
+
+      modal.scrollBy({
+        top: scrollAmount,
+        behavior: "smooth",
+      });
+
+    }
+
+  }, 100);
+
+});
+
   };
 
 
