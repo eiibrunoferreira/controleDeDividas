@@ -639,7 +639,7 @@ export default function MonthWeekSelector({
       <div
         ref={weekContainerRef}
 
-        className="week-scroll flex gap-2 overflow-x-auto pb-2"
+        className="week-scroll flex gap-2 overflow-x-auto rounded-full"
 
         style={{
           scrollbarWidth: "none",
@@ -683,7 +683,7 @@ export default function MonthWeekSelector({
                 handleWeekClick(week)
               }
 
-              className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 selectedWeek === week
                   ? "bg-white text-black"
                   : "bg-white/10 text-white"

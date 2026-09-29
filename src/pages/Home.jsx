@@ -365,11 +365,11 @@ export default function Home() {
           {/* ADICIONAR DÍVIDA */}
           {/* ================================================= */}
 
-          <AddDividaButton
+         {/* <AddDividaButton
             onClick={() =>
               setModalVisible(true)
             }
-          />
+          />/*}
 
 
           {/* ================================================= */}
