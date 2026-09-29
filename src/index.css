@@ -10,3 +10,16 @@ body {
   background-color: #061224;
   /* mesmo cor do bg-zinc-900 */
 }
+
+/* ================================================= */
+/* ESCONDER TODAS AS BARRAS DE ROLAGEM */
+/* ================================================= */
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
