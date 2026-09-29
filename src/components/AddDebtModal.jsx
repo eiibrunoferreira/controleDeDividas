@@ -207,7 +207,6 @@ useEffect(() => {
 
 }, [visible]);
 
-
 useEffect(() => {
 
   if (!visible) return;
@@ -230,8 +229,7 @@ useEffect(() => {
     }
 
 
-    // Campos que não vamos interceptar
-
+    // Campos que não vamos controlar
     if (
       target.type === "date" ||
       target.type === "checkbox" ||
@@ -242,9 +240,8 @@ useEffect(() => {
     }
 
 
-    // Se já está focado, deixa o comportamento
-    // normal acontecer
-
+    // Se o campo já está focado,
+    // não precisamos fazer nada
     if (
       document.activeElement === target
     ) {
@@ -252,9 +249,8 @@ useEffect(() => {
     }
 
 
-    // Impede o navegador de fazer o
-    // auto-scroll da página
-
+    // Impede o navegador de deslocar
+    // a página automaticamente
     event.preventDefault();
 
 
@@ -262,65 +258,100 @@ useEffect(() => {
       preventScroll: true,
     });
 
-    requestAnimationFrame(() => {
 
-  setTimeout(() => {
+    // Espera o teclado e o modal
+    // terminarem de se ajustar
+    setTimeout(() => {
 
-    const modalRect =
-      modal.getBoundingClientRect();
+      const modalRect =
+        modal.getBoundingClientRect();
 
-    const targetRect =
-      target.getBoundingClientRect();
-
-    const topPadding = 12;
-
-    const bottomPadding = 16;
+      const targetRect =
+        target.getBoundingClientRect();
 
 
-    // ----------------------------------------
-    // CAMPO ESTÁ ABAIXO DA ÁREA VISÍVEL
-    // ----------------------------------------
+      const topPadding = 16;
 
-    if (
-      targetRect.bottom >
-      modalRect.bottom - bottomPadding
-    ) {
-
-      const scrollAmount =
-        targetRect.bottom -
-        (modalRect.bottom - bottomPadding);
-
-      modal.scrollBy({
-        top: scrollAmount,
-        behavior: "smooth",
-      });
-
-    }
+      const bottomPadding = 20;
 
 
-    // ----------------------------------------
-    // CAMPO ESTÁ ACIMA DA ÁREA VISÍVEL
-    // ----------------------------------------
+      // ----------------------------------------
+      // CAMPO ABAIXO DA ÁREA VISÍVEL
+      // ----------------------------------------
 
-    else if (
-      targetRect.top <
-      modalRect.top + topPadding
-    ) {
+      if (
+        targetRect.bottom >
+        modalRect.bottom - bottomPadding
+      ) {
 
-      const scrollAmount =
-        targetRect.top -
-        (modalRect.top + topPadding);
+        const amount =
+          targetRect.bottom -
+          (modalRect.bottom - bottomPadding);
 
-      modal.scrollBy({
-        top: scrollAmount,
-        behavior: "smooth",
-      });
 
-    }
+        modal.scrollBy({
+          top: amount,
+          behavior: "smooth",
+        });
 
-  }, 100);
+        return;
+      }
 
-});
+
+      // ----------------------------------------
+      // CAMPO ACIMA DA ÁREA VISÍVEL
+      // ----------------------------------------
+
+      if (
+        targetRect.top <
+        modalRect.top + topPadding
+      ) {
+
+        const amount =
+          targetRect.top -
+          (modalRect.top + topPadding);
+
+
+        modal.scrollBy({
+          top: amount,
+          behavior: "smooth",
+        });
+
+        return;
+      }
+
+
+      // ----------------------------------------
+      // CAMPO ESTÁ VISÍVEL, MAS MUITO ABAIXO
+      // ----------------------------------------
+      //
+      // Coloca o campo em uma posição
+      // mais confortável dentro do modal
+      //
+
+      const comfortableTop =
+        modalRect.top +
+        modalRect.height * 0.45;
+
+
+      if (
+        targetRect.top >
+        comfortableTop
+      ) {
+
+        const amount =
+          targetRect.top -
+          comfortableTop;
+
+
+        modal.scrollBy({
+          top: amount,
+          behavior: "smooth",
+        });
+
+      }
+
+    }, 300);
 
   };
 
@@ -341,6 +372,7 @@ useEffect(() => {
   };
 
 }, [visible]);
+
   // =========================
   // DADOS PRINCIPAIS
   // =========================
