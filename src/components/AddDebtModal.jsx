@@ -121,12 +121,6 @@ useEffect(() => {
     updateModalPosition
   );
 
-  viewport.addEventListener(
-    "scroll",
-    updateModalPosition
-  );
-
-
   return () => {
 
     viewport.removeEventListener(
@@ -134,10 +128,6 @@ useEffect(() => {
       updateModalPosition
     );
 
-    viewport.removeEventListener(
-      "scroll",
-      updateModalPosition
-    );
 
 
     const modal = modalRef.current;
