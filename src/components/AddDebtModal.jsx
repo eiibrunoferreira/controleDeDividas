@@ -331,7 +331,7 @@ useEffect(() => {
 
       const comfortableTop =
         modalRect.top +
-        modalRect.height * 0.45;
+        modalRect.height * 0.60;
 
 
       if (
