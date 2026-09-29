@@ -57,61 +57,99 @@ useEffect(() => {
 
   if (!viewport) return;
 
+  let keyboardOpen = false;
+
   const updateModalPosition = () => {
 
     const modal = modalRef.current;
 
     if (!modal) return;
 
-    const keyboardOpen =
+    const isKeyboardOpen =
       viewport.height <
       window.innerHeight * 0.75;
 
 
-    if (keyboardOpen) {
+    // ----------------------------------------
+    // IGNORA NOVAS ALTERAÇÕES ENQUANTO
+    // O TECLADO JÁ ESTIVER ABERTO
+    // ----------------------------------------
 
-  const topSpace = 40;
+    if (
+      isKeyboardOpen === keyboardOpen
+    ) {
 
-  const bottomSpace = 10;
+      return;
 
-  modal.style.position = "fixed";
+    }
 
-  modal.style.top =
-    `${topSpace}px`;
 
-  modal.style.left = "50%";
+    keyboardOpen = isKeyboardOpen;
 
-  modal.style.transform =
-    "translateX(-50%)";
 
-  modal.style.width =
-    "calc(100% - 32px)";
+    // ----------------------------------------
+    // TECLADO ABERTO
+    // ----------------------------------------
 
-  modal.style.marginTop = "0";
+    if (isKeyboardOpen) {
 
-  modal.style.maxHeight =
-    `${viewport.height - topSpace - bottomSpace}px`;
+      const topSpace = 40;
 
-} else {
+      const bottomSpace = 10;
 
-  modal.style.position = "";
+      modal.style.position = "fixed";
 
-  modal.style.top = "";
+      modal.style.top =
+        `${topSpace}px`;
 
-  modal.style.left = "";
+      modal.style.left = "50%";
 
-  modal.style.transform = "";
+      modal.style.transform =
+        "translateX(-50%)";
 
-  modal.style.width = "";
+      modal.style.width =
+        "calc(100% - 32px)";
 
-  modal.style.marginTop = "0";
+      modal.style.marginTop = "0";
 
-  modal.style.maxHeight = "90vh";
+      modal.style.maxHeight =
+        `${viewport.height - topSpace - bottomSpace}px`;
 
-}
+    }
+
+
+    // ----------------------------------------
+    // TECLADO FECHADO
+    // ----------------------------------------
+
+    else {
+
+      modal.style.position = "";
+
+      modal.style.top = "";
+
+      modal.style.left = "";
+
+      modal.style.transform = "";
+
+      modal.style.width = "";
+
+      modal.style.marginTop = "0";
+
+      modal.style.maxHeight = "90vh";
+
+    }
 
   };
 
+
+  // Verifica o estado inicial
+
+  const initialKeyboardOpen =
+    viewport.height <
+    window.innerHeight * 0.75;
+
+  keyboardOpen = !initialKeyboardOpen;
 
   updateModalPosition();
 
@@ -121,13 +159,13 @@ useEffect(() => {
     updateModalPosition
   );
 
+
   return () => {
 
     viewport.removeEventListener(
       "resize",
       updateModalPosition
     );
-
 
 
     const modal = modalRef.current;
@@ -141,6 +179,8 @@ useEffect(() => {
       modal.style.left = "";
 
       modal.style.transform = "";
+
+      modal.style.width = "";
 
       modal.style.marginTop = "";
 
