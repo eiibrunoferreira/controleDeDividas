@@ -1156,7 +1156,14 @@ recurrenceYear:
   if (!visible) return null;
 
   return (
-   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden">
+
+<div
+  className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 overflow-hidden"
+  style={{
+    paddingTop: "env(safe-area-inset-top, 0px)",
+    paddingBottom: "env(safe-area-inset-bottom, 0px)",
+  }}
+>
 
   <div
   ref={modalRef}

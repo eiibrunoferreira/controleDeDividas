@@ -537,7 +537,13 @@ export default function Dividas() {
 
   return (
 
-<div className="min-h-screen w-full flex flex-col p-5 relative overflow-x-hidden bg-[#161616]">
+
+<div
+  className="min-h-screen w-full flex flex-col px-5 pb-5 pt-5 relative overflow-x-hidden bg-[#161616]"
+  style={{
+    paddingTop: "calc(1.25rem + env(safe-area-inset-top, 0px))",
+  }}
+>
 
       {/* ================================================= */}
       {/* CONTEÚDO */}
