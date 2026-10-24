@@ -451,8 +451,15 @@ export default function Header() {
     <>
       {/* HEADER */}
 
-      <div className="px-10 py-7 flex justify-between bg-[#138e92] items-center rounded-b-3xl">
+{/* HEADER */}
 
+<div className="relative bg-[#138e92] rounded-b-3xl">
+
+  {/* Extensão da cor para cima */}
+  <div className="absolute bottom-full left-0 w-full h-screen bg-[#138e92]" />
+
+  {/* Conteúdo do Header */}
+  <div className="px-10 py-7 flex justify-between items-center relative">
         <div>
 
           <p className="text-sm text-zinc-300">
@@ -498,7 +505,7 @@ export default function Header() {
           />
 
         </label>
-
+</div>
       </div>
 
 
