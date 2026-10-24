@@ -461,8 +461,12 @@ export default function Header() {
   />
 
   {/* Conteúdo do Header */}
-  <div className="relative px-10 py-7 flex justify-between items-center">
-        <div>
+<div
+  className="relative px-10 pt-7 pb-7 flex justify-between items-center"
+  style={{
+    paddingTop: "calc(1.75rem + env(safe-area-inset-top, 0px))",
+  }}
+>        <div>
 
           <p className="text-sm text-zinc-300">
             Bem-vindo,
