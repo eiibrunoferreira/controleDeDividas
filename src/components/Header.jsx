@@ -451,14 +451,17 @@ export default function Header() {
     <>
       {/* HEADER */}
 
-{/* HEADER */}
-
-<div className="relative bg-[#138e92] rounded-b-3xl z-10">
-  {/* Extensão da cor para cima */}
-  <div className="absolute bottom-full left-0 w-full h-screen bg-[#138e92]" />
+<div className="relative z-10 bg-[#138e92] rounded-b-3xl">
+  {/* Extensão turquesa para a área superior do iPhone */}
+  <div
+    className="absolute left-0 right-0 bottom-full bg-[#138e92]"
+    style={{
+      height: "calc(100vh + env(safe-area-inset-top, 0px))",
+    }}
+  />
 
   {/* Conteúdo do Header */}
-  <div className="px-10 py-7 flex justify-between items-center relative">
+  <div className="relative px-10 py-7 flex justify-between items-center">
         <div>
 
           <p className="text-sm text-zinc-300">
