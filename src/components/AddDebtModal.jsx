@@ -171,10 +171,15 @@ useEffect(() => {
   updateModalPosition();
 
 
-  viewport.addEventListener(
-    "resize",
-    updateModalPosition
-  );
+ viewport.addEventListener(
+  "resize",
+  updateModalPosition
+);
+
+viewport.addEventListener(
+  "scroll",
+  updateModalPosition
+);
 
 
   return () => {
@@ -183,6 +188,11 @@ useEffect(() => {
       "resize",
       updateModalPosition
     );
+
+    viewport.removeEventListener(
+  "scroll",
+  updateModalPosition
+);
 
 
     const modal = modalRef.current;
