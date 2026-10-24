@@ -11,30 +11,17 @@ export default function AddDebtModal({ visible, onClose }) {
   // =========================
   // BLOQUEIA O SCROLL DE TRÁS
   // =========================
- useEffect(() => {
-
+ 
+useEffect(() => {
   if (!visible) return;
 
-  const html = document.documentElement;
-  const body = document.body;
-
-  html.style.overflow = "hidden";
-  body.style.overflow = "hidden";
-
-  html.style.overscrollBehavior = "none";
-  body.style.overscrollBehavior = "none";
+  document.body.style.overflow = "hidden";
 
   return () => {
-
-    html.style.overflow = "";
-    body.style.overflow = "";
-
-    html.style.overscrollBehavior = "";
-    body.style.overscrollBehavior = "";
-
+    document.body.style.overflow = "";
   };
-
 }, [visible]);
+
 
 useEffect(() => {
   if (!visible) return;
