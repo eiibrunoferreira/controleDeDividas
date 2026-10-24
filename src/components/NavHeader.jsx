@@ -44,8 +44,7 @@ export default function NavHeader({
         handleBack
       }
 
-      className="absolute ml-2 cursor-pointer -mt-1.5 w-11 h-11 flex items-center justify-center bg-[#10284D] rounded-full hover:brightness-90 transition-all"
-    >
+className="absolute ml-2 cursor-pointer -mt-1.5 w-11 h-11 flex items-center justify-center bg-[#0e0d0d]  rounded-full hover:border-[#138e92] hover:bg-white/5 active:scale-95 transition-all"    >
 
       <button
         type="button"

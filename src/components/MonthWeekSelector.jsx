@@ -562,7 +562,7 @@ export default function MonthWeekSelector({
   onClick={() => changeMonth(-1)}
   className={`text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full transition-colors select-none focus:outline-none focus:ring-0 ${
     pressedArrow === "left"
-      ? "bg-white/10"
+      ? "bg-[#a7a7a73f]"
       : ""
   }`}
   style={{
@@ -593,7 +593,7 @@ export default function MonthWeekSelector({
 
           {isCurrentMonth && (
 
-            <p className="text-orange-400 text-xs font-medium mt-1">
+            <p className="text-[#18c4ca] text-xs font-medium mt-1">
 
               Mês atual
 
@@ -618,7 +618,7 @@ export default function MonthWeekSelector({
   onClick={() => changeMonth(1)}
   className={`text-white text-2xl w-10 h-10 flex items-center justify-center rounded-full transition-colors select-none focus:outline-none focus:ring-0 ${
     pressedArrow === "right"
-      ? "bg-white/10"
+      ? "bg-[#a7a7a73f]"
       : ""
   }`}
   style={{
@@ -686,7 +686,7 @@ export default function MonthWeekSelector({
               className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 selectedWeek === week
                   ? "bg-white text-black"
-                  : "bg-white/10 text-white"
+                  : "bg-[#0e0d0d] text-white"
               }`}
             >
 

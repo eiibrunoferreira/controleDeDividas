@@ -307,33 +307,7 @@ export default function Home() {
 
     <>
 
-      <div className="min-h-screen w-full flex flex-col relative overflow-x-hidden bg-[#061224]">
-
-
-        {/* ================================================= */}
-        {/* FUNDO SUPERIOR */}
-        {/* ================================================= */}
-
-        <div
-          className="fixed top-0 left-0 right-0 h-[35vh] z-0 pointer-events-none"
-          style={{
-            ...imageMaskTopStyle,
-            backgroundPosition:
-              "top center",
-          }}
-        />
-
-
-        {/* ================================================= */}
-        {/* FUNDO INFERIOR */}
-        {/* ================================================= */}
-
-        <div
-          className="fixed inset-0 z-0 pointer-events-none"
-          style={
-            imageMaskBottomStyle
-          }
-        />
+      <div className="min-h-screen w-full flex flex-col relative overflow-x-hidden bg-[#161616]">
 
 
         <div className="relative z-10 flex flex-col w-full flex-1">

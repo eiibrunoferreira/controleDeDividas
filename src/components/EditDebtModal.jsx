@@ -1001,7 +1001,7 @@ monthlyWeekOccurrence:
         
 <div
   ref={modalRef}
-  className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
+  className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#161616] rounded-2xl shadow-2xl border border-white/10"
   style={{
     WebkitOverflowScrolling: "touch",
     overscrollBehavior: "contain",
@@ -1009,7 +1009,7 @@ monthlyWeekOccurrence:
 >
           {/* CABEÇALHO */}
 
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#243B5D]">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
             <h2 className="text-white text-xl font-bold">
               Editar dívida
             </h2>
@@ -1045,7 +1045,7 @@ monthlyWeekOccurrence:
                   }))
                 }
                 placeholder="Ex: Internet"
-                className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                className="w-full bg-[#0e0d0d] text-white placeholder-gray-400 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
               />
             </div>
 
@@ -1071,7 +1071,7 @@ monthlyWeekOccurrence:
                 }
                 placeholder="Ex: Internet de casa"
                 rows={2}
-                className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400 resize-none"
+                className="w-full bg-[#0e0d0d] text-white placeholder-gray-400 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92] resize-none"
               />
             </div>
 
@@ -1092,7 +1092,7 @@ monthlyWeekOccurrence:
                   className={`py-3 rounded-xl font-semibold transition ${
                     !form.recurring
                       ? "bg-red-700 text-white"
-                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                      : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                   }`}
                 >
                   Não
@@ -1105,8 +1105,8 @@ monthlyWeekOccurrence:
                   }
                   className={`py-3 rounded-xl font-semibold transition ${
                     form.recurring
-                      ? "bg-orange-600 text-white"
-                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                      ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                      : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                   }`}
                 >
                   Sim
@@ -1136,7 +1136,7 @@ monthlyWeekOccurrence:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="edit-debt-date bg-[#10284D] text-white border border-[#29466D] rounded-xl outline-none cursor-pointer"
+  className="edit-debt-date bg-[#0e0d0d] text-white border border-white/10 rounded-xl outline-none cursor-pointer"
 />
               </div>
             )}
@@ -1164,8 +1164,8 @@ monthlyWeekOccurrence:
                       className={`py-3 rounded-xl text-sm font-semibold ${
                         form.recurrenceType ===
                         "monthly"
-                          ? "bg-orange-600 text-white"
-                          : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                          ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                          : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                       }`}
                     >
                       Mensal
@@ -1181,8 +1181,8 @@ monthlyWeekOccurrence:
                       className={`py-3 rounded-xl text-sm font-semibold ${
                         form.recurrenceType ===
                         "weekly"
-                          ? "bg-orange-600 text-white"
-                          : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                          ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                          : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                       }`}
                     >
                       Semanal
@@ -1198,8 +1198,8 @@ monthlyWeekOccurrence:
   className={`py-3 rounded-xl text-sm font-semibold ${
     form.recurrenceType ===
     "biweekly"
-      ? "bg-orange-600 text-white"
-      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+      ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+      : "bg-[#0e0d0d] text-gray-300 border border-white/10"
   }`}
 >
   Quinzenal
@@ -1215,8 +1215,8 @@ monthlyWeekOccurrence:
                       className={`py-3 rounded-xl text-sm font-semibold ${
                         form.recurrenceType ===
                         "annual"
-                          ? "bg-orange-600 text-white"
-                          : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                          ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                          : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                       }`}
                     >
                       Anual
@@ -1248,8 +1248,8 @@ monthlyWeekOccurrence:
                           className={`py-3 rounded-xl text-sm font-semibold ${
                             form.monthlyDueMode ===
                             "date"
-                              ? "bg-blue-600 text-white"
-                              : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                              ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                              : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                           }`}
                         >
                           Por dia
@@ -1265,8 +1265,8 @@ monthlyWeekOccurrence:
                           className={`py-3 rounded-xl text-sm font-semibold ${
                             form.monthlyDueMode ===
                             "weekday"
-                              ? "bg-blue-600 text-white"
-                              : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                              ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                              : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                           }`}
                         >
                           Por dia da semana
@@ -1298,7 +1298,7 @@ monthlyWeekOccurrence:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="edit-debt-date bg-[#10284D] text-white border border-[#29466D] rounded-xl outline-none cursor-pointer"
+  className="edit-debt-date bg-[#0e0d0d] text-white border border-white/10 rounded-xl outline-none cursor-pointer"
 />
 
                         <p className="text-gray-400 text-xs mt-1">
@@ -1328,7 +1328,7 @@ monthlyWeekOccurrence:
                               error: "",
                             }))
                           }
-                          className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                          className="w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
                         >
                           <option value="">
                             Selecione
@@ -1368,7 +1368,7 @@ monthlyWeekOccurrence:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="edit-debt-date bg-[#10284D] text-white border border-[#29466D] rounded-xl outline-none cursor-pointer"
+  className="edit-debt-date bg-[#0e0d0d] text-white border border-white/10 rounded-xl outline-none cursor-pointer"
 />
 
   <p className="text-gray-400 text-xs mt-1">
@@ -1403,7 +1403,7 @@ monthlyWeekOccurrence:
                           error: "",
                         }))
                       }
-                      className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                      className="w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
                     >
                       <option value="">
                         Selecione
@@ -1448,7 +1448,7 @@ monthlyWeekOccurrence:
           error: "",
         }))
       }
-      className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+      className="w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
     >
       <option value="">
         Selecione
@@ -1484,7 +1484,7 @@ monthlyWeekOccurrence:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="edit-debt-date bg-[#10284D] text-white border border-[#29466D] rounded-xl outline-none cursor-pointer"
+  className="edit-debt-date bg-[#0e0d0d] text-white border border-white/10 rounded-xl outline-none cursor-pointer"
 />
 
       <p className="text-gray-400 text-xs mt-1">
@@ -1525,7 +1525,7 @@ monthlyWeekOccurrence:
                             className={`py-2 px-2 rounded-lg text-sm font-semibold transition ${
                               selected
                                 ? "bg-orange-600 text-white"
-                                : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                                : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                             }`}
                           >
                             {month.label}
@@ -1549,7 +1549,7 @@ monthlyWeekOccurrence:
     "weekly" ||
   form.recurrenceType ===
     "biweekly") && (
-                  <div className="bg-[#10284D] border border-[#29466D] rounded-xl p-3">
+                  <div className="bg-[#0e0d0d] border border-white/10 rounded-xl p-3">
 
                     <label className="flex items-center gap-3 cursor-pointer">
 
@@ -1570,7 +1570,7 @@ monthlyWeekOccurrence:
                             error: "",
                           }))
                         }
-                        className="w-5 h-5 accent-orange-600"
+                        className="w-5 h-5 accent-[#138e92]"
                       />
 
                       <span className="text-white text-sm font-semibold">
@@ -1595,7 +1595,7 @@ monthlyWeekOccurrence:
                           }))
                         }
                         placeholder="Ex: 12"
-                        className="mt-3 w-full bg-[#0B1D39] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                        className="mt-3 w-full bg-[#161616] text-white placeholder-gray-400 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
                       />
                     )}
 
@@ -1628,7 +1628,7 @@ monthlyWeekOccurrence:
                     )
                   }
                   placeholder="0,00"
-                  className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl pl-12 pr-4 py-3 outline-none focus:border-blue-400"
+                  className="w-full bg-[#0e0d0d] text-white placeholder-gray-400 border border-white/10 rounded-xl pl-12 pr-4 py-3 outline-none focus:border-[#138e92]"
                 />
 
               </div>
@@ -1656,7 +1656,7 @@ monthlyWeekOccurrence:
                     form.status ===
                     "a-vencer"
                       ? "bg-red-700 text-white"
-                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                      : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                   }`}
                 >
                   A Vencer
@@ -1673,8 +1673,8 @@ monthlyWeekOccurrence:
                   }
                   className={`py-3 rounded-xl font-semibold transition ${
                     form.status === "pagos"
-                      ? "bg-green-600 text-white"
-                      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                      ? "bg-[#138e92] text-white"
+                      : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                   }`}
                 >
                   Pago
@@ -1706,8 +1706,7 @@ monthlyWeekOccurrence:
               <button
                 type="button"
                 onClick={handleUpdate}
-                className="py-3 rounded-xl bg-[#16A34A] text-white font-bold hover:brightness-90 transition"
-              >
+className="py-3 rounded-xl bg-[#138e92] text-white font-bold hover:brightness-110 transition shadow-md shadow-[#138e92]/20"              >
                 Salvar
               </button>
 
@@ -1718,8 +1717,7 @@ monthlyWeekOccurrence:
             <button
               type="button"
               onClick={handleClose}
-              className="w-full py-3 rounded-xl bg-gray-600 text-white font-bold hover:bg-gray-500 transition"
-            >
+className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-bold hover:bg-white/10 hover:text-white transition"            >
               Cancelar
             </button>
 
@@ -1732,13 +1730,13 @@ monthlyWeekOccurrence:
       ========================= */}
 
       {deleteConfirmVisible && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 px-5">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-sm px-5">
 
-          <div className="w-full max-w-sm bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558] p-6">
+          <div className="w-full max-w-sm bg-[#161616] rounded-2xl shadow-2xl border border-white/10 p-6">
 
             <div className="text-center">
 
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
 
                 <span className="text-red-400 text-2xl font-bold">
                   !
@@ -1761,16 +1759,14 @@ monthlyWeekOccurrence:
                 <button
                   type="button"
                   onClick={cancelDelete}
-                  className="py-3 rounded-xl bg-gray-600 text-white font-bold hover:bg-gray-500 transition"
-                >
+className="py-3 rounded-xl bg-[#0e0d0d] border border-white/10 text-gray-300 font-bold hover:bg-white/5 hover:text-white active:scale-[0.98] transition-all"                >
                   Cancelar
                 </button>
 
                 <button
                   type="button"
                   onClick={confirmDelete}
-                  className="py-3 rounded-xl bg-red-700 text-white font-bold hover:bg-red-600 transition"
-                >
+className="py-3 rounded-xl bg-red-700 text-white font-bold hover:bg-red-600 active:scale-[0.98] transition-all"                >
                   Apagar
                 </button>
 

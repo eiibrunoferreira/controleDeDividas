@@ -535,8 +535,7 @@ export default function DebtHistoryModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-[#0B1D39] p-5 shadow-2xl"
-        onClick={(event) =>
+className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-[#07353a] p-5 shadow-2xl"        onClick={(event) =>
           event.stopPropagation()
         }
       >
@@ -562,8 +561,7 @@ export default function DebtHistoryModal({
           </p>
 
           {debt.description ? (
-            <div className="w-full min-h-[70px] max-h-[160px] overflow-y-auto rounded-xl bg-white/10 border border-white/10 p-3">
-              <p className="text-white text-sm leading-relaxed whitespace-pre-wrap break-words">
+<div className="w-full min-h-[90px] max-h-[180px] overflow-y-auto rounded-xl bg-white/10 border border-white/10 p-3">              <p className="text-white text-sm leading-relaxed whitespace-pre-wrap break-words">
                 {debt.description}
               </p>
             </div>
@@ -618,8 +616,7 @@ export default function DebtHistoryModal({
                     !current
                 )
               }
-              className="w-full flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-white font-semibold hover:bg-white/20 transition"
-            >
+className="w-full flex items-center justify-between rounded-xl bg-[#0e0d0d] border border-white/10 px-4 py-3 text-white font-semibold hover:bg-white/5 transition"            >
               <span>
                 Parcelas
               </span>
@@ -656,8 +653,7 @@ export default function DebtHistoryModal({
                         key={
                           installment.id
                         }
-                        className="rounded-xl bg-white/5 border border-white/10 p-3"
-                      >
+className="rounded-xl bg-[#0e0d0d] border border-white/10 p-3"                      >
                         <div className="flex items-center justify-between gap-3">
                           <div className="min-w-0">
                             <p className="text-white font-semibold text-sm">
@@ -703,26 +699,26 @@ export default function DebtHistoryModal({
           </div>
         )}
 
-        {/* AÇÕES */}
-<div className="flex gap-3">
+                {/* AÇÕES */}
+        <div className="flex flex-col gap-3">
 
-  <button
-    type="button"
-    onClick={() => onEdit(debt)}
-    className="flex-1 py-3 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition"
-  >
-    Editar
-  </button>
+          <button
+            type="button"
+            onClick={() => onEdit(debt)}
+            className="w-full py-3 rounded-xl bg-[#138e92] text-white font-bold flex items-center justify-center gap-2 hover:bg-[#0e7074] transition"
+          >
+            Editar Dívida
+          </button>
 
-  <button
-    type="button"
-    onClick={onClose}
-    className="flex-1 py-3 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20 transition"
-  >
-    Fechar
-  </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-3 rounded-xl bg-[#0e0d0d] text-white font-semibold hover:bg-[#0c0b0b] transition"
+          >
+            Fechar
+          </button>
 
-</div>
+        </div>
       </div>
     </div>
   );

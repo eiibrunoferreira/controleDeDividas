@@ -1160,8 +1160,7 @@ recurrenceYear:
 
   <div
   ref={modalRef}
-    className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0B1D39] rounded-2xl shadow-2xl border border-[#1E3558]"
-    style={{
+className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#161616] rounded-2xl shadow-2xl border border-white/10"    style={{
       WebkitOverflowScrolling: "touch",
       overscrollBehavior: "contain",
     }}
@@ -1209,8 +1208,7 @@ recurrenceYear:
             CABEÇALHO
         ========================= */}
 
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#243B5D]">
-
+<div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <h2 className="text-white text-xl font-bold">
             Adicionar dívida
           </h2>
@@ -1246,7 +1244,7 @@ recurrenceYear:
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ex: Internet"
-              className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+              className="w-full bg-[#0e0d0d] text-white placeholder-gray-400 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
             />
           </div>
 
@@ -1267,7 +1265,7 @@ recurrenceYear:
               }
               placeholder="Ex: Internet de casa"
               rows={2}
-              className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400 resize-none"
+              className="w-full bg-[#0e0d0d] text-white placeholder-gray-400 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92] resize-none"
             />
           </div>
 
@@ -1288,9 +1286,9 @@ recurrenceYear:
                   handleRecurringChange(false)
                 }
                 className={`py-3 rounded-xl font-semibold transition ${
-                  !recurring
-                    ? "bg-orange-600 text-white"
-                    : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                 !recurring
+  ? "bg-red-700 text-white"
+  : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                 }`}
               >
                 Não
@@ -1303,8 +1301,8 @@ recurrenceYear:
                 }
                 className={`py-3 rounded-xl font-semibold transition ${
                   recurring
-                    ? "bg-orange-600 text-white"
-                    : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                    ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                    : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                 }`}
               >
                 Sim
@@ -1333,7 +1331,7 @@ recurrenceYear:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
+  className="add-debt-date w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 outline-none cursor-pointer focus:border-[#138e92]"
 />
 
             </div>
@@ -1365,8 +1363,8 @@ recurrenceYear:
                     }
                     className={`py-3 rounded-xl text-sm font-semibold ${
                       recurrenceType === "monthly"
-                        ? "bg-orange-600 text-white"
-                        : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                        ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                        : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                     }`}
                   >
                     Mensal
@@ -1381,8 +1379,8 @@ recurrenceYear:
                     }
                     className={`py-3 rounded-xl text-sm font-semibold ${
                       recurrenceType === "weekly"
-                        ? "bg-orange-600 text-white"
-                        : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                        ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                        : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                     }`}
                   >
                     Semanal
@@ -1397,8 +1395,8 @@ recurrenceYear:
   }
   className={`py-3 rounded-xl text-sm font-semibold ${
     recurrenceType === "biweekly"
-      ? "bg-orange-600 text-white"
-      : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+      ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+      : "bg-[#0e0d0d] text-gray-300 border border-white/10"
   }`}
 >
   Quinzenal
@@ -1413,8 +1411,8 @@ recurrenceYear:
                     }
                     className={`py-3 rounded-xl text-sm font-semibold ${
                       recurrenceType === "annual"
-                        ? "bg-orange-600 text-white"
-                        : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                        ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                        : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                     }`}
                   >
                     Anual
@@ -1446,9 +1444,9 @@ recurrenceYear:
                           setRecurrenceWeekday("");
                         }}
                         className={`py-3 rounded-xl text-sm font-semibold ${
-                          monthlyDueMode === "date"
-                            ? "bg-blue-600 text-white"
-                            : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                         monthlyDueMode === "date"
+  ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+  : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                         }`}
                       >
                         Por dia
@@ -1463,9 +1461,9 @@ recurrenceYear:
                           setDueDate("");
                         }}
                         className={`py-3 rounded-xl text-sm font-semibold ${
-                          monthlyDueMode === "weekday"
-                            ? "bg-blue-600 text-white"
-                            : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                         monthlyDueMode === "weekday"
+  ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+  : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                         }`}
                       >
                         Por dia da semana
@@ -1493,7 +1491,7 @@ recurrenceYear:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
+  className="add-debt-date w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 outline-none cursor-pointer focus:border-[#138e92]"
 />
 
                       <p className="text-gray-400 text-xs mt-1">
@@ -1520,7 +1518,7 @@ recurrenceYear:
           e.target.value
         )
       }
-      className="w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+      className="w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
     >
 
       <option value="">
@@ -1559,7 +1557,7 @@ recurrenceYear:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
+  className="add-debt-date w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 outline-none cursor-pointer focus:border-[#138e92]"
 />
 
       <p className="text-gray-400 text-xs mt-1">
@@ -1593,7 +1591,7 @@ recurrenceYear:
                         e.target.value
                       )
                     }
-                    className="w-full bg-[#10284D] cursor-pointer text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none"
+                    className="w-full bg-[#0e0d0d] cursor-pointer text-white border border-white/10 rounded-xl px-4 py-3 outline-none"
                   >
                     <option value="">
                       Selecione
@@ -1646,8 +1644,8 @@ recurrenceYear:
                           }
                           className={`py-2 px-2 rounded-lg text-sm font-semibold transition ${
                             selected
-                              ? "bg-orange-600 text-white"
-                              : "bg-[#10284D] text-gray-300 border border-[#29466D]"
+                              ? "bg-[#138e92] text-white shadow-md shadow-[#138e92]/20"
+                              : "bg-[#0e0d0d] text-gray-300 border border-white/10"
                           }`}
                         >
                           {month.label}
@@ -1681,7 +1679,7 @@ recurrenceYear:
           e.target.value
         )
       }
-      className="w-full bg-[#10284D] cursor-pointer text-white border border-[#29466D] rounded-xl px-4 py-3 outline-none"
+      className="w-full bg-[#0e0d0d] cursor-pointer text-white border border-white/10 rounded-xl px-4 py-3 outline-none"
     >
 
       <option value="">
@@ -1720,7 +1718,7 @@ recurrenceYear:
   onClick={(e) =>
     e.currentTarget.showPicker?.()
   }
-  className="add-debt-date w-full bg-[#10284D] text-white border border-[#29466D] rounded-xl px-4 outline-none cursor-pointer focus:border-blue-400"
+  className="add-debt-date w-full bg-[#0e0d0d] text-white border border-white/10 rounded-xl px-4 outline-none cursor-pointer focus:border-[#138e92]"
 />
 
       <p className="text-gray-400 text-xs mt-1">
@@ -1742,7 +1740,7 @@ recurrenceYear:
   recurrenceType === "weekly" ||
   recurrenceType === "biweekly"
 ) && (
-                <div className="bg-[#10284D] border border-[#29466D] rounded-xl p-3">
+                <div className="bg-[#0e0d0d] border border-white/10 rounded-xl p-3">
 
                   <label className="flex items-center gap-3 cursor-pointer">
 
@@ -1758,7 +1756,7 @@ recurrenceYear:
                           setRecurrenceLimit("");
                         }
                       }}
-                      className="w-5 h-5 accent-orange-600"
+                      className="w-5 h-5 accent-[#138e92]"
                     />
 
                     <span className="text-white text-sm font-semibold">
@@ -1778,7 +1776,7 @@ recurrenceYear:
                         )
                       }
                       placeholder="Ex: 12"
-                      className="mt-3 w-full bg-[#0B1D39] text-white placeholder-gray-400 border border-[#29466D] rounded-xl px-4 py-3 outline-none focus:border-blue-400"
+                      className="mt-3 w-full bg-[#161616] text-white placeholder-gray-400 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#138e92]"
                     />
                   )}
 
@@ -1812,7 +1810,7 @@ recurrenceYear:
                   formatAmount(e.target.value)
                 }
                 placeholder="0,00"
-                className="w-full bg-[#10284D] text-white placeholder-gray-400 border border-[#29466D] rounded-xl pl-12 pr-4 py-3 outline-none focus:border-blue-400"
+                className="w-full bg-[#0e0d0d] text-white placeholder-gray-400 border border-white/10 rounded-xl pl-12 pr-4 py-3 outline-none focus:border-[#138e92]"
               />
 
             </div>
@@ -1838,15 +1836,13 @@ recurrenceYear:
             <button
               type="button"
               onClick={handleClose}
-              className="py-3 rounded-xl bg-gray-600 text-white font-bold hover:bg-gray-500 transition"
-            >
+className="py-3 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-bold hover:bg-white/10 hover:text-white transition"            >
               Cancelar
             </button>
 
             <button
               type="submit"
-              className="py-3 rounded-xl bg-[#16A34A] text-white font-bold hover:brightness-90 transition"
-            >
+className="py-3 rounded-xl bg-[#138e92] text-white font-bold hover:brightness-110 transition shadow-md shadow-[#138e92]/20"            >
               Salvar
             </button>
 

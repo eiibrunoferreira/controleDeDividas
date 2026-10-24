@@ -341,7 +341,7 @@ export default function DebtDetailsModal({
     >
 
       <div
-        className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-[#0B1D39] p-5 shadow-2xl"
+        className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-[#07353a] p-5 shadow-2xl"
         onClick={(event) =>
           event.stopPropagation()
         }
@@ -468,10 +468,10 @@ export default function DebtDetailsModal({
               onClick={() =>
                 handleStatusChange("a-vencer")
               }
-              className={`py-2 rounded-lg border font-semibold transition ${
+              className={`py-2 rounded-lg border-2 border-[#138e92] font-semibold transition ${
                 debt.status === "a-vencer"
-                  ? "bg-red-800 text-white border-red-800"
-                  : "bg-transparent text-gray-300 border-gray-500"
+                  ? "bg-[#138e92] text-white"
+                  : "bg-transparent text-gray-300"
               }`}
             >
               A Vencer
@@ -483,10 +483,10 @@ export default function DebtDetailsModal({
               onClick={() =>
                 handleStatusChange("pagos")
               }
-              className={`py-2 rounded-lg border font-semibold transition ${
+              className={`py-2 rounded-lg border-2 border-[#138e92] font-semibold transition ${
                 debt.status === "pagos"
-                  ? "bg-green-500 text-black border-green-500"
-                  : "bg-transparent text-gray-300 border-gray-500"
+                  ? "bg-[#138e92] text-white"
+                  : "bg-transparent text-gray-300"
               }`}
             >
               Pagos
@@ -539,7 +539,7 @@ export default function DebtDetailsModal({
         <button
           type="button"
           onClick={handleEdit}
-          className="w-full mb-3 py-3 rounded-xl bg-orange-500 text-white font-bold flex items-center justify-center gap-2 hover:bg-orange-600 transition"
+          className="w-full mb-3 py-3 rounded-xl bg-[#138e92] text-white font-bold flex items-center justify-center gap-2 hover:bg-[#0e7074] transition"
         >
 
           Editar Dívida
@@ -554,7 +554,7 @@ export default function DebtDetailsModal({
         <button
           type="button"
           onClick={onClose}
-          className="w-full py-3 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20 transition"
+          className="w-full py-3 rounded-xl bg-[#0e0d0d] text-white font-semibold hover:bg-[#0c0b0b] transition"
         >
           Fechar
         </button>

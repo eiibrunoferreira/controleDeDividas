@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDebts } from "../context/useDebts";
 
-import backgroundImage from "/images/background.png";
-
 
 export default function Login() {
 
@@ -120,95 +118,12 @@ navigate("/home");
 
 
   // =========================================================
-  // FUNDO - TOPO
-  // =========================================================
-
-  const imageMaskTopStyle = {
-
-    backgroundImage:
-      `url('${backgroundImage}')`,
-
-    backgroundSize:
-      "100%",
-
-    backgroundRepeat:
-      "no-repeat",
-
-    opacity:
-      "0.10",
-
-    transform:
-      "scaleY(-1) scaleX(-1)",
-
-    WebkitMaskImage:
-      "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)",
-
-    maskImage:
-      "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)",
-
-  };
-
-
-  // =========================================================
-  // FUNDO - BASE
-  // =========================================================
-
-  const imageMaskBottomStyle = {
-
-    backgroundImage:
-      `url('${backgroundImage}')`,
-
-    backgroundSize:
-      "100%",
-
-    backgroundPosition:
-      "bottom center",
-
-    backgroundRepeat:
-      "no-repeat",
-
-    opacity:
-      "0.25",
-
-    WebkitMaskImage:
-      "linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)",
-
-    maskImage:
-      "linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)",
-
-  };
-
-
-  // =========================================================
   // INTERFACE
   // =========================================================
 
   return (
 
-    <div className="min-h-screen w-full bg-[#061224] relative overflow-hidden flex items-center justify-center px-5 py-8">
-
-
-      {/* ================================================= */}
-      {/* FUNDO TOPO */}
-      {/* ================================================= */}
-
-      <div
-        className="fixed top-0 left-0 right-0 h-[35vh] z-0 pointer-events-none"
-        style={{
-          ...imageMaskTopStyle,
-          backgroundPosition: "top center",
-        }}
-      />
-
-
-      {/* ================================================= */}
-      {/* FUNDO BASE */}
-      {/* ================================================= */}
-
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={imageMaskBottomStyle}
-      />
+    <div className="min-h-screen w-full bg-[#161616] relative overflow-hidden flex items-center justify-center px-5 py-8">
 
 
       {/* ================================================= */}
@@ -224,20 +139,13 @@ navigate("/home");
 
         <div className="text-center mb-8">
 
-          <div className="mx-auto mb-4 w-16 h-16 rounded-2xl bg-white/10 border border-white/10 backdrop-blur-md flex items-center justify-center">
-
-            <span className="text-white text-xl font-bold">
-              CD
-            </span>
-
-          </div>
+        
 
 
           <h1 className="text-white text-3xl font-bold">
 
             Controle
-            <span className="text-orange-400">
-              Dívidas
+<span className="text-[#138e92]">              Dívidas
             </span>
 
           </h1>
@@ -254,7 +162,7 @@ navigate("/home");
         {/* CARD LOGIN */}
         {/* ================================================= */}
 
-        <div className="bg-white/10 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl">
+        <div className="bg-[#0e0d0d] border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl">
 
           <h2 className="text-white text-2xl font-semibold">
             Entrar
@@ -295,8 +203,7 @@ navigate("/home");
                 placeholder="Digite seu e-mail"
                 autoComplete="email"
                 required
-                className="w-full h-12 rounded-xl bg-black/20 border border-white/10 text-white placeholder:text-gray-500 px-4 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all"
-              />
+className="w-full h-12 rounded-xl bg-[#161616] border border-white/10 text-white placeholder:text-gray-500 px-4 outline-none focus:border-[#138e92] focus:ring-2 focus:ring-[#138e92]/20 transition-all"              />
 
             </div>
 
@@ -331,8 +238,7 @@ navigate("/home");
                   placeholder="Digite sua senha"
                   autoComplete="current-password"
                   required
-                  className="w-full h-12 rounded-xl bg-black/20 border border-white/10 text-white placeholder:text-gray-500 px-4 pr-24 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all"
-                />
+className="w-full h-12 rounded-xl bg-[#161616] border border-white/10 text-white placeholder:text-gray-500 px-4 pr-24 outline-none focus:border-[#138e92] focus:ring-2 focus:ring-[#138e92]/20 transition-all"                />
 
 
                 <button
@@ -340,7 +246,7 @@ navigate("/home");
                   onClick={() =>
                     setShowPassword(!showPassword)
                   }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs font-medium px-2 py-2"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs font-medium px-2 py-2 transition-colors"
                 >
 
                   {showPassword
@@ -360,37 +266,35 @@ navigate("/home");
 
             <div className="flex items-center justify-between gap-3">
 
-  <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer">
 
-    <input
-      type="checkbox"
-      checked={rememberMe}
-      onChange={(event) =>
-        setRememberMe(
-          event.target.checked
-        )
-      }
-      className="w-4 h-4 accent-orange-500"
-    />
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(event) =>
+                    setRememberMe(
+                      event.target.checked
+                    )
+                  }
+className="w-4 h-4 accent-[#138e92]"                />
 
-    <span className="text-gray-400 text-sm">
-      Lembrar de mim
-    </span>
+                <span className="text-gray-400 text-sm">
+                  Lembrar de mim
+                </span>
 
-  </label>
+              </label>
 
 
-  <button
-    type="button"
-    onClick={() =>
-      alert("Recuperação de senha será conectada ao backend.")
-    }
-    className="text-orange-400 hover:text-orange-300 text-sm transition-colors"
-  >
-    Esqueci minha senha
-  </button>
+              <button
+                type="button"
+                onClick={() =>
+                  alert("Recuperação de senha será conectada ao backend.")
+                }
+className="text-[#138e92] hover:text-[#19adb1] text-sm transition-colors"              >
+                Esqueci minha senha
+              </button>
 
-</div>
+            </div>
 
 
             {/* ================================================= */}
@@ -399,8 +303,7 @@ navigate("/home");
 
             <button
               type="submit"
-              className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-semibold transition-all active:scale-[0.98]"
-            >
+className="w-full h-12 rounded-xl bg-[#138e92] hover:bg-[#10777a] text-white font-semibold transition-all active:scale-[0.98] shadow-lg shadow-[#138e92]/15"            >
               Entrar
             </button>
 
@@ -420,8 +323,7 @@ navigate("/home");
 
             <Link
               to="/cadastro"
-              className="inline-block mt-2 text-orange-400 hover:text-orange-300 font-semibold text-sm transition-colors"
-            >
+className="inline-block mt-2 text-[#138e92] hover:text-[#19adb1] font-semibold text-sm transition-colors"            >
               Criar minha conta
             </Link>
 

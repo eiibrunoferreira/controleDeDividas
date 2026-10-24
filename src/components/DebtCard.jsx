@@ -12,10 +12,10 @@ export default function DebtCard({
     switch (debt.status) {
 
       case "pagos":
-        return "bg-green-500";
+        return "bg-[#138e92]";
 
       case "a-vencer":
-        return "bg-red-700";
+        return "borderColor-[#138e92]";
 
       case "dividas":
       default:
@@ -29,7 +29,7 @@ export default function DebtCard({
     switch (debt.status) {
 
       case "pagos":
-        return "text-white";
+        return "text-gray";
 
       case "a-vencer":
         return "text-white";
@@ -174,7 +174,7 @@ export default function DebtCard({
       onClick={() =>
         onPress && onPress(debt)
       }
-      className="cursor-pointer bg-gradient-to-r from-[#0B1D39] to-[#10284D] p-4 rounded-lg mx-2 mb-3 flex justify-between items-center hover:brightness-90 transition-all"
+      className="cursor-pointer bg-[#0e0d0d] p-4 rounded-lg mx-2 mb-3 flex justify-between items-center hover:brightness-90 transition-all"
     >
 
       <div className="flex items-center min-w-0">
@@ -182,7 +182,7 @@ export default function DebtCard({
         {!debt.hideDate && (
 
           <div
-            className={`${circleColor} w-12 h-12 rounded-full flex items-center justify-center mr-4 shrink-0`}
+            className={`${circleColor} border-2 border-[#138e92] w-12 h-12 rounded-full flex items-center justify-center mr-4 shrink-0`}
           >
 
             <span

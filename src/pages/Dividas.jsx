@@ -4,17 +4,19 @@ import DebtCard from "../components/DebtCard";
 import EditDebtModal from "../components/EditDebtModal";
 import DebtHistoryModal from "../components/DebtHistoryModal";
 
+import ButtonsCards from "../components/ButtonsCards";
+
+import AddDebtModal from "../components/AddDebtModal";
+
 import { useDebts } from "../context/useDebts";
 
 import NavHeader from "../components/NavHeader";
 
-import backgroundImage from "/images/background.png";
-
-import BackToTopButton from "../components/BackToTopButton";
 
 
 export default function Dividas() {
 
+  const [modalVisible, setModalVisible] = useState(false);
 
   const {
     debts,
@@ -470,66 +472,6 @@ export default function Dividas() {
 
 
   // =========================================================
-  // IMAGEM DA PARTE DE BAIXO
-  // =========================================================
-
-  const imageMaskBottomStyle = {
-
-    backgroundImage:
-      `url('${backgroundImage}')`,
-
-    backgroundSize:
-      "100%",
-
-    backgroundPosition:
-      "bottom center",
-
-    backgroundRepeat:
-      "no-repeat",
-
-    opacity:
-      "0.25",
-
-    WebkitMaskImage:
-      "linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)",
-
-    maskImage:
-      "linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)",
-
-  };
-
-
-  // =========================================================
-  // IMAGEM DA PARTE DE CIMA
-  // =========================================================
-
-  const imageMaskTopStyle = {
-
-    backgroundImage:
-      `url('${backgroundImage}')`,
-
-    backgroundSize:
-      "100%",
-
-    backgroundRepeat:
-      "no-repeat",
-
-    opacity:
-      "0.10",
-
-    transform:
-      "scaleY(-1) scaleX(-1)",
-
-    WebkitMaskImage:
-      "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)",
-
-    maskImage:
-      "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)",
-
-  };
-
-
-  // =========================================================
   // VOLTAR DA SUBPÁGINA
   // =========================================================
 
@@ -552,7 +494,7 @@ export default function Dividas() {
 
       return (
 
-        <h1 className="text-white text-2xl font-semibold mb-8 px-16 whitespace-nowrap flex items-center gap-3">
+        <h1 className="text-white text-2xl font-bold mb-8 ml-14 px-2 sm:px-4 whitespace-nowrap flex items-center gap-3">
           Dívidas em Aberto
         </h1>
 
@@ -567,7 +509,7 @@ export default function Dividas() {
 
       return (
 
-        <h1 className="text-white text-2xl font-semibold mb-8 px-16 whitespace-nowrap flex items-center gap-3">
+        <h1 className="text-white text-2xl font-bold mb-8 ml-14 px-2 sm:px-4 whitespace-nowrap flex items-center gap-3">
           Dívidas Quitadas
         </h1>
 
@@ -578,7 +520,7 @@ export default function Dividas() {
 
     return (
 
-      <h1 className="text-white text-2xl font-semibold mb-8 px-16 whitespace-nowrap">
+      <h1 className="text-white text-2xl font-bold mb-8 ml-14 px-2 sm:px-4 whitespace-nowrap">
 
         Dívidas Totais
 
@@ -595,34 +537,7 @@ export default function Dividas() {
 
   return (
 
-    <div className="min-h-screen w-full flex flex-col p-5 relative overflow-x-hidden bg-[#061224]">
-
-
-      {/* ================================================= */}
-      {/* IMAGEM DO TOPO */}
-      {/* ================================================= */}
-
-      <div
-        className="fixed top-0 left-0 right-0 h-[35vh] z-0 pointer-events-none"
-        style={{
-          ...imageMaskTopStyle,
-          backgroundPosition:
-            "top center",
-        }}
-      />
-
-
-      {/* ================================================= */}
-      {/* IMAGEM DA BASE */}
-      {/* ================================================= */}
-
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={
-          imageMaskBottomStyle
-        }
-      />
-
+<div className="min-h-screen w-full flex flex-col p-5 relative overflow-x-hidden bg-[#161616]">
 
       {/* ================================================= */}
       {/* CONTEÚDO */}
@@ -672,10 +587,9 @@ export default function Dividas() {
                 )
               }
 
-              className="w-full max-w-md bg-[#10284D] text-white rounded-2xl px-6 py-5 flex items-center justify-center gap-3 border border-white/10 hover:brightness-110 active:scale-[0.98] transition-all"
-            >
+className="w-full max-w-md bg-[#0e0d0d] text-white rounded-2xl px-6 py-5 flex items-center justify-center gap-3 hover:border-[#138e92]/60 hover:bg-white/5 active:scale-[0.98] transition-all"            >
 
-              <span className="w-3 h-3 bg-red-500 rounded-full flex-shrink-0"></span>
+              <span className="w-3 h-3 bg-[#138e92] rounded-full flex-shrink-0"></span>
 
               <span className="text-lg font-semibold">
                 Dívidas em Aberto
@@ -696,10 +610,9 @@ export default function Dividas() {
                 )
               }
 
-              className="w-full max-w-md bg-[#10284D] text-white rounded-2xl px-6 py-5 flex items-center justify-center gap-3 border border-white/10 hover:brightness-110 active:scale-[0.98] transition-all"
-            >
+className="w-full max-w-md bg-[#0e0d0d] text-white rounded-2xl px-6 py-5 flex items-center justify-center gap-3 hover:border-[#138e92]/60 hover:bg-white/5 active:scale-[0.98] transition-all"            >
 
-              <span className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></span>
+              <span className="w-3 h-3 bg-[#138e92] rounded-full flex-shrink-0"></span>
 
               <span className="text-lg font-semibold">
                 Dívidas Quitadas
@@ -722,13 +635,13 @@ export default function Dividas() {
 
             {activeDebts.length === 0 ? (
 
-              <p className="text-gray-400 text-center mt-2 mb-10 text-lg">
+              <p className="text-gray-400 text-center mt-8 mb-10 text-sm sm:text-base">
                 Nenhuma dívida em andamento
               </p>
 
             ) : (
 
-              <div className="space-y-1 flex flex-col mb-5">
+              <div className="space-y-3 flex flex-col mb-24 px-1">
 
                 {activeDebts.map((debt) => (
 
@@ -773,13 +686,13 @@ export default function Dividas() {
 
             {paidDebts.length === 0 ? (
 
-              <p className="text-gray-400 text-center mt-2 mb-10 text-lg">
+              <p className="text-gray-400 text-center mt-8 mb-10 text-sm sm:text-base">
                 Nenhuma dívida quitada
               </p>
 
             ) : (
 
-              <div className="space-y-1 flex flex-col pb-5">
+              <div className="space-y-3 flex flex-col pb-24 px-1">
 
                 {paidDebts.map((debt) => (
 
@@ -881,7 +794,17 @@ export default function Dividas() {
 
       )}
 
-      <BackToTopButton />
+<AddDebtModal
+  visible={modalVisible}
+  onClose={() => setModalVisible(false)}
+/>
+
+<div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-5 pb-4 pointer-events-none">  <div className="pointer-events-auto">
+    <ButtonsCards
+      onAddDebt={() => setModalVisible(true)}
+    />
+  </div>
+</div>
 
     </div>
 

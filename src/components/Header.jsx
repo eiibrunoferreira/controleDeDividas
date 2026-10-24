@@ -451,7 +451,7 @@ export default function Header() {
     <>
       {/* HEADER */}
 
-      <div className="mt-5 mx-5 px-10 py-5 flex justify-between items-center bg-gradient-to-r from-[#10284D] to-[#0B1D39] rounded-2xl">
+      <div className="px-10 py-7 flex justify-between bg-[#138e92] items-center rounded-b-3xl">
 
         <div>
 
@@ -509,28 +509,25 @@ export default function Header() {
       {modalVisible && (
 
         <div
-          className="fixed inset-0 bg-slate-950/90 flex items-center justify-center p-5 z-50"
-
+className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-5 z-50"
           onClick={() =>
             setModalVisible(false)
           }
         >
 
           <div
-            className="bg-[#08162c] rounded-2xl p-6 w-full max-w-md"
-
+className="bg-[#161616] border border-white/10 rounded-2xl p-6 w-full max-w-md"
             onClick={(e) =>
               e.stopPropagation()
             }
           >
 
-            <h2 className="text-white text-xl font-semibold mb-4">
+            <h2 className="text-white text-xl font-semibold mb-5">
               Editar Nome
             </h2>
 
             <input
-              className="w-full bg-slate-800 text-white p-3 rounded-xl mb-3 outline-none focus:ring-2 focus:ring-white/30"
-
+className="w-full bg-[#0e0d0d] border border-white/10 text-white placeholder:text-gray-500 p-3 rounded-xl mb-4 outline-none focus:border-[#138e92] focus:ring-1 focus:ring-[#138e92] transition-all"
               placeholder="Digite seu nome"
 
               value={inputName}
@@ -545,16 +542,14 @@ export default function Header() {
             />
 
             <button
-              className="w-full bg-white text-black font-semibold p-3 rounded-xl transition"
-
+className="w-full bg-[#138e92] hover:bg-[#10777a] active:scale-[0.98] text-white font-semibold p-3 rounded-xl transition-all"
               onClick={saveName}
             >
               Salvar
             </button>
 
             <button
-              className="w-full bg-slate-800 text-white font-semibold p-3 rounded-xl mt-3 transition"
-
+className="w-full bg-[#0e0d0d] border border-white/10 hover:bg-white/5 text-gray-300 hover:text-white font-semibold p-3 rounded-xl mt-3 transition-all"
               onClick={() =>
                 setModalVisible(false)
               }
@@ -591,7 +586,7 @@ export default function Header() {
             }
           >
 
-            <h2 className="text-white text-xl font-semibold mb-4">
+            <h2 className="text-white text-xl font-semibold mb-5">
               Ajustar Imagem
             </h2>
 
