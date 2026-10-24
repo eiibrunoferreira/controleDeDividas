@@ -453,8 +453,7 @@ export default function Header() {
 
 {/* HEADER */}
 
-<div className="relative bg-[#138e92] rounded-b-3xl">
-
+<div className="relative bg-[#138e92] rounded-b-3xl z-10">
   {/* Extensão da cor para cima */}
   <div className="absolute bottom-full left-0 w-full h-screen bg-[#138e92]" />
 

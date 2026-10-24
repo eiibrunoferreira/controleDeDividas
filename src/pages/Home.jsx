@@ -307,8 +307,10 @@ export default function Home() {
 
     <>
 
-      <div className="min-h-screen w-full flex flex-col relative overflow-x-hidden bg-[#161616]">
-
+<div
+  className="min-h-screen w-full flex flex-col relative overflow-x-hidden bg-[#161616]"
+  style={{ overscrollBehaviorY: "none" }}
+>
 
         <div className="relative z-10 flex flex-col w-full flex-1">
 
