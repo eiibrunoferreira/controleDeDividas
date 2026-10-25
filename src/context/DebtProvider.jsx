@@ -14,7 +14,8 @@ export function DebtProvider({ children }) {
   const loadDebts = useCallback(async () => {
 
   const token =
-    localStorage.getItem("@auth_token");
+  sessionStorage.getItem("@auth_token") ||
+  localStorage.getItem("@auth_token");
 
   if (!token) {
 
@@ -1744,7 +1745,8 @@ else if (
   ) => {
 
     const token =
-      localStorage.getItem("@auth_token");
+  sessionStorage.getItem("@auth_token") ||
+  localStorage.getItem("@auth_token");
 
     if (!token) {
 

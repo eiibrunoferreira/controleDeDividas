@@ -1,249 +1,211 @@
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import backgroundImage from "/images/background.png";
-
+const API_URL = "https://controlededividas.onrender.com";
+const STORAGE_KEY = "@saved_accounts";
 
 export default function Cadastro() {
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
-
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(null);
 
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
+  const [errors, setErrors] = useState({});
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // =========================================================
-  // CADASTRO
-  // =========================================================
+  const validateForm = () => {
+    const newErrors = {};
 
-  const handleSubmit = async (event) => {
-
-    event.preventDefault();
-
-
-    if (password !== confirmPassword) {
-
-      alert("As senhas não são iguais.");
-
-      return;
-
+    if (!name.trim()) {
+      newErrors.name = "Informe seu nome.";
     }
 
+    if (!email.trim()) {
+      newErrors.email = "Informe seu e-mail.";
+    } else if (!emailRegex.test(email.trim())) {
+      newErrors.email = "Digite um e-mail válido.";
+    }
+
+    if (!password) {
+      newErrors.password = "Informe uma senha.";
+    } else if (password.length < 8) {
+      newErrors.password = "A senha deve ter pelo menos 8 caracteres.";
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Confirme sua senha.";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "As senhas não são iguais.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (loading) return;
+    if (!validateForm()) return;
+
+    setLoading(true);
+    setModal({ type: "loading" });
 
     try {
-
-      const response = await fetch("https://controlededividas.onrender.com/users/register", {
-
+      const response = await fetch(`${API_URL}/users/register`, {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
-          name,
-          email,
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
           password,
         }),
-
       });
 
-
-      const data = await response.json();
-
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-
-        alert(data.error || "Não foi possível criar a conta.");
+        setModal({
+          type: "error",
+          title: "Não foi possível criar a conta",
+          message:
+            response.status === 409
+              ? "Este e-mail já está cadastrado. Tente entrar ou utilize outro e-mail."
+              : data.error || "Verifique os dados e tente novamente.",
+        });
 
         return;
-
       }
 
+      /*
+       * Monta o perfil com os dados retornados pelo backend,
+       * usando os dados do formulário como alternativa.
+       */
+      const usuario = data.user || data.usuario || data;
 
-      console.log("Usuário criado:", data);
+      const novoPerfil = {
+        id:
+          usuario.id ||
+          usuario._id ||
+          usuario.userId ||
+          email.trim().toLowerCase(),
+        name: usuario.name || name.trim(),
+        email: (usuario.email || email.trim()).toLowerCase(),
+        profileImage: usuario.profileImage || null,
+      };
 
-      alert("Conta criada com sucesso!");
+      /*
+       * Atualiza a lista de perfis da tela inicial.
+       * Se o e-mail já existir, substitui o registro.
+       */
+      let contasSalvas = [];
 
+      try {
+        const armazenadas = JSON.parse(
+          localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+
+        if (Array.isArray(armazenadas)) {
+          contasSalvas = armazenadas;
+        }
+      } catch {
+        contasSalvas = [];
+      }
+
+      const contasAtualizadas = [
+        ...contasSalvas.filter(
+          (conta) =>
+            conta.email?.toLowerCase() !== novoPerfil.email
+        ),
+        novoPerfil,
+      ];
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(contasAtualizadas)
+      );
+
+      setModal({
+        type: "success",
+        title: "Conta criada com sucesso!",
+        message:
+          "Sua conta foi criada e adicionada à lista de perfis.",
+      });
     } catch (error) {
+      console.error("Erro ao cadastrar usuário:", error);
 
-      console.error(error);
+      setModal({
+        type: "error",
+        title: "Erro de conexão",
+        message:
+          "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      alert("Não foi possível conectar ao servidor.");
-
+  const closeModal = () => {
+    if (modal?.type === "success") {
+      navigate("/");
+      return;
     }
 
+    setModal(null);
   };
 
-
-  // =========================================================
-  // FUNDO - TOPO
-  // =========================================================
-
-  const imageMaskTopStyle = {
-
-    backgroundImage:
-      `url('${backgroundImage}')`,
-
-    backgroundSize:
-      "100%",
-
-    backgroundRepeat:
-      "no-repeat",
-
-    opacity:
-      "0.10",
-
-    transform:
-      "scaleY(-1) scaleX(-1)",
-
-    WebkitMaskImage:
-      "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)",
-
-    maskImage:
-      "linear-gradient(to bottom, transparent 0%, black 20%, black 60%, transparent 90%)",
-
-  };
-
-
-  // =========================================================
-  // FUNDO - BASE
-  // =========================================================
-
-  const imageMaskBottomStyle = {
-
-    backgroundImage:
-      `url('${backgroundImage}')`,
-
-    backgroundSize:
-      "100%",
-
-    backgroundPosition:
-      "bottom center",
-
-    backgroundRepeat:
-      "no-repeat",
-
-    opacity:
-      "0.25",
-
-    WebkitMaskImage:
-      "linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)",
-
-    maskImage:
-      "linear-gradient(to bottom, transparent 0%, transparent 75%, black 100%)",
-
-  };
-
-
-  // =========================================================
-  // INTERFACE
-  // =========================================================
+  const inputClass = (field) =>
+    `w-full h-12 rounded-xl bg-[#161616] border ${
+      errors[field]
+        ? "border-red-500"
+        : "border-white/10 focus:border-[#138e92]"
+    } text-white placeholder:text-gray-500 px-4 outline-none focus:ring-2 ${
+      errors[field]
+        ? "focus:ring-red-500/20"
+        : "focus:ring-[#138e92]/20"
+    } transition-all`;
 
   return (
-
-    <div className="min-h-screen w-full bg-[#061224] relative overflow-hidden flex items-center justify-center px-5 py-8">
-
-
-      {/* ================================================= */}
-      {/* FUNDO TOPO */}
-      {/* ================================================= */}
-
-      <div
-        className="fixed top-0 left-0 right-0 h-[35vh] z-0 pointer-events-none"
-        style={{
-          ...imageMaskTopStyle,
-          backgroundPosition: "top center",
-        }}
-      />
-
-
-      {/* ================================================= */}
-      {/* FUNDO BASE */}
-      {/* ================================================= */}
-
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={imageMaskBottomStyle}
-      />
-
-
-      {/* ================================================= */}
-      {/* CONTEÚDO */}
-      {/* ================================================= */}
-
-      <div className="relative z-10 w-full max-w-md">
-
-
-        {/* ================================================= */}
-        {/* LOGO / NOME */}
-        {/* ================================================= */}
-
-        <div className="text-center mb-8">
-
-          <div className="mx-auto mb-4 w-16 h-16 rounded-2xl bg-white/10 border border-white/10 backdrop-blur-md flex items-center justify-center">
-
-            <span className="text-white text-xl font-bold">
-              CD
-            </span>
-
-          </div>
-
-
+    <div className="min-h-screen w-full bg-[#161616] text-white flex flex-col items-center justify-center px-5 py-8">
+      <main className="relative z-10 w-full max-w-md">
+        {/* Cabeçalho */}
+        <header className="text-center mb-8">
           <h1 className="text-white text-3xl font-bold">
-
             Controle
-            <span className="text-orange-400">
-              Dívidas
-            </span>
-
+            <span className="text-[#138e92]"> Dívidas</span>
           </h1>
 
-
           <p className="text-gray-400 text-sm mt-2">
-            Crie sua conta e comece a se organizar.
+            Controle suas dívidas de forma simples.
           </p>
+        </header>
 
-        </div>
-
-
-        {/* ================================================= */}
-        {/* CARD CADASTRO */}
-        {/* ================================================= */}
-
-        <div className="bg-white/10 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl">
-
+        {/* Card de cadastro */}
+        <section className="bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
           <h2 className="text-white text-2xl font-semibold">
             Criar conta
           </h2>
 
           <p className="text-gray-400 text-sm mt-1 mb-6">
-            Preencha seus dados abaixo.
+            Preencha seus dados para começar.
           </p>
 
-
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-4"
-          >
-
-
-            {/* ================================================= */}
-            {/* NOME */}
-            {/* ================================================= */}
-
+          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+            {/* Nome */}
             <div>
-
               <label
                 htmlFor="name"
                 className="block text-gray-300 text-sm font-medium mb-2"
@@ -251,29 +213,32 @@ export default function Cadastro() {
                 Nome
               </label>
 
-
               <input
                 id="name"
                 type="text"
                 value={name}
-                onChange={(event) =>
-                  setName(event.target.value)
-                }
+                onChange={(event) => {
+                  setName(event.target.value);
+                  setErrors((previous) => ({
+                    ...previous,
+                    name: "",
+                  }));
+                }}
                 placeholder="Digite seu nome"
                 autoComplete="name"
-                required
-                className="w-full h-12 rounded-xl bg-black/20 border border-white/10 text-white placeholder:text-gray-500 px-4 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all"
+                disabled={loading}
+                className={inputClass("name")}
               />
 
+              {errors.name && (
+                <p className="text-red-400 text-xs mt-2">
+                  {errors.name}
+                </p>
+              )}
             </div>
 
-
-            {/* ================================================= */}
-            {/* E-MAIL */}
-            {/* ================================================= */}
-
+            {/* E-mail */}
             <div>
-
               <label
                 htmlFor="email"
                 className="block text-gray-300 text-sm font-medium mb-2"
@@ -281,29 +246,32 @@ export default function Cadastro() {
                 E-mail
               </label>
 
-
               <input
                 id="email"
                 type="email"
                 value={email}
-                onChange={(event) =>
-                  setEmail(event.target.value)
-                }
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setErrors((previous) => ({
+                    ...previous,
+                    email: "",
+                  }));
+                }}
                 placeholder="Digite seu e-mail"
                 autoComplete="email"
-                required
-                className="w-full h-12 rounded-xl bg-black/20 border border-white/10 text-white placeholder:text-gray-500 px-4 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all"
+                disabled={loading}
+                className={inputClass("email")}
               />
 
+              {errors.email && (
+                <p className="text-red-400 text-xs mt-2">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
-
-            {/* ================================================= */}
-            {/* SENHA */}
-            {/* ================================================= */}
-
+            {/* Senha */}
             <div>
-
               <label
                 htmlFor="password"
                 className="block text-gray-300 text-sm font-medium mb-2"
@@ -311,52 +279,44 @@ export default function Cadastro() {
                 Senha
               </label>
 
-
               <div className="relative">
-
                 <input
                   id="password"
-                  type={
-                    showPassword
-                      ? "text"
-                      : "password"
-                  }
+                  type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(event) =>
-                    setPassword(event.target.value)
-                  }
-                  placeholder="Crie sua senha"
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                    setErrors((previous) => ({
+                      ...previous,
+                      password: "",
+                      confirmPassword: "",
+                    }));
+                  }}
+                  placeholder="Crie uma senha"
                   autoComplete="new-password"
-                  required
-                  className="w-full h-12 rounded-xl bg-black/20 border border-white/10 text-white placeholder:text-gray-500 px-4 pr-24 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all"
+                  disabled={loading}
+                  className={`${inputClass("password")} pr-24`}
                 />
-
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs font-medium px-2 py-2"
                 >
-
-                  {showPassword
-                    ? "Ocultar"
-                    : "Mostrar"}
-
+                  {showPassword ? "Ocultar" : "Mostrar"}
                 </button>
-
               </div>
 
+              {errors.password && (
+                <p className="text-red-400 text-xs mt-2">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
-
-            {/* ================================================= */}
-            {/* CONFIRMAR SENHA */}
-            {/* ================================================= */}
-
+            {/* Confirmar senha */}
             <div>
-
               <label
                 htmlFor="confirmPassword"
                 className="block text-gray-300 text-sm font-medium mb-2"
@@ -364,100 +324,177 @@ export default function Cadastro() {
                 Confirmar senha
               </label>
 
-
               <div className="relative">
-
                 <input
                   id="confirmPassword"
-                  type={
-                    showConfirmPassword
-                      ? "text"
-                      : "password"
-                  }
+                  type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
-                  onChange={(event) =>
-                    setConfirmPassword(
-                      event.target.value
-                    )
-                  }
+                  onChange={(event) => {
+                    setConfirmPassword(event.target.value);
+                    setErrors((previous) => ({
+                      ...previous,
+                      confirmPassword: "",
+                    }));
+                  }}
                   placeholder="Digite a senha novamente"
                   autoComplete="new-password"
-                  required
-                  className="w-full h-12 rounded-xl bg-black/20 border border-white/10 text-white placeholder:text-gray-500 px-4 pr-24 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all"
+                  disabled={loading}
+                  className={`${inputClass("confirmPassword")} pr-24`}
                 />
-
 
                 <button
                   type="button"
                   onClick={() =>
-                    setShowConfirmPassword(
-                      !showConfirmPassword
-                    )
+                    setShowConfirmPassword(!showConfirmPassword)
                   }
+                  disabled={loading}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs font-medium px-2 py-2"
                 >
-
-                  {showConfirmPassword
-                    ? "Ocultar"
-                    : "Mostrar"}
-
+                  {showConfirmPassword ? "Ocultar" : "Mostrar"}
                 </button>
-
               </div>
 
+              {errors.confirmPassword && (
+                <p className="text-red-400 text-xs mt-2">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
-
-            {/* ================================================= */}
-            {/* BOTÃO CADASTRAR */}
-            {/* ================================================= */}
-
+            {/* Botão */}
             <button
               type="submit"
-              className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-semibold transition-all active:scale-[0.98] mt-2"
+              disabled={loading}
+              className="w-full h-12 rounded-xl bg-[#138e92] hover:bg-[#10777a] text-white font-semibold transition-all active:scale-[0.98] shadow-lg shadow-[#138e92]/15 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Criar conta
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  Criando conta...
+                </>
+              ) : (
+                "Criar conta"
+              )}
             </button>
-
           </form>
 
-
-          {/* ================================================= */}
-          {/* VOLTAR PARA LOGIN */}
-          {/* ================================================= */}
-
+          {/* Voltar */}
           <div className="mt-7 pt-6 border-t border-white/10 text-center">
-
             <p className="text-gray-400 text-sm">
               Já possui uma conta?
             </p>
 
-
             <Link
               to="/"
-              className="inline-block mt-2 text-orange-400 hover:text-orange-300 font-semibold text-sm transition-colors"
+              className="inline-block mt-2 text-[#138e92] hover:text-[#19adb1] font-semibold text-sm transition-colors"
             >
-              Voltar para o login
+              Voltar para a tela inicial
             </Link>
-
           </div>
+        </section>
 
-
-        </div>
-
-
-        {/* ================================================= */}
-        {/* RODAPÉ */}
-        {/* ================================================= */}
-
-        <p className="text-gray-500 text-xs text-center mt-6">
+        {/* Rodapé */}
+        <footer className="text-gray-500 text-xs text-center mt-6">
           © Direitos reservados Bruno Ferreira
-        </p>
+        </footer>
+      </main>
 
-      </div>
+      {/* Modal de carregamento, sucesso ou erro */}
+      {modal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5 py-6"
+          role="presentation"
+        >
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            className="w-full max-w-sm bg-[#0e0d0d] border border-white/10 rounded-3xl p-7 shadow-2xl text-center"
+          >
+            {modal.type === "loading" ? (
+              <>
+                <div className="mx-auto mb-5 w-14 h-14 rounded-full border-4 border-white/10 border-t-[#138e92] animate-spin" />
 
+                <h2
+                  id="modal-title"
+                  className="text-white text-xl font-semibold"
+                >
+                  Criando sua conta
+                </h2>
+
+                <p className="text-gray-400 text-sm mt-3">
+                  Aguarde enquanto processamos seus dados...
+                </p>
+              </>
+            ) : (
+              <>
+                <div
+                  className={`mx-auto mb-5 w-14 h-14 rounded-full flex items-center justify-center ${
+                    modal.type === "success"
+                      ? "bg-[#138e92]/15 text-[#138e92]"
+                      : "bg-red-500/10 text-red-400"
+                  }`}
+                >
+                  {modal.type === "success" ? (
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="w-7 h-7"
+                    >
+                      <path
+                        d="m5 12 4 4L19 6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <span className="text-2xl font-bold">!</span>
+                  )}
+                </div>
+
+                <h2
+                  id="modal-title"
+                  className="text-white text-xl font-semibold"
+                >
+                  {modal.title}
+                </h2>
+
+                <p className="text-gray-400 text-sm mt-3 leading-relaxed">
+                  {modal.message}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="w-full h-12 mt-7 rounded-xl bg-[#138e92] hover:bg-[#10777a] text-white font-semibold transition-all active:scale-[0.98]"
+                >
+                  OK
+                </button>
+              </>
+            )}
+          </section>
+        </div>
+      )}
     </div>
-
   );
-
 }

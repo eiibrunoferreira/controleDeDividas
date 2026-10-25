@@ -80,9 +80,8 @@ export default function Header() {
     const loadUser = async () => {
 
       const token =
-        localStorage.getItem(
-          "@auth_token"
-        );
+  sessionStorage.getItem("@auth_token") ||
+  localStorage.getItem("@auth_token");
 
       if (!token) {
         return;
