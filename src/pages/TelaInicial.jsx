@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDebts } from "../context/useDebts";
 
@@ -22,21 +23,46 @@ export default function TelaInicial() {
   });
 
   const carrosselRef = useRef(null);
+  const pulseRef = useRef(null);
   const [indiceAtivo, setIndiceAtivo] = useState(0);
 
   const totalSlides = contasSalvas.length + 1;
 
-  const atualizarSlide = () => {
-    if (!carrosselRef.current) return;
+  const atualizarSlide = useCallback(() => {
+    const carrossel = carrosselRef.current;
 
-    const largura = carrosselRef.current.clientWidth;
+    if (!carrossel) return;
 
-    if (largura > 0) {
-      setIndiceAtivo(
-        Math.round(carrosselRef.current.scrollLeft / largura)
-      );
+    const largura = carrossel.clientWidth;
+
+    if (largura <= 0) return;
+
+    const scrollLeft = carrossel.scrollLeft;
+    const indice = Math.round(scrollLeft / largura);
+
+    setIndiceAtivo((anterior) =>
+      anterior === indice ? anterior : indice
+    );
+
+    // Mantém o círculo sincronizado com o movimento real do carrossel.
+    if (pulseRef.current) {
+      pulseRef.current.style.transform =
+        `translateX(${-scrollLeft}px)`;
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    atualizarSlide();
+
+    const carrossel = carrosselRef.current;
+
+    if (!carrossel) return;
+
+    const observer = new ResizeObserver(atualizarSlide);
+    observer.observe(carrossel);
+
+    return () => observer.disconnect();
+  }, [atualizarSlide, contasSalvas.length]);
 
   const irParaSlide = (indice) => {
     carrosselRef.current?.scrollTo({
@@ -53,6 +79,164 @@ export default function TelaInicial() {
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState("");
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
+
+  const modalRef = useRef(null);
+
+  // Bloqueia a rolagem do fundo enquanto o modal estiver aberto.
+  useEffect(() => {
+    if (!modalAberto) return;
+
+    const overflowAnterior = document.body.style.overflow;
+    const overflowHtmlAnterior =
+      document.documentElement.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    const bloquearToqueForaDoModal = (event) => {
+      if (!modalRef.current?.contains(event.target)) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener(
+      "touchmove",
+      bloquearToqueForaDoModal,
+      { passive: false }
+    );
+
+    return () => {
+      document.body.style.overflow = overflowAnterior;
+      document.documentElement.style.overflow =
+        overflowHtmlAnterior;
+
+      document.removeEventListener(
+        "touchmove",
+        bloquearToqueForaDoModal
+      );
+    };
+  }, [modalAberto]);
+
+  // Ajusta a posição do modal quando o teclado aparece.
+  useEffect(() => {
+    if (!modalAberto) return;
+
+    const modal = modalRef.current;
+    if (!modal) return;
+
+    const viewport = window.visualViewport;
+
+    const ajustarModal = () => {
+      if (!modalRef.current) return;
+
+      const alturaViewport =
+        viewport?.height ?? window.innerHeight;
+
+      const tecladoAberto =
+        alturaViewport < window.innerHeight * 0.75;
+
+      if (tecladoAberto) {
+        modal.style.position = "fixed";
+        modal.style.top = "12px";
+        modal.style.left = "50%";
+        modal.style.transform = "translateX(-50%)";
+        modal.style.width = "calc(100% - 40px)";
+        modal.style.marginTop = "0";
+        modal.style.maxHeight = `${Math.max(
+          150,
+          alturaViewport - 24
+        )}px`;
+      } else {
+        modal.style.position = "";
+        modal.style.top = "";
+        modal.style.left = "";
+        modal.style.transform = "";
+        modal.style.width = "";
+        modal.style.marginTop = "0";
+        modal.style.maxHeight = "90vh";
+      }
+    };
+
+    ajustarModal();
+
+    viewport?.addEventListener("resize", ajustarModal);
+    viewport?.addEventListener("scroll", ajustarModal);
+    window.addEventListener("resize", ajustarModal);
+
+    return () => {
+      viewport?.removeEventListener("resize", ajustarModal);
+      viewport?.removeEventListener("scroll", ajustarModal);
+      window.removeEventListener("resize", ajustarModal);
+
+      modal.style.position = "";
+      modal.style.top = "";
+      modal.style.left = "";
+      modal.style.transform = "";
+      modal.style.width = "";
+      modal.style.marginTop = "";
+      modal.style.maxHeight = "";
+    };
+  }, [modalAberto]);
+
+  // Mantém o campo selecionado visível dentro do modal.
+  useEffect(() => {
+    if (!modalAberto) return;
+
+    const modal = modalRef.current;
+    if (!modal) return;
+
+    const ajustarCampo = (event) => {
+      const campo = event.target;
+
+      if (
+        !(campo instanceof HTMLInputElement) &&
+        !(campo instanceof HTMLTextAreaElement)
+      ) {
+        return;
+      }
+
+      if (
+        ["checkbox", "radio", "file", "date"].includes(campo.type)
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      campo.focus({ preventScroll: true });
+
+      window.setTimeout(() => {
+        if (!modalRef.current || !campo.isConnected) return;
+
+        const modalAtual = modalRef.current;
+        const campoRect = campo.getBoundingClientRect();
+        const modalRect = modalAtual.getBoundingClientRect();
+
+        const margem = 24;
+        let deslocamento = 0;
+
+        if (campoRect.bottom > modalRect.bottom - margem) {
+          deslocamento =
+            campoRect.bottom - modalRect.bottom + margem;
+        } else if (campoRect.top < modalRect.top + margem) {
+          deslocamento =
+            campoRect.top - modalRect.top - margem;
+        }
+
+        if (deslocamento !== 0) {
+          modalAtual.scrollBy({
+            top: deslocamento,
+            behavior: "smooth",
+          });
+        }
+      }, 300);
+    };
+
+    modal.addEventListener("pointerdown", ajustarCampo);
+
+    return () => {
+      modal.removeEventListener("pointerdown", ajustarCampo);
+    };
+  }, [modalAberto]);
 
   const abrirModalAdicionar = () => {
     setContaSelecionada(null);
@@ -123,8 +307,12 @@ export default function TelaInicial() {
     setIndiceAtivo(novoIndice);
 
     requestAnimationFrame(() => {
-      carrosselRef.current?.scrollTo({
-        left: novoIndice * carrosselRef.current.clientWidth,
+      const carrossel = carrosselRef.current;
+
+      if (!carrossel) return;
+
+      carrossel.scrollTo({
+        left: novoIndice * carrossel.clientWidth,
         behavior: "smooth",
       });
     });
@@ -151,7 +339,9 @@ export default function TelaInicial() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErro(data.error || "Não foi possível entrar na conta.");
+        setErro(
+          data.error || "Não foi possível entrar na conta."
+        );
         return;
       }
 
@@ -169,11 +359,14 @@ export default function TelaInicial() {
         return;
       }
 
-      const profileResponse = await fetch(`${API_URL}/users/me`, {
-        headers: {
-          Authorization: `Bearer ${data.token}`,
-        },
-      });
+      const profileResponse = await fetch(
+        `${API_URL}/users/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${data.token}`,
+          },
+        }
+      );
 
       let profile = data.user;
 
@@ -222,9 +415,8 @@ export default function TelaInicial() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#161616] text-white flex flex-col items-center justify-center px-5 py-8">
-      <main className="w-full max-w-md">
-        {/* Cabeçalho */}
+<div className="min-h-screen w-full bg-[#161616] text-white flex flex-col">     
+<main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-5 py-8">        {/* Cabeçalho */}
         <header className="text-center mb-14">
           <h1 className="text-3xl font-bold">
             Controle
@@ -246,14 +438,25 @@ export default function TelaInicial() {
             Selecione seu perfil para continuar.
           </p>
 
-          {/* Carrossel de perfis */}
+          {/* Carrossel */}
           <div className="relative w-full">
-            {/* Animação fora do contêiner de rolagem */}
-            {indiceAtivo < contasSalvas.length && (
-              <div className="absolute left-1/2 top-2 -translate-x-1/2 w-28 h-28 pointer-events-none z-0">
-                <span className="profile-pulse-ring" />
-              </div>
-            )}
+            {/* Círculo fora do carrossel */}
+<div className="absolute inset-0 pointer-events-none z-20 overflow-visible">              {contasSalvas.length > 0 && (
+                <div
+                  ref={pulseRef}
+                  className="absolute top-2 left-0 w-full"
+                >
+                  <div
+                    className="absolute w-28 h-28"
+                    style={{
+                      left: `calc(${indiceAtivo * 100}% + 50% - 56px)`,
+                    }}
+                  >
+                    <span className="profile-pulse-ring" />
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div
               ref={carrosselRef}
@@ -300,7 +503,7 @@ export default function TelaInicial() {
                 </div>
               ))}
 
-              {/* Slide para adicionar conta */}
+              {/* Adicionar conta */}
               <div className="w-full min-w-full shrink-0 snap-start flex justify-center px-2">
                 <div className="flex max-w-full flex-col items-center gap-4 py-2 px-4">
                   <button
@@ -327,10 +530,6 @@ export default function TelaInicial() {
 
                   <span className="text-white text-lg font-semibold">
                     Adicionar conta
-                  </span>
-
-                  <span className="text-gray-500 text-sm">
-                    Entre com outra conta
                   </span>
                 </div>
               </div>
@@ -363,31 +562,32 @@ export default function TelaInicial() {
             </div>
           )}
         </section>
-
-        {/* Cadastro */}
-        <div className="mt-10 pt-6 border-t border-white/10 text-center">
-          <p className="text-gray-400 text-sm">
-            Não tem uma conta?
-          </p>
-
-          <Link
-            to="/cadastro"
-            className="inline-block mt-2 text-[#168F95] hover:text-[#20a6ac] font-semibold text-sm transition-colors"
-          >
-            Cadastre-se agora
-          </Link>
-        </div>
       </main>
 
       {/* Rodapé */}
-      <footer className="mt-10 text-gray-500 text-xs text-center">
-        © Direitos reservados Bruno Ferreira
-      </footer>
+<footer className="mt-auto w-full rounded-t-[2rem] bg-[#168F95] px-6 pt-8 pb-7 text-center shadow-[0_-8px_30px_rgba(22,143,149,0.08)]">
+  <p className="text-sm text-white/80">
+    Não tem uma conta?
+  </p>
+
+  <Link
+    to="/cadastro"
+    className="mt-2 inline-block text-base font-semibold text-white transition-colors hover:text-white/80"
+  >
+    Cadastre-se agora
+  </Link>
+
+  <div className="mx-auto mt-6 mb-4 h-px w-16 bg-white/25" />
+
+  <p className="text-xs text-white/70">
+    © Direitos reservados Bruno Ferreira
+  </p>
+</footer>
 
       {/* Modal de autenticação */}
       {modalAberto && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm px-5 py-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm px-5 py-6 overflow-hidden"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) {
               fecharModal();
@@ -395,10 +595,15 @@ export default function TelaInicial() {
           }}
         >
           <section
+            ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="titulo-modal"
-            className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl"
+            className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            style={{
+              WebkitOverflowScrolling: "touch",
+              overscrollBehavior: "contain",
+            }}
           >
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>

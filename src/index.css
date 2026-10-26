@@ -38,14 +38,19 @@ body {
   }
 }
 
+
 .profile-pulse-ring {
   position: absolute;
-  inset: -5px;
+  inset: -8px;
+  display: block;
+  box-sizing: border-box;
   border: 2px solid rgba(22, 143, 149, 0.75);
   border-radius: 9999px;
   pointer-events: none;
   animation: profile-pulse 3s ease-in-out infinite;
+  will-change: transform, opacity, box-shadow;
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   .profile-pulse-ring {

@@ -179,8 +179,7 @@ export default function Cadastro() {
     } transition-all`;
 
   return (
-    <div className="min-h-screen w-full bg-[#161616] text-white flex flex-col items-center justify-center px-5 py-8">
-      <main className="relative z-10 w-full max-w-md">
+<div className="min-h-screen w-full bg-[#161616] text-white flex flex-col items-center justify-start px-5 pt-12 pb-8 sm:justify-center sm:py-8">      <main className="relative z-10 w-full max-w-md">
         {/* Cabeçalho */}
         <header className="text-center mb-8">
           <h1 className="text-white text-3xl font-bold">
