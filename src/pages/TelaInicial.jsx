@@ -119,32 +119,21 @@ const atualizarSlide = useCallback(() => {
   
   
 
-  // Bloqueia a rolagem da página de fundo enquanto o modal estiver aberto.
+  
+  // Bloqueia a rolagem do fundo enquanto o modal estiver aberto.
   useEffect(() => {
     if (!modalAberto) return;
 
-    const body = document.body;
-    const html = document.documentElement;
-    const scrollYAnterior = window.scrollY;
+    const overflowAnterior = document.body.style.overflow;
 
-    const estilosAnteriores = {
-      bodyPosition: body.style.position,
-      bodyTop: body.style.top,
-      bodyWidth: body.style.width,
-      bodyOverflow: body.style.overflow,
-      htmlOverflow: html.style.overflow,
-    };
-
-    body.style.position = "fixed";
-    body.style.top = `-${scrollYAnterior}px`;
-    body.style.width = "100%";
-    body.style.overflow = "hidden";
-    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
 
     const bloquearFundo = (event) => {
+      const alvo = event.target;
+
       if (
-        event.target instanceof Element &&
-        event.target.closest(".modal-scroll-content")
+        alvo instanceof Element &&
+        alvo.closest(".modal-scroll-content")
       ) {
         return;
       }
@@ -157,19 +146,13 @@ const atualizarSlide = useCallback(() => {
     });
 
     return () => {
+      document.body.style.overflow = overflowAnterior;
+
       document.removeEventListener("touchmove", bloquearFundo);
-
-      body.style.position = estilosAnteriores.bodyPosition;
-      body.style.top = estilosAnteriores.bodyTop;
-      body.style.width = estilosAnteriores.bodyWidth;
-      body.style.overflow = estilosAnteriores.bodyOverflow;
-      html.style.overflow = estilosAnteriores.htmlOverflow;
-
-      window.scrollTo(0, scrollYAnterior);
     };
   }, [modalAberto]);
 
-  // Ajusta a área visível do modal sem reposicioná-lo a cada movimento do teclado.
+  // Ajusta o modal ao abrir ou fechar o teclado.
   useEffect(() => {
     if (!modalAberto) return;
 
@@ -177,32 +160,59 @@ const atualizarSlide = useCallback(() => {
 
     if (!viewport) return;
 
-    const atualizarAltura = () => {
+    const atualizarPosicaoModal = () => {
       const modal = modalRef.current;
 
       if (!modal) return;
 
-      modal.style.maxHeight = `${Math.max(
-        160,
-        viewport.height - 32
-      )}px`;
+      const tecladoAberto =
+        viewport.height < window.innerHeight * 0.75;
+
+      if (tecladoAberto) {
+        const topSpace = 40;
+        const bottomSpace = 10;
+
+        modal.style.position = "fixed";
+        modal.style.top = `${topSpace}px`;
+        modal.style.left = "50%";
+        modal.style.transform = "translateX(-50%)";
+        modal.style.width = "calc(100% - 32px)";
+        modal.style.marginTop = "0";
+        modal.style.maxHeight =
+          `${Math.max(160, viewport.height - topSpace - bottomSpace)}px`;
+      } else {
+        modal.style.position = "";
+        modal.style.top = "";
+        modal.style.left = "";
+        modal.style.transform = "";
+        modal.style.width = "";
+        modal.style.marginTop = "";
+        modal.style.maxHeight = "90vh";
+      }
     };
 
-    atualizarAltura();
+    atualizarPosicaoModal();
 
-    viewport.addEventListener("resize", atualizarAltura);
+    viewport.addEventListener("resize", atualizarPosicaoModal);
+    viewport.addEventListener("scroll", atualizarPosicaoModal);
 
     return () => {
-      viewport.removeEventListener("resize", atualizarAltura);
+      viewport.removeEventListener("resize", atualizarPosicaoModal);
+      viewport.removeEventListener("scroll", atualizarPosicaoModal);
 
       const modal = modalRef.current;
 
       if (modal) {
+        modal.style.position = "";
+        modal.style.top = "";
+        modal.style.left = "";
+        modal.style.transform = "";
+        modal.style.width = "";
+        modal.style.marginTop = "";
         modal.style.maxHeight = "";
       }
     };
   }, [modalAberto]);
-
 
 
 
@@ -613,18 +623,16 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
       {modalAberto && (
         
 
-  <div
-    className="fixed inset-0 z-50 flex items-start justify-center overflow-hidden bg-black/75 px-4 py-4 backdrop-blur-sm"
-    style={{
-      height: "100dvh",
-      boxSizing: "border-box",
-    }}
-    onMouseDown={(event) => {
-      if (event.target === event.currentTarget) {
-        fecharModal();
-      }
-    }}
-  >
+  
+<div
+  className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4 overflow-hidden backdrop-blur-sm"
+  onMouseDown={(event) => {
+    if (event.target === event.currentTarget) {
+      fecharModal();
+    }
+  }}
+>
+
 
 
           
@@ -633,7 +641,8 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
     role="dialog"
     aria-modal="true"
     aria-labelledby="titulo-modal"
-    className="modal-scroll-content w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+
+className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto overscroll-contain bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     style={{
       WebkitOverflowScrolling: "touch",
       overscrollBehavior: "contain",
