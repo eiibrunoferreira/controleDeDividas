@@ -468,8 +468,7 @@ if (contaSelecionada) {
 <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-5 py-8">        {/* Cabeçalho */}
         <header className="text-center mb-14">
           <img
-  src="/controleDeDividas/public/images/iconeApp.png"
-  alt="Logo Controle de Dívidas"
+src={`${import.meta.env.BASE_URL}images/iconeApp.png`}  alt="Logo Controle de Dívidas"
   className="mx-auto mb-5 h-24 w-24 object-contain"
 />
           <h1 className="text-3xl font-bold">
