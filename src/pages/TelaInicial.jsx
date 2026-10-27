@@ -169,6 +169,12 @@ const atualizarSlide = useCallback(() => {
       const tecladoAberto =
         viewport.height < window.innerHeight * 0.75;
 
+        if (tecladoAberto) {
+  document.body.style.overflow = "hidden";
+} else {
+  document.body.style.overflow = "";
+}
+
       if (tecladoAberto) {
         const topSpace = 10;
 const bottomSpace = 10;
