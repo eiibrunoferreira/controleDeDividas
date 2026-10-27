@@ -5,6 +5,8 @@ import getCroppedImg from "../utils/cropImage";
 export default function Header() {
   const defaultImage = "/profile.jpg";
 
+const [currentUser, setCurrentUser] = useState(null);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [inputName, setInputName] = useState("");
 
@@ -113,6 +115,8 @@ export default function Header() {
 
         }
 
+        setCurrentUser(data);
+
         // -----------------------------------------------
         // NOME
         // -----------------------------------------------
@@ -177,25 +181,40 @@ const syncSavedAccount = (updatedUser) => {
     localStorage.getItem("@saved_accounts") || "[]"
   );
 
+  const user = {
+    ...currentUser,
+    ...updatedUser,
+  };
+
+  const email = user.email;
+  const id = user.id;
+
   const updatedAccounts = savedAccounts.map((account) => {
-    if (
-      account.id === updatedUser.id ||
-      account.email === updatedUser.email
-    ) {
-      return {
-        ...account,
-        name: updatedUser.name,
-        profileImage: updatedUser.profileImage || null,
-      };
+    const isSameAccount =
+      (id != null && account.id != null &&
+        String(account.id) === String(id)) ||
+      (email && account.email &&
+        account.email.toLowerCase() === email.toLowerCase());
+
+    if (!isSameAccount) {
+      return account;
     }
 
-    return account;
+    return {
+      ...account,
+      id: id ?? account.id,
+      email: email ?? account.email,
+      name: user.name ?? account.name,
+      profileImage: user.profileImage || null,
+    };
   });
 
   localStorage.setItem(
     "@saved_accounts",
     JSON.stringify(updatedAccounts)
   );
+
+  window.dispatchEvent(new Event("savedAccountsUpdated"));
 };
 
 
@@ -454,6 +473,7 @@ syncSavedAccount(data);
       // Sincronizar perfil na tela inicial
 syncSavedAccount({
   ...data,
+  name: data.name,
   profileImage:
     localStorage.getItem("@user_profile_image") || null,
 });

@@ -24,56 +24,39 @@ export default function TelaInicial() {
 
 
   useEffect(() => {
-    let cancelado = false;
+  const atualizarPerfis = () => {
+    try {
+      const contas = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+      );
 
-    const atualizarPerfis = async () => {
-      try {
-        const contas = JSON.parse(
-          localStorage.getItem(STORAGE_KEY) || "[]"
-        );
+      setContasSalvas(
+        Array.isArray(contas) ? contas : []
+      );
+    } catch (error) {
+      console.error("Erro ao carregar perfis salvos:", error);
+      setContasSalvas([]);
+    }
+  };
 
-        if (!Array.isArray(contas) || contas.length === 0) {
-          setContasSalvas([]);
-          return;
-        }
+  atualizarPerfis();
 
-        const contasAtualizadas = await Promise.all(
-          contas.map(async (conta) => {
-            try {
-              const response = await fetch(`${API_URL}/users/login`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  email: conta.email,
-                  // Não temos a senha salva, então não fazemos login aqui.
-                }),
-              });
+  window.addEventListener(
+    "savedAccountsUpdated",
+    atualizarPerfis
+  );
 
-              // Sem senha não é possível autenticar essa consulta.
-              // Mantém os dados atuais até implementarmos a consulta correta.
-              return conta;
-            } catch {
-              return conta;
-            }
-          })
-        );
+  window.addEventListener("focus", atualizarPerfis);
 
-        if (!cancelado) {
-          setContasSalvas(contasAtualizadas);
-        }
-      } catch (error) {
-        console.error("Erro ao atualizar perfis:", error);
-      }
-    };
+  return () => {
+    window.removeEventListener(
+      "savedAccountsUpdated",
+      atualizarPerfis
+    );
 
-    atualizarPerfis();
-
-    return () => {
-      cancelado = true;
-    };
-  }, []);
+    window.removeEventListener("focus", atualizarPerfis);
+  };
+}, []);
 
 
   const carrosselRef = useRef(null);
@@ -83,6 +66,7 @@ export default function TelaInicial() {
   const totalSlides = contasSalvas.length + 1;
 
   
+
 const atualizarSlide = useCallback(() => {
   const carrossel = carrosselRef.current;
 
@@ -101,9 +85,10 @@ const atualizarSlide = useCallback(() => {
 
   if (pulseRef.current) {
     pulseRef.current.style.transform =
-      `translate3d(${-scrollLeft}px, 0, 0)`;
+      `translateX(${-scrollLeft}px)`;
   }
 }, []);
+
 
 
   useEffect(() => {
@@ -499,7 +484,7 @@ const atualizarSlide = useCallback(() => {
 <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">              {contasSalvas.length > 0 && (
                 <div
                   ref={pulseRef}
-className="absolute top-2 left-0 w-full will-change-transform"                >
+className="absolute top-2 left-0 w-full"              >
                   <div
                     className="absolute w-28 h-28"
                     style={{
