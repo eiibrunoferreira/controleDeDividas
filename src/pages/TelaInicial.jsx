@@ -177,7 +177,7 @@ const atualizarSlide = useCallback(() => {
       if (!modal) return;
 
       const tecladoEstaAberto =
-        viewport.height < window.innerHeight * 0.75;
+  window.visualViewport.height < window.screen.height * 0.75;
 
       if (tecladoEstaAberto === tecladoAberto) return;
 
@@ -208,7 +208,7 @@ const atualizarSlide = useCallback(() => {
     };
 
     const tecladoInicialmenteAberto =
-      viewport.height < window.innerHeight * 0.75;
+  window.visualViewport.height < window.screen.height * 0.75;
 
     tecladoAberto = !tecladoInicialmenteAberto;
     ajustarModal();
