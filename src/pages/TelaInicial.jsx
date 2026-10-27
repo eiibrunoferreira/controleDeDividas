@@ -130,17 +130,19 @@ const atualizarSlide = useCallback(() => {
     
 
     const bloquearFundo = (event) => {
-      const alvo = event.target;
+  if (
+    event.target instanceof Element &&
+    event.target.closest(".modal-scroll-content")
+  ) {
+    const modal = modalRef.current;
 
-      if (
-        alvo instanceof Element &&
-        alvo.closest(".modal-scroll-content")
-      ) {
-        return;
-      }
+    if (modal && modal.contains(event.target)) {
+      return;
+    }
+  }
 
-      event.preventDefault();
-    };
+  event.preventDefault();
+};
 
     document.addEventListener("touchmove", bloquearFundo, {
       passive: false,
