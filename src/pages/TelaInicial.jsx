@@ -162,11 +162,10 @@ const atualizarSlide = useCallback(() => {
 
   
   // Ajusta a posição do modal quando o teclado aparece.
+  
+  // Ajusta a posição do modal quando o teclado aparece.
   useEffect(() => {
     if (!modalAberto) return;
-
-    const modal = modalRef.current;
-    if (!modal) return;
 
     const viewport = window.visualViewport;
     if (!viewport) return;
@@ -174,8 +173,8 @@ const atualizarSlide = useCallback(() => {
     let tecladoAberto = false;
 
     const ajustarModal = () => {
-      const modalAtual = modalRef.current;
-      if (!modalAtual) return;
+      const modal = modalRef.current;
+      if (!modal) return;
 
       const tecladoEstaAberto =
         viewport.height < window.innerHeight * 0.75;
@@ -188,57 +187,52 @@ const atualizarSlide = useCallback(() => {
         const espacoSuperior = 40;
         const espacoInferior = 10;
 
-        modalAtual.style.position = "fixed";
-        modalAtual.style.top = `${espacoSuperior}px`;
-        modalAtual.style.bottom = "auto";
-        modalAtual.style.left = "50%";
-        modalAtual.style.right = "auto";
-        modalAtual.style.transform = "translateX(-50%)";
-        modalAtual.style.width = "calc(100% - 32px)";
-        modalAtual.style.marginTop = "0";
-        modalAtual.style.maxHeight = `${Math.max(
-          150,
+        modal.style.position = "fixed";
+        modal.style.top = `${espacoSuperior}px`;
+        modal.style.left = "50%";
+        modal.style.transform = "translateX(-50%)";
+        modal.style.width = "calc(100% - 32px)";
+        modal.style.marginTop = "0";
+        modal.style.maxHeight = `${
           viewport.height - espacoSuperior - espacoInferior
-        )}px`;
+        }px`;
       } else {
-        modalAtual.style.position = "";
-        modalAtual.style.top = "";
-        modalAtual.style.bottom = "";
-        modalAtual.style.left = "";
-        modalAtual.style.right = "";
-        modalAtual.style.transform = "";
-        modalAtual.style.width = "";
-        modalAtual.style.marginTop = "";
-        modalAtual.style.maxHeight = "90vh";
+        modal.style.position = "";
+        modal.style.top = "";
+        modal.style.left = "";
+        modal.style.transform = "";
+        modal.style.width = "";
+        modal.style.marginTop = "0";
+        modal.style.maxHeight = "90vh";
       }
     };
 
-    const estadoInicialTeclado =
+    const tecladoInicialmenteAberto =
       viewport.height < window.innerHeight * 0.75;
 
-    tecladoAberto = !estadoInicialTeclado;
+    tecladoAberto = !tecladoInicialmenteAberto;
     ajustarModal();
 
     viewport.addEventListener("resize", ajustarModal);
     viewport.addEventListener("scroll", ajustarModal);
-    window.addEventListener("resize", ajustarModal);
 
     return () => {
       viewport.removeEventListener("resize", ajustarModal);
       viewport.removeEventListener("scroll", ajustarModal);
-      window.removeEventListener("resize", ajustarModal);
+
+      const modal = modalRef.current;
+      if (!modal) return;
 
       modal.style.position = "";
       modal.style.top = "";
-      modal.style.bottom = "";
       modal.style.left = "";
-      modal.style.right = "";
       modal.style.transform = "";
       modal.style.width = "";
       modal.style.marginTop = "";
       modal.style.maxHeight = "";
     };
   }, [modalAberto]);
+
 
 
   // Mantém o campo selecionado visível dentro do modal.
@@ -614,8 +608,15 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
 
               {/* Adicionar conta */}
               <div className="w-full min-w-full shrink-0 snap-start flex justify-center px-2">
-                <div className="flex max-w-full flex-col items-center gap-4 py-2 px-4">
-                  <button
+<div className="flex max-w-full flex-col items-center gap-4 pt-8 pb-2 px-4">
+
+  <div className="relative w-28 h-28 shrink-0">
+  <span
+    className="profile-pulse-ring"
+    aria-hidden="true"
+  />
+
+  <button
                     type="button"
                     onClick={abrirModalAdicionar}
                     aria-label="Adicionar conta"
@@ -635,7 +636,8 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
                       <path d="M12 5v14" />
                       <path d="M5 12h14" />
                     </svg>
-                  </button>
+                    </button>
+</div>
 
                   <span className="text-white text-lg font-semibold">
                     Adicionar conta
