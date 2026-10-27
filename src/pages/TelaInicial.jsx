@@ -22,34 +22,89 @@ export default function TelaInicial() {
     }
   });
 
+
+  useEffect(() => {
+    let cancelado = false;
+
+    const atualizarPerfis = async () => {
+      try {
+        const contas = JSON.parse(
+          localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+
+        if (!Array.isArray(contas) || contas.length === 0) {
+          setContasSalvas([]);
+          return;
+        }
+
+        const contasAtualizadas = await Promise.all(
+          contas.map(async (conta) => {
+            try {
+              const response = await fetch(`${API_URL}/users/login`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: conta.email,
+                  // Não temos a senha salva, então não fazemos login aqui.
+                }),
+              });
+
+              // Sem senha não é possível autenticar essa consulta.
+              // Mantém os dados atuais até implementarmos a consulta correta.
+              return conta;
+            } catch {
+              return conta;
+            }
+          })
+        );
+
+        if (!cancelado) {
+          setContasSalvas(contasAtualizadas);
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar perfis:", error);
+      }
+    };
+
+    atualizarPerfis();
+
+    return () => {
+      cancelado = true;
+    };
+  }, []);
+
+
   const carrosselRef = useRef(null);
   const pulseRef = useRef(null);
   const [indiceAtivo, setIndiceAtivo] = useState(0);
 
   const totalSlides = contasSalvas.length + 1;
 
-  const atualizarSlide = useCallback(() => {
-    const carrossel = carrosselRef.current;
+  
+const atualizarSlide = useCallback(() => {
+  const carrossel = carrosselRef.current;
 
-    if (!carrossel) return;
+  if (!carrossel) return;
 
-    const largura = carrossel.clientWidth;
+  const largura = carrossel.clientWidth;
 
-    if (largura <= 0) return;
+  if (largura <= 0) return;
 
-    const scrollLeft = carrossel.scrollLeft;
-    const indice = Math.round(scrollLeft / largura);
+  const scrollLeft = carrossel.scrollLeft;
+  const indice = Math.round(scrollLeft / largura);
 
-    setIndiceAtivo((anterior) =>
-      anterior === indice ? anterior : indice
-    );
+  setIndiceAtivo((anterior) =>
+    anterior === indice ? anterior : indice
+  );
 
-    // Mantém o círculo sincronizado com o movimento real do carrossel.
-    if (pulseRef.current) {
-      pulseRef.current.style.transform =
-        `translateX(${-scrollLeft}px)`;
-    }
-  }, []);
+  if (pulseRef.current) {
+    pulseRef.current.style.transform =
+      `translate3d(${-scrollLeft}px, 0, 0)`;
+  }
+}, []);
+
 
   useEffect(() => {
     atualizarSlide();
@@ -444,8 +499,7 @@ export default function TelaInicial() {
 <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">              {contasSalvas.length > 0 && (
                 <div
                   ref={pulseRef}
-                  className="absolute top-2 left-0 w-full"
-                >
+className="absolute top-2 left-0 w-full will-change-transform"                >
                   <div
                     className="absolute w-28 h-28"
                     style={{

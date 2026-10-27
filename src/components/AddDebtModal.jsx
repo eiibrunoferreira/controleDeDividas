@@ -1048,92 +1048,40 @@ recurrenceYear:
   // ENVIA PARA O BACKEND
   // -------------------------
 
-  const token = localStorage.getItem("@auth_token");
+  
+  // -------------------------
+  // SALVA PELO CONTEXTO
+  // -------------------------
 
-  if (!token) {
+  const savedDebt = await addDebt(debtData);
 
-    setError("Usuário não autenticado.");
+  if (!savedDebt) {
+    setError(
+      "Não foi possível salvar a dívida. Verifique sua conexão e tente novamente."
+    );
 
     return;
-
   }
 
-  try {
+  // -------------------------
+  // LIMPA FORMULÁRIO
+  // -------------------------
 
-    const response = await fetch(
-      "https://controlededividas.onrender.com/debts",
-      {
+  setName("");
+  setDescription("");
+  setAmount("");
+  setRecurring(false);
+  setRecurrenceType("");
+  setMonthlyDueMode("");
+  setRecurrenceWeekday("");
+  setDueDate("");
+  setRecurrenceMonths([]);
+  setHasRecurrenceLimit(false);
+  setRecurrenceLimit("");
+  setError("");
 
-        method: "POST",
+  onClose();
 
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-
-        body: JSON.stringify(debtData),
-
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-
-      setError(
-        data.error ||
-        "Não foi possível salvar a dívida."
-      );
-
-      return;
-
-    }
-
-    // -------------------------
-    // ATUALIZA A TELA
-    // -------------------------
-
-    addDebt(data);
-
-    // -------------------------
-    // LIMPA FORMULÁRIO
-    // -------------------------
-
-    setName("");
-
-    setDescription("");
-
-    setAmount("");
-
-    setRecurring(false);
-
-    setRecurrenceType("");
-
-    setMonthlyDueMode("");
-
-    setRecurrenceWeekday("");
-
-    setDueDate("");
-
-    setRecurrenceMonths([]);
-
-    setHasRecurrenceLimit(false);
-
-    setRecurrenceLimit("");
-
-    setError("");
-
-    onClose();
-
-  } catch (error) {
-
-    console.error(error);
-
-    setError(
-      "Não foi possível conectar ao servidor."
-    );
-
-  }
 
 }
 

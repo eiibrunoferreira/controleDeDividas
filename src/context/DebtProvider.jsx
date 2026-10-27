@@ -111,86 +111,77 @@ useEffect(() => {
   // ADICIONAR DÍVIDA
   // =========================================================
 
-  const addDebt = (newDebt) => {
+  
+const addDebt = async (newDebt) => {
+  const token =
+    sessionStorage.getItem("@auth_token") ||
+    localStorage.getItem("@auth_token");
+
+  if (!token) {
+    console.error("Usuário não autenticado.");
+    return null;
+  }
+
+  const recurrenceGroupId =
+    newDebt.recurring === true
+      ? newDebt.recurrenceGroupId ||
+        createRecurrenceGroupId()
+      : null;
+
+  const debt = {
+    ...newDebt,
+
+    recurrenceGroupId,
+
+    recurrenceYear:
+      newDebt.recurring === true &&
+      newDebt.recurrenceType === "annual"
+        ? newDebt.recurrenceYear ??
+          new Date().getFullYear()
+        : null,
+
+    annualPaidWeek: null,
+    annualPaidMonth: null,
+    annualPaidYear: null,
+  };
+
+  try {
+    const response = await fetch(
+      "https://controlededividas.onrender.com/debts",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(debt),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(
+        data.error || "Erro ao adicionar a dívida."
+      );
+      return null;
+    }
 
     setDebts((prev) => {
+      const updated = [...prev, data];
 
-      const recurrenceGroupId =
-        newDebt.recurring === true
-          ? newDebt.recurrenceGroupId ||
-            createRecurrenceGroupId()
-          : null;
+      persist(updated);
 
-
-      const debt = {
-
-        ...newDebt,
-
-        id:
-  newDebt.id ||
-  String(
-    Date.now()
-  ),
-
-        recurrenceGroupId,
-
-        /*
-          Para recorrências anuais,
-          guardamos o ano do mês selecionado.
-
-          Se não vier informado,
-          usamos o ano atual.
-        */
-
-        recurrenceYear:
-          newDebt.recurring === true &&
-          newDebt.recurrenceType === "annual"
-            ? newDebt.recurrenceYear ??
-              new Date().getFullYear()
-            : null,
-
-        /*
-          Enquanto uma ocorrência anual
-          ainda não foi paga, a semana é nula.
-        */
-
-        annualPaidWeek:
-          newDebt.recurring === true &&
-          newDebt.recurrenceType === "annual"
-            ? null
-            : null,
-
-        annualPaidMonth:
-          newDebt.recurring === true &&
-          newDebt.recurrenceType === "annual"
-            ? null
-            : null,
-
-        annualPaidYear:
-          newDebt.recurring === true &&
-          newDebt.recurrenceType === "annual"
-            ? null
-            : null,
-
-      };
-
-
-      const updated = [
-
-        ...prev,
-
-        debt
-
-      ];
-
-
-      return persist(
-        updated
-      );
-
+      return updated;
     });
 
-  };
+    return data;
+  } catch (error) {
+    console.error("Erro ao adicionar a dívida:", error);
+    return null;
+  }
+};
+
 
 
   // =========================================================

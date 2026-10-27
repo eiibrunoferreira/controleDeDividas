@@ -168,6 +168,37 @@ export default function Header() {
   }, []);
 
 
+// =========================================================
+// SINCRONIZAR CONTA SALVA NA TELA INICIAL
+// =========================================================
+
+const syncSavedAccount = (updatedUser) => {
+  const savedAccounts = JSON.parse(
+    localStorage.getItem("@saved_accounts") || "[]"
+  );
+
+  const updatedAccounts = savedAccounts.map((account) => {
+    if (
+      account.id === updatedUser.id ||
+      account.email === updatedUser.email
+    ) {
+      return {
+        ...account,
+        name: updatedUser.name,
+        profileImage: updatedUser.profileImage || null,
+      };
+    }
+
+    return account;
+  });
+
+  localStorage.setItem(
+    "@saved_accounts",
+    JSON.stringify(updatedAccounts)
+  );
+};
+
+
   // =========================================================
   // ESCOLHER IMAGEM
   // =========================================================
@@ -240,9 +271,8 @@ export default function Header() {
         );
 
       const token =
-        localStorage.getItem(
-          "@auth_token"
-        );
+  sessionStorage.getItem("@auth_token") ||
+  localStorage.getItem("@auth_token");
 
       if (!token) {
 
@@ -302,23 +332,22 @@ export default function Header() {
 
 
         // -----------------------------------------------
-        // ATUALIZAR CACHE LOCAL
-        // -----------------------------------------------
+// ATUALIZAR CACHE LOCAL
+// -----------------------------------------------
 
-        if (data.profileImage) {
+if (data.profileImage) {
+  localStorage.setItem(
+    "@user_profile_image",
+    data.profileImage
+  );
+} else {
+  localStorage.removeItem(
+    "@user_profile_image"
+  );
+}
 
-          localStorage.setItem(
-            "@user_profile_image",
-            data.profileImage
-          );
-
-        } else {
-
-          localStorage.removeItem(
-            "@user_profile_image"
-          );
-
-        }
+// Sincronizar perfil na tela inicial
+syncSavedAccount(data);
 
 
         // -----------------------------------------------
@@ -363,9 +392,8 @@ export default function Header() {
     }
 
     const token =
-      localStorage.getItem(
-        "@auth_token"
-      );
+  sessionStorage.getItem("@auth_token") ||
+  localStorage.getItem("@auth_token");
 
     if (!token) {
 
@@ -422,6 +450,13 @@ export default function Header() {
         "@user_name",
         data.name
       );
+
+      // Sincronizar perfil na tela inicial
+syncSavedAccount({
+  ...data,
+  profileImage:
+    localStorage.getItem("@user_profile_image") || null,
+});
 
       setModalVisible(
         false
