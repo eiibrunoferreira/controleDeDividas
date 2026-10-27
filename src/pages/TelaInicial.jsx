@@ -649,7 +649,7 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
     aria-modal="true"
     aria-labelledby="titulo-modal"
 
-className="modal-scroll-content touch-none w-full max-w-md max-h-[90vh] overflow-y-auto overscroll-contain bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"    style={{
+className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto touch-pan-y overscroll-contain bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"style={{
       WebkitOverflowScrolling: "touch",
       overscrollBehavior: "contain",
     }}
