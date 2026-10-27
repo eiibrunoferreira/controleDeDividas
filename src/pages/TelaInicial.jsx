@@ -165,38 +165,67 @@ const atualizarSlide = useCallback(() => {
   
   // Ajusta a posição do modal quando o teclado aparece.
  
-  // Ajusta apenas a altura rolável do modal quando o teclado aparece.
+  
+  // Ajusta a posição e a altura do modal quando o teclado aparece.
   useEffect(() => {
     if (!modalAberto) return;
 
     const viewport = window.visualViewport;
     if (!viewport) return;
 
-    const ajustarAlturaModal = () => {
+    const ajustarPosicaoModal = () => {
       const modal = modalRef.current;
       if (!modal) return;
 
       const tecladoAberto =
         viewport.height < window.innerHeight * 0.75;
 
-      modal.style.maxHeight = tecladoAberto
-        ? `${Math.max(180, viewport.height - 32)}px`
-        : "90dvh";
+      if (tecladoAberto) {
+        const topSpace = 16;
+        const bottomSpace = 16;
+
+        modal.style.position = "fixed";
+        modal.style.top = `${topSpace}px`;
+        modal.style.left = "50%";
+        modal.style.transform = "translateX(-50%)";
+        modal.style.width = "calc(100% - 32px)";
+        modal.style.maxHeight =
+          `${Math.max(180, viewport.height - topSpace - bottomSpace)}px`;
+        modal.style.marginTop = "0";
+      } else {
+        modal.style.position = "";
+        modal.style.top = "";
+        modal.style.left = "";
+        modal.style.transform = "";
+        modal.style.width = "";
+        modal.style.maxHeight = "90dvh";
+        modal.style.marginTop = "";
+      }
     };
 
-    ajustarAlturaModal();
+    ajustarPosicaoModal();
 
-    viewport.addEventListener("resize", ajustarAlturaModal);
+    viewport.addEventListener("resize", ajustarPosicaoModal);
+    viewport.addEventListener("scroll", ajustarPosicaoModal);
 
     return () => {
-      viewport.removeEventListener("resize", ajustarAlturaModal);
+      viewport.removeEventListener("resize", ajustarPosicaoModal);
+      viewport.removeEventListener("scroll", ajustarPosicaoModal);
 
       const modal = modalRef.current;
+
       if (modal) {
+        modal.style.position = "";
+        modal.style.top = "";
+        modal.style.left = "";
+        modal.style.transform = "";
+        modal.style.width = "";
         modal.style.maxHeight = "";
+        modal.style.marginTop = "";
       }
     };
   }, [modalAberto]);
+
 
 
 
