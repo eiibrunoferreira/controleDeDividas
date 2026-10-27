@@ -236,65 +236,7 @@ const atualizarSlide = useCallback(() => {
 
 
   // Mantém o campo selecionado visível dentro do modal.
-  useEffect(() => {
-    if (!modalAberto) return;
-
-    const modal = modalRef.current;
-    if (!modal) return;
-
-    const ajustarCampo = (event) => {
-      const campo = event.target;
-
-      if (
-        !(campo instanceof HTMLInputElement) &&
-        !(campo instanceof HTMLTextAreaElement)
-      ) {
-        return;
-      }
-
-      if (
-        ["checkbox", "radio", "file", "date"].includes(campo.type)
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-      campo.focus({ preventScroll: true });
-
-      window.setTimeout(() => {
-        if (!modalRef.current || !campo.isConnected) return;
-
-        const modalAtual = modalRef.current;
-        const campoRect = campo.getBoundingClientRect();
-        const modalRect = modalAtual.getBoundingClientRect();
-
-        const margem = 24;
-        let deslocamento = 0;
-
-        if (campoRect.bottom > modalRect.bottom - margem) {
-          deslocamento =
-            campoRect.bottom - modalRect.bottom + margem;
-        } else if (campoRect.top < modalRect.top + margem) {
-          deslocamento =
-            campoRect.top - modalRect.top - margem;
-        }
-
-        if (deslocamento !== 0) {
-          modalAtual.scrollBy({
-            top: deslocamento,
-            behavior: "smooth",
-          });
-        }
-      }, 300);
-    };
-
-    modal.addEventListener("pointerdown", ajustarCampo);
-
-    return () => {
-      modal.removeEventListener("pointerdown", ajustarCampo);
-    };
-  }, [modalAberto]);
-
+ 
   const abrirModalAdicionar = () => {
     setContaSelecionada(null);
     setEmail("");
