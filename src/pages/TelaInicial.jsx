@@ -467,9 +467,14 @@ if (contaSelecionada) {
 <div className="min-h-screen w-full bg-[#161616] text-white flex flex-col">     
 <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-5 py-8">        {/* Cabeçalho */}
         <header className="text-center mb-14">
+          <img
+  src="/controleDeDividas/public/images/iconeApp.png"
+  alt="Logo Controle de Dívidas"
+  className="mx-auto mb-5 h-24 w-24 object-contain"
+/>
           <h1 className="text-3xl font-bold">
             Controle
-            <span className="text-[#168F95]"> Dívidas</span>
+            <span className="text-[#ffffff]"> de Dívidas</span>
           </h1>
 
           <p className="text-gray-400 text-sm mt-3">
@@ -479,13 +484,7 @@ if (contaSelecionada) {
 
         {/* Seleção de perfil */}
         <section>
-          <h2 className="text-xl font-semibold text-center">
-            Quem está acessando?
-          </h2>
 
-          <p className="text-gray-400 text-sm text-center mt-2 mb-10">
-            Selecione seu perfil para continuar.
-          </p>
 
           {/* Carrossel */}
           <div className="relative w-full">
@@ -494,7 +493,7 @@ if (contaSelecionada) {
             <div
               ref={carrosselRef}
               onScroll={atualizarSlide}
-className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"            >
+className="relative  z-10 flex w-full overflow-x-auto -mt-12 overflow-y-hidden overscroll-x-contain touch-pan-x snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"            >
               {contasSalvas.map((conta) => (
                 <div
                   key={conta.id || conta.email}
@@ -575,6 +574,9 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
                   <span className="text-white text-lg font-semibold">
                     Adicionar conta
                   </span>
+                  <span className="text-gray-500 text-sm">
+                      Toque para adicionar uma conta
+                    </span>
                 </div>
               </div>
             </div>
