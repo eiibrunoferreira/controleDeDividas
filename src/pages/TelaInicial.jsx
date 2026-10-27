@@ -127,6 +127,7 @@ const atualizarSlide = useCallback(() => {
     const overflowAnterior = document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
 
     const bloquearFundo = (event) => {
       const alvo = event.target;
