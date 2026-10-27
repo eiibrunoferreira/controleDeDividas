@@ -169,11 +169,11 @@ const atualizarSlide = useCallback(() => {
         viewport.height < window.innerHeight * 0.75;
 
       if (tecladoAberto) {
-        const topSpace = 40;
-        const bottomSpace = 10;
+        const topSpace = 10;
+const bottomSpace = 10;
 
         modal.style.position = "fixed";
-        modal.style.top = `${topSpace}px`;
+        modal.style.maxHeight = "none";
         modal.style.left = "50%";
         modal.style.transform = "translateX(-50%)";
         modal.style.width = "calc(100% - 32px)";
