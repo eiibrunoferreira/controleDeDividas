@@ -117,23 +117,34 @@ const atualizarSlide = useCallback(() => {
   const modalRef = useRef(null);
 
   
-  // Bloqueia a rolagem do fundo enquanto o modal estiver aberto.
+  
+
+  // Bloqueia a rolagem da página de fundo enquanto o modal estiver aberto.
   useEffect(() => {
     if (!modalAberto) return;
 
-    const overflowAnterior = document.body.style.overflow;
-    const overflowHtmlAnterior =
-      document.documentElement.style.overflow;
+    const body = document.body;
+    const html = document.documentElement;
+    const scrollYAnterior = window.scrollY;
 
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
+    const estilosAnteriores = {
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyWidth: body.style.width,
+      bodyOverflow: body.style.overflow,
+      htmlOverflow: html.style.overflow,
+    };
 
-    const bloquearRolagemFundo = (event) => {
-      const alvo = event.target;
+    body.style.position = "fixed";
+    body.style.top = `-${scrollYAnterior}px`;
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    html.style.overflow = "hidden";
 
+    const bloquearFundo = (event) => {
       if (
-        alvo instanceof Element &&
-        alvo.closest(".modal-scroll-content")
+        event.target instanceof Element &&
+        event.target.closest(".modal-scroll-content")
       ) {
         return;
       }
@@ -141,87 +152,53 @@ const atualizarSlide = useCallback(() => {
       event.preventDefault();
     };
 
-    document.addEventListener(
-      "touchmove",
-      bloquearRolagemFundo,
-      { passive: false }
-    );
+    document.addEventListener("touchmove", bloquearFundo, {
+      passive: false,
+    });
 
     return () => {
-      document.body.style.overflow = overflowAnterior;
-      document.documentElement.style.overflow =
-        overflowHtmlAnterior;
+      document.removeEventListener("touchmove", bloquearFundo);
 
-      document.removeEventListener(
-        "touchmove",
-        bloquearRolagemFundo
-      );
+      body.style.position = estilosAnteriores.bodyPosition;
+      body.style.top = estilosAnteriores.bodyTop;
+      body.style.width = estilosAnteriores.bodyWidth;
+      body.style.overflow = estilosAnteriores.bodyOverflow;
+      html.style.overflow = estilosAnteriores.htmlOverflow;
+
+      window.scrollTo(0, scrollYAnterior);
     };
   }, [modalAberto]);
 
-
-  
-  // Ajusta a posição do modal quando o teclado aparece.
-  
-  // Ajusta a posição do modal quando o teclado aparece.
- 
-  
-  // Ajusta a posição e a altura do modal quando o teclado aparece.
+  // Ajusta a área visível do modal sem reposicioná-lo a cada movimento do teclado.
   useEffect(() => {
     if (!modalAberto) return;
 
     const viewport = window.visualViewport;
+
     if (!viewport) return;
 
-    const ajustarPosicaoModal = () => {
+    const atualizarAltura = () => {
       const modal = modalRef.current;
+
       if (!modal) return;
 
-      const tecladoAberto =
-        viewport.height < window.innerHeight * 0.75;
-
-      if (tecladoAberto) {
-        const topSpace = 16;
-        const bottomSpace = 16;
-
-        modal.style.position = "fixed";
-        modal.style.top = `${topSpace}px`;
-        modal.style.left = "50%";
-        modal.style.transform = "translateX(-50%)";
-        modal.style.width = "calc(100% - 32px)";
-        modal.style.maxHeight =
-          `${Math.max(180, viewport.height - topSpace - bottomSpace)}px`;
-        modal.style.marginTop = "0";
-      } else {
-        modal.style.position = "";
-        modal.style.top = "";
-        modal.style.left = "";
-        modal.style.transform = "";
-        modal.style.width = "";
-        modal.style.maxHeight = "90dvh";
-        modal.style.marginTop = "";
-      }
+      modal.style.maxHeight = `${Math.max(
+        160,
+        viewport.height - 32
+      )}px`;
     };
 
-    ajustarPosicaoModal();
+    atualizarAltura();
 
-    viewport.addEventListener("resize", ajustarPosicaoModal);
-    viewport.addEventListener("scroll", ajustarPosicaoModal);
+    viewport.addEventListener("resize", atualizarAltura);
 
     return () => {
-      viewport.removeEventListener("resize", ajustarPosicaoModal);
-      viewport.removeEventListener("scroll", ajustarPosicaoModal);
+      viewport.removeEventListener("resize", atualizarAltura);
 
       const modal = modalRef.current;
 
       if (modal) {
-        modal.style.position = "";
-        modal.style.top = "";
-        modal.style.left = "";
-        modal.style.transform = "";
-        modal.style.width = "";
         modal.style.maxHeight = "";
-        modal.style.marginTop = "";
       }
     };
   }, [modalAberto]);
@@ -635,32 +612,34 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
       {/* Modal de autenticação */}
       {modalAberto && (
         
-<div
-  className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/75 px-4 py-4 backdrop-blur-sm"
-  style={{
-    height: "100dvh",
-    boxSizing: "border-box",
-  }}
-  onMouseDown={(event) => {
-    if (event.target === event.currentTarget) {
-      fecharModal();
-    }
-  }}
->
 
-          <section
-            ref={modalRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="titulo-modal"
-            
-className="modal-scroll-content w-full max-w-md max-h-[90dvh] overflow-y-auto bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-style={{
-  WebkitOverflowScrolling: "touch",
-  overscrollBehavior: "contain",
-}}
+  <div
+    className="fixed inset-0 z-50 flex items-start justify-center overflow-hidden bg-black/75 px-4 py-4 backdrop-blur-sm"
+    style={{
+      height: "100dvh",
+      boxSizing: "border-box",
+    }}
+    onMouseDown={(event) => {
+      if (event.target === event.currentTarget) {
+        fecharModal();
+      }
+    }}
+  >
 
-          >
+
+          
+  <section
+    ref={modalRef}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="titulo-modal"
+    className="modal-scroll-content w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    style={{
+      WebkitOverflowScrolling: "touch",
+      overscrollBehavior: "contain",
+    }}
+  >
+
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>
                 <h2
