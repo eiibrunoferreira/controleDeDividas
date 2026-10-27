@@ -164,74 +164,40 @@ const atualizarSlide = useCallback(() => {
   // Ajusta a posição do modal quando o teclado aparece.
   
   // Ajusta a posição do modal quando o teclado aparece.
+ 
+  // Ajusta apenas a altura rolável do modal quando o teclado aparece.
   useEffect(() => {
     if (!modalAberto) return;
 
     const viewport = window.visualViewport;
     if (!viewport) return;
 
-    let tecladoAberto = false;
-
-    const ajustarModal = () => {
+    const ajustarAlturaModal = () => {
       const modal = modalRef.current;
       if (!modal) return;
 
-      const tecladoEstaAberto =
-  window.visualViewport.height < window.screen.height * 0.75;
+      const tecladoAberto =
+        viewport.height < window.innerHeight * 0.75;
 
-      if (tecladoEstaAberto === tecladoAberto) return;
-
-      tecladoAberto = tecladoEstaAberto;
-
-      if (tecladoEstaAberto) {
-        const espacoSuperior = 40;
-        const espacoInferior = 10;
-
-        modal.style.position = "fixed";
-        modal.style.top = `${espacoSuperior}px`;
-        modal.style.left = "50%";
-        modal.style.transform = "translateX(-50%)";
-        modal.style.width = "calc(100% - 32px)";
-        modal.style.marginTop = "0";
-        modal.style.maxHeight = `${
-          viewport.height - espacoSuperior - espacoInferior
-        }px`;
-      } else {
-        modal.style.position = "";
-        modal.style.top = "";
-        modal.style.left = "";
-        modal.style.transform = "";
-        modal.style.width = "";
-        modal.style.marginTop = "0";
-        modal.style.maxHeight = "90vh";
-      }
+      modal.style.maxHeight = tecladoAberto
+        ? `${Math.max(180, viewport.height - 32)}px`
+        : "90dvh";
     };
 
-    const tecladoInicialmenteAberto =
-  window.visualViewport.height < window.screen.height * 0.75;
+    ajustarAlturaModal();
 
-    tecladoAberto = !tecladoInicialmenteAberto;
-    ajustarModal();
-
-    viewport.addEventListener("resize", ajustarModal);
-    viewport.addEventListener("scroll", ajustarModal);
+    viewport.addEventListener("resize", ajustarAlturaModal);
 
     return () => {
-      viewport.removeEventListener("resize", ajustarModal);
-      viewport.removeEventListener("scroll", ajustarModal);
+      viewport.removeEventListener("resize", ajustarAlturaModal);
 
       const modal = modalRef.current;
-      if (!modal) return;
-
-      modal.style.position = "";
-      modal.style.top = "";
-      modal.style.left = "";
-      modal.style.transform = "";
-      modal.style.width = "";
-      modal.style.marginTop = "";
-      modal.style.maxHeight = "";
+      if (modal) {
+        modal.style.maxHeight = "";
+      }
     };
   }, [modalAberto]);
+
 
 
 
@@ -639,24 +605,32 @@ className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscrol
 
       {/* Modal de autenticação */}
       {modalAberto && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm px-5 py-6 overflow-hidden"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              fecharModal();
-            }
-          }}
-        >
+        
+<div
+  className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/75 px-4 py-4 backdrop-blur-sm"
+  style={{
+    height: "100dvh",
+    boxSizing: "border-box",
+  }}
+  onMouseDown={(event) => {
+    if (event.target === event.currentTarget) {
+      fecharModal();
+    }
+  }}
+>
+
           <section
             ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="titulo-modal"
-            className="modal-scroll-content w-full max-w-md max-h-[90vh] overflow-y-auto bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            style={{
-              WebkitOverflowScrolling: "touch",
-              overscrollBehavior: "contain",
-            }}
+            
+className="modal-scroll-content w-full max-w-md max-h-[90dvh] overflow-y-auto bg-[#0e0d0d] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+style={{
+  WebkitOverflowScrolling: "touch",
+  overscrollBehavior: "contain",
+}}
+
           >
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>
