@@ -60,7 +60,6 @@ export default function TelaInicial() {
 
 
   const carrosselRef = useRef(null);
-  const pulseRef = useRef(null);
   const [indiceAtivo, setIndiceAtivo] = useState(0);
 
   const totalSlides = contasSalvas.length + 1;
@@ -117,6 +116,7 @@ const atualizarSlide = useCallback(() => {
 
   const modalRef = useRef(null);
 
+  
   // Bloqueia a rolagem do fundo enquanto o modal estiver aberto.
   useEffect(() => {
     if (!modalAberto) return;
@@ -128,15 +128,22 @@ const atualizarSlide = useCallback(() => {
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
 
-    const bloquearToqueForaDoModal = (event) => {
-      if (!modalRef.current?.contains(event.target)) {
-        event.preventDefault();
+    const bloquearRolagemFundo = (event) => {
+      const alvo = event.target;
+
+      if (
+        alvo instanceof Element &&
+        alvo.closest(".modal-scroll-content")
+      ) {
+        return;
       }
+
+      event.preventDefault();
     };
 
     document.addEventListener(
       "touchmove",
-      bloquearToqueForaDoModal,
+      bloquearRolagemFundo,
       { passive: false }
     );
 
@@ -147,11 +154,13 @@ const atualizarSlide = useCallback(() => {
 
       document.removeEventListener(
         "touchmove",
-        bloquearToqueForaDoModal
+        bloquearRolagemFundo
       );
     };
   }, [modalAberto]);
 
+
+  
   // Ajusta a posição do modal quando o teclado aparece.
   useEffect(() => {
     if (!modalAberto) return;
@@ -160,58 +169,77 @@ const atualizarSlide = useCallback(() => {
     if (!modal) return;
 
     const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    let tecladoAberto = false;
 
     const ajustarModal = () => {
-      if (!modalRef.current) return;
+      const modalAtual = modalRef.current;
+      if (!modalAtual) return;
 
-      const alturaViewport =
-        viewport?.height ?? window.innerHeight;
+      const tecladoEstaAberto =
+        viewport.height < window.innerHeight * 0.75;
 
-      const tecladoAberto =
-        alturaViewport < window.innerHeight * 0.75;
+      if (tecladoEstaAberto === tecladoAberto) return;
 
-      if (tecladoAberto) {
-        modal.style.position = "fixed";
-        modal.style.top = "12px";
-        modal.style.left = "50%";
-        modal.style.transform = "translateX(-50%)";
-        modal.style.width = "calc(100% - 40px)";
-        modal.style.marginTop = "0";
-        modal.style.maxHeight = `${Math.max(
+      tecladoAberto = tecladoEstaAberto;
+
+      if (tecladoEstaAberto) {
+        const espacoSuperior = 40;
+        const espacoInferior = 10;
+
+        modalAtual.style.position = "fixed";
+        modalAtual.style.top = `${espacoSuperior}px`;
+        modalAtual.style.bottom = "auto";
+        modalAtual.style.left = "50%";
+        modalAtual.style.right = "auto";
+        modalAtual.style.transform = "translateX(-50%)";
+        modalAtual.style.width = "calc(100% - 32px)";
+        modalAtual.style.marginTop = "0";
+        modalAtual.style.maxHeight = `${Math.max(
           150,
-          alturaViewport - 24
+          viewport.height - espacoSuperior - espacoInferior
         )}px`;
       } else {
-        modal.style.position = "";
-        modal.style.top = "";
-        modal.style.left = "";
-        modal.style.transform = "";
-        modal.style.width = "";
-        modal.style.marginTop = "0";
-        modal.style.maxHeight = "90vh";
+        modalAtual.style.position = "";
+        modalAtual.style.top = "";
+        modalAtual.style.bottom = "";
+        modalAtual.style.left = "";
+        modalAtual.style.right = "";
+        modalAtual.style.transform = "";
+        modalAtual.style.width = "";
+        modalAtual.style.marginTop = "";
+        modalAtual.style.maxHeight = "90vh";
       }
     };
 
+    const estadoInicialTeclado =
+      viewport.height < window.innerHeight * 0.75;
+
+    tecladoAberto = !estadoInicialTeclado;
     ajustarModal();
 
-    viewport?.addEventListener("resize", ajustarModal);
-    viewport?.addEventListener("scroll", ajustarModal);
+    viewport.addEventListener("resize", ajustarModal);
+    viewport.addEventListener("scroll", ajustarModal);
     window.addEventListener("resize", ajustarModal);
 
     return () => {
-      viewport?.removeEventListener("resize", ajustarModal);
-      viewport?.removeEventListener("scroll", ajustarModal);
+      viewport.removeEventListener("resize", ajustarModal);
+      viewport.removeEventListener("scroll", ajustarModal);
       window.removeEventListener("resize", ajustarModal);
 
       modal.style.position = "";
       modal.style.top = "";
+      modal.style.bottom = "";
       modal.style.left = "";
+      modal.style.right = "";
       modal.style.transform = "";
       modal.style.width = "";
       modal.style.marginTop = "";
       modal.style.maxHeight = "";
     };
   }, [modalAberto]);
+
 
   // Mantém o campo selecionado visível dentro do modal.
   useEffect(() => {
@@ -534,36 +562,24 @@ if (contaSelecionada) {
 
           {/* Carrossel */}
           <div className="relative w-full">
-            {/* Círculo fora do carrossel */}
-<div className="absolute inset-0 pointer-events-none z-20 overflow-visible">              {contasSalvas.length > 0 && (
-                <div
-                  ref={pulseRef}
-className="absolute top-2 left-0 w-full"              >
-                  <div
-                    className="absolute w-28 h-28"
-                    style={{
-                      left: `calc(${indiceAtivo * 100}% + 50% - 56px)`,
-                    }}
-                  >
-                    <span className="profile-pulse-ring" />
-                  </div>
-                </div>
-              )}
-            </div>
+           
 
             <div
               ref={carrosselRef}
               onScroll={atualizarSlide}
-              className="relative z-10 flex w-full overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            >
+className="relative z-10 flex w-full overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"            >
               {contasSalvas.map((conta) => (
                 <div
                   key={conta.id || conta.email}
                   className="w-full min-w-full shrink-0 snap-start flex justify-center px-2"
                 >
-                  <div className="flex max-w-full flex-col items-center gap-4 py-2 px-4">
-                    <div className="relative w-28 h-28 shrink-0">
-                      <button
+<div className="flex max-w-full flex-col items-center gap-4 pt-8 pb-2 px-4">                  <div className="relative w-28 h-28 shrink-0">
+  <span
+    className="profile-pulse-ring"
+    aria-hidden="true"
+  />
+
+  <button
                         type="button"
                         onClick={() => abrirModalPerfil(conta)}
                         aria-label={`Entrar no perfil ${conta.name || conta.email}`}
