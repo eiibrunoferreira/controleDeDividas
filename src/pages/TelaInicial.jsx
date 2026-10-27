@@ -173,6 +173,7 @@ const atualizarSlide = useCallback(() => {
 const bottomSpace = 10;
 
         modal.style.position = "fixed";
+        modal.style.maxHeight = "none";
         modal.style.top = `${topSpace}px`;
         modal.style.left = "50%";
         modal.style.transform = "translateX(-50%)";
