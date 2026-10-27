@@ -176,46 +176,64 @@ const [currentUser, setCurrentUser] = useState(null);
 // SINCRONIZAR CONTA SALVA NA TELA INICIAL
 // =========================================================
 
+
 const syncSavedAccount = (updatedUser) => {
-  const savedAccounts = JSON.parse(
-    localStorage.getItem("@saved_accounts") || "[]"
-  );
+  try {
+    const savedAccounts = JSON.parse(
+      localStorage.getItem("@saved_accounts") || "[]"
+    );
 
-  const user = {
-    ...currentUser,
-    ...updatedUser,
-  };
-
-  const email = user.email;
-  const id = user.id;
-
-  const updatedAccounts = savedAccounts.map((account) => {
-    const isSameAccount =
-      (id != null && account.id != null &&
-        String(account.id) === String(id)) ||
-      (email && account.email &&
-        account.email.toLowerCase() === email.toLowerCase());
-
-    if (!isSameAccount) {
-      return account;
-    }
-
-    return {
-      ...account,
-      id: id ?? account.id,
-      email: email ?? account.email,
-      name: user.name ?? account.name,
-      profileImage: user.profileImage || null,
+    const user = {
+      ...currentUser,
+      ...updatedUser,
     };
-  });
 
-  localStorage.setItem(
-    "@saved_accounts",
-    JSON.stringify(updatedAccounts)
-  );
+    const email = user.email;
+    const id = user.id;
 
-  window.dispatchEvent(new Event("savedAccountsUpdated"));
+    const updatedAccounts = savedAccounts.map((account) => {
+      const sameId =
+        id != null &&
+        account.id != null &&
+        String(account.id) === String(id);
+
+      const sameEmail =
+        email &&
+        account.email &&
+        account.email.toLowerCase() === email.toLowerCase();
+
+      if (!sameId && !sameEmail) {
+        return account;
+      }
+
+      return {
+        ...account,
+        id: id ?? account.id,
+        email: email ?? account.email,
+        name: user.name ?? account.name,
+        profileImage:
+          user.profileImage !== undefined
+            ? user.profileImage
+            : account.profileImage ?? null,
+      };
+    });
+
+    localStorage.setItem(
+      "@saved_accounts",
+      JSON.stringify(updatedAccounts)
+    );
+
+    window.dispatchEvent(
+      new Event("savedAccountsUpdated")
+    );
+  } catch (error) {
+    console.error(
+      "Erro ao sincronizar perfil salvo:",
+      error
+    );
+  }
 };
+
 
 
   // =========================================================

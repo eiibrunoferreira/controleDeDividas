@@ -82,11 +82,6 @@ const atualizarSlide = useCallback(() => {
   setIndiceAtivo((anterior) =>
     anterior === indice ? anterior : indice
   );
-
-  if (pulseRef.current) {
-    pulseRef.current.style.transform =
-      `translateX(${-scrollLeft}px)`;
-  }
 }, []);
 
 
@@ -385,19 +380,78 @@ const atualizarSlide = useCallback(() => {
         return;
       }
 
-      if (contaSelecionada) {
-        localStorage.removeItem("@auth_token");
-        sessionStorage.removeItem("@auth_token");
+      
+if (contaSelecionada) {
+  const profileResponse = await fetch(
+    `${API_URL}/users/me`,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`,
+      },
+    }
+  );
 
-        sessionStorage.setItem("@auth_token", data.token);
-        localStorage.setItem("@user_name", data.user.name);
+  if (!profileResponse.ok) {
+    setErro(
+      "Não foi possível carregar seu perfil atualizado."
+    );
+    return;
+  }
 
-        await loadDebts();
+  const profile = await profileResponse.json();
 
-        setModalAberto(false);
-        navigate("/home");
-        return;
-      }
+  const contasAtualizadas = contasSalvas.map((conta) => {
+    const mesmoEmail =
+      conta.email?.toLowerCase() ===
+      profile.email?.toLowerCase();
+
+    const mesmoId =
+      conta.id != null &&
+      profile.id != null &&
+      String(conta.id) === String(profile.id);
+
+    if (!mesmoEmail && !mesmoId) {
+      return conta;
+    }
+
+    return {
+      ...conta,
+      id: profile.id ?? conta.id,
+      name: profile.name ?? conta.name,
+      email: profile.email ?? conta.email,
+      profileImage: profile.profileImage ?? null,
+    };
+  });
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(contasAtualizadas)
+  );
+
+  setContasSalvas(contasAtualizadas);
+
+  localStorage.removeItem("@auth_token");
+  sessionStorage.removeItem("@auth_token");
+
+  sessionStorage.setItem("@auth_token", data.token);
+  localStorage.setItem("@user_name", profile.name);
+
+  if (profile.profileImage) {
+    localStorage.setItem(
+      "@user_profile_image",
+      profile.profileImage
+    );
+  } else {
+    localStorage.removeItem("@user_profile_image");
+  }
+
+  await loadDebts();
+
+  setModalAberto(false);
+  navigate("/home");
+  return;
+}
+
 
       const profileResponse = await fetch(
         `${API_URL}/users/me`,
