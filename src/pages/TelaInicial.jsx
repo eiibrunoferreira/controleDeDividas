@@ -121,67 +121,36 @@ const atualizarSlide = useCallback(() => {
 
   
   // Bloqueia a rolagem do fundo enquanto o modal estiver aberto.
- 
-useEffect(() => {
-  if (!modalAberto) return;
+  useEffect(() => {
+    if (!modalAberto) return;
 
-  const body = document.body;
-  const html = document.documentElement;
-  const scrollYAnterior = window.scrollY;
+    const overflowAnterior = document.body.style.overflow;
 
-  const estilosAnteriores = {
-    position: body.style.position,
-    top: body.style.top,
-    left: body.style.left,
-    right: body.style.right,
-    width: body.style.width,
-    overflow: body.style.overflow,
-    htmlOverflow: html.style.overflow,
-  };
+    document.body.style.overflow = "hidden";
 
-  // Trava a página na posição atual.
-  body.style.position = "fixed";
-  body.style.top = `-${scrollYAnterior}px`;
-  body.style.left = "0";
-  body.style.right = "0";
-  body.style.width = "100%";
-  body.style.overflow = "hidden";
-  html.style.overflow = "hidden";
+    const bloquearFundo = (event) => {
+      const alvo = event.target;
 
-  const bloquearFundo = (event) => {
-    const alvo = event.target;
+      if (
+        alvo instanceof Element &&
+        alvo.closest(".modal-scroll-content")
+      ) {
+        return;
+      }
 
-    // Permite rolar somente o conteúdo do modal.
-    if (
-      alvo instanceof Element &&
-      alvo.closest(".modal-scroll-content")
-    ) {
-      return;
-    }
+      event.preventDefault();
+    };
 
-    event.preventDefault();
-  };
+    document.addEventListener("touchmove", bloquearFundo, {
+      passive: false,
+    });
 
-  document.addEventListener("touchmove", bloquearFundo, {
-    passive: false,
-  });
+    return () => {
+      document.body.style.overflow = overflowAnterior;
 
-  return () => {
-    document.removeEventListener("touchmove", bloquearFundo);
-
-    body.style.position = estilosAnteriores.position;
-    body.style.top = estilosAnteriores.top;
-    body.style.left = estilosAnteriores.left;
-    body.style.right = estilosAnteriores.right;
-    body.style.width = estilosAnteriores.width;
-    body.style.overflow = estilosAnteriores.overflow;
-    html.style.overflow = estilosAnteriores.htmlOverflow;
-
-    // Restaura a posição original da página.
-    window.scrollTo(0, scrollYAnterior);
-  };
-}, [modalAberto]);
-
+      document.removeEventListener("touchmove", bloquearFundo);
+    };
+  }, [modalAberto]);
 
   // Ajusta o modal ao abrir ou fechar o teclado.
   useEffect(() => {
@@ -204,7 +173,7 @@ useEffect(() => {
 const bottomSpace = 10;
 
         modal.style.position = "fixed";
-        modal.style.maxHeight = "none";
+        modal.style.top = `${topSpace}px`;
         modal.style.left = "50%";
         modal.style.transform = "translateX(-50%)";
         modal.style.width = "calc(100% - 32px)";
