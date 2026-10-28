@@ -120,40 +120,62 @@ const atualizarSlide = useCallback(() => {
   
 
   
+  
   // Bloqueia a rolagem do fundo enquanto o modal estiver aberto.
   useEffect(() => {
     if (!modalAberto) return;
 
-    const overflowAnterior = document.body.style.overflow;
+    const body = document.body;
+    const html = document.documentElement;
 
-    document.body.style.overflow = "hidden";
-    
+    const overflowBodyAnterior = body.style.overflow;
+    const overflowHtmlAnterior = html.style.overflow;
+    const touchActionAnterior = body.style.touchAction;
 
-    const bloquearFundo = (event) => {
-  if (
-    event.target instanceof Element &&
-    event.target.closest(".modal-scroll-content")
-  ) {
-    const modal = modalRef.current;
+    body.style.overflow = "hidden";
+    html.style.overflow = "hidden";
+    body.style.touchAction = "none";
 
-    if (modal && modal.contains(event.target)) {
-      return;
-    }
-  }
+    const bloquearRolagemDoFundo = (event) => {
+      const modal = modalRef.current;
 
-  event.preventDefault();
-};
+      // Permite a interação dentro do modal.
+      if (modal && modal.contains(event.target)) {
+        return;
+      }
 
-    document.addEventListener("touchmove", bloquearFundo, {
-      passive: false,
-    });
+      event.preventDefault();
+    };
+
+    document.addEventListener(
+      "wheel",
+      bloquearRolagemDoFundo,
+      { passive: false }
+    );
+
+    document.addEventListener(
+      "touchmove",
+      bloquearRolagemDoFundo,
+      { passive: false }
+    );
 
     return () => {
-      document.body.style.overflow = overflowAnterior;
+      body.style.overflow = overflowBodyAnterior;
+      html.style.overflow = overflowHtmlAnterior;
+      body.style.touchAction = touchActionAnterior;
 
-      document.removeEventListener("touchmove", bloquearFundo);
+      document.removeEventListener(
+        "wheel",
+        bloquearRolagemDoFundo
+      );
+
+      document.removeEventListener(
+        "touchmove",
+        bloquearRolagemDoFundo
+      );
     };
   }, [modalAberto]);
+
 
   // Ajusta o modal ao abrir ou fechar o teclado.
   useEffect(() => {
@@ -171,11 +193,6 @@ const atualizarSlide = useCallback(() => {
       const tecladoAberto =
         viewport.height < window.innerHeight * 0.75;
 
-        if (tecladoAberto) {
-  document.body.style.overflow = "hidden";
-} else {
-  document.body.style.overflow = "";
-}
 
       if (tecladoAberto) {
         const topSpace = 10;
