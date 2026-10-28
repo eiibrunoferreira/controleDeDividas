@@ -14,6 +14,14 @@ app.use(express.json({ limit: "10mb" }));
 app.use("/users", userRoutes);
 app.use("/debts", debtRoutes);
 
+// Verificação de disponibilidade do backend
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Backend pronto!",
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
